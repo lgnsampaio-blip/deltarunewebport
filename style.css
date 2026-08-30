@@ -17,12 +17,12 @@ body {
 
 .stretched-text {
   display: inline-block;
-  transform: scaleY(1.1); 
-  transform-origin: bottom; 
+  transform: scaleY(1.1);
+  transform-origin: bottom;
 }
 
 .menu {
-  width: min(90vw, 800px); 
+  width: min(90vw, 800px);
 }
 
 a {
@@ -34,20 +34,20 @@ a {
 
 .row {
   display: grid;
-  grid-template-columns: 200px 1fr auto; 
+  grid-template-columns: 200px 1fr auto;
   align-items: center;
-  padding: 12px 0; 
-  gap: 16px; 
+  padding: 12px 0;
+  gap: 16px;
   letter-spacing: 0.5px;
 }
 
 .disabled-row {
   display: grid;
   opacity: 0.7;
-  grid-template-columns: 200px 1fr auto; 
+  grid-template-columns: 200px 1fr auto;
   align-items: center;
-  padding: 12px 0; 
-  gap: 16px; 
+  padding: 12px 0;
+  gap: 16px;
   letter-spacing: 0.5px;
 }
 
@@ -66,6 +66,7 @@ a {
 .row:hover .title {
   color: #fefe00;
 }
+
 .row:hover img,
 .selected img {
   filter: sepia(1) saturate(100);
@@ -76,9 +77,9 @@ a {
 }
 
 .badge {
-  font-size: 24px; 
+  font-size: 24px;
   color: #ff9;
-  padding-left: 20px; 
+  padding-left: 20px;
 }
 
 .chapter {
@@ -88,6 +89,7 @@ a {
 .title {
   text-align: center;
 }
+
 .disabled-title {
   text-align: center;
   opacity: 0.7;
@@ -100,11 +102,11 @@ img {
 }
 
 .logo {
-  width: 700px; 
+  width: 700px;
   height: 200px;
   object-fit: contain;
   display: block;
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 
 #mute {
@@ -116,6 +118,8 @@ img {
   padding: 8px 12px;
   cursor: pointer;
 }
+
+
 /* =========================
    JOYSTICK MOBILE
    ========================= */
@@ -124,39 +128,179 @@ img {
   position: fixed;
   left: 25px;
   bottom: 25px;
+
   width: 150px;
   height: 150px;
+
   z-index: 99999;
+
   touch-action: none;
   user-select: none;
+  -webkit-user-select: none;
+
+  display: block;
 }
 
 #joystickBase {
   position: absolute;
+
   inset: 0;
+
   border-radius: 50%;
+
   background: rgba(255, 255, 255, 0.12);
+
   border: 2px solid rgba(255, 255, 255, 0.35);
+
   box-shadow:
-    0 0 20px rgba(255,255,255,0.08),
-    inset 0 0 20px rgba(0,0,0,0.4);
+    0 0 20px rgba(255, 255, 255, 0.08),
+    inset 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 #joystickStick {
   position: absolute;
+
   width: 68px;
   height: 68px;
+
   left: 50%;
   top: 50%;
+
   transform: translate(-50%, -50%);
+
   border-radius: 50%;
-  background: rgba(255,255,255,0.8);
-  border: 3px solid rgba(255,255,255,0.95);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+
+  background: rgba(255, 255, 255, 0.8);
+
+  border: 3px solid rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.5);
+
   pointer-events: none;
-/* Esconde no PC */
+}
+
+
+/* =========================
+   BOTÕES Z X C
+   ========================= */
+
+#mobileButtons {
+  position: fixed;
+
+  right: 25px;
+  bottom: 30px;
+
+  z-index: 99999;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mobileButton {
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+
+  color: white;
+
+  font-family: 'Deltarune', monospace;
+
+  font-size: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 0 15px rgba(255, 255, 255, 0.08),
+    inset 0 0 15px rgba(0, 0, 0, 0.4);
+
+  touch-action: none;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobileButton:active {
+  background: rgba(255, 255, 255, 0.3);
+
+  transform: scale(0.92);
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
 @media (min-width: 800px) {
-  #virtualJoystick {
+
+  #virtualJoystick,
+  #mobileButtons {
     display: none;
   }
+
+}
+
+
+/* =========================
+   IPAD / CELULAR
+   ========================= */
+
+@media (max-width: 799px) {
+
+  #virtualJoystick {
+    display: block;
+  }
+
+  #mobileButtons {
+    display: flex;
+  }
+
+}
+
+
+/* =========================
+   TELAS MUITO PEQUENAS
+   ========================= */
+
+@media (max-width: 500px) {
+
+  #virtualJoystick {
+    width: 125px;
+    height: 125px;
+
+    left: 18px;
+    bottom: 18px;
+  }
+
+  #joystickStick {
+    width: 56px;
+    height: 56px;
+  }
+
+  #mobileButtons {
+    right: 18px;
+    bottom: 20px;
+
+    gap: 8px;
+  }
+
+  .mobileButton {
+    width: 58px;
+    height: 58px;
+
+    font-size: 24px;
+  }
+
 }
