@@ -2,12 +2,7 @@
   font-family: "Deltarune";
   src: url("https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/font.otf")
        format("opentype");
-  font-display: swap;
 }
-
-/* =========================================================
-   GLOBAL
-========================================================= */
 
 * {
   box-sizing: border-box;
@@ -23,10 +18,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-
   background: #000;
   color: #fff;
-
   overflow: hidden;
 }
 
@@ -41,7 +34,6 @@ body {
 #main-menu-ui {
   position: fixed;
   inset: 0;
-
   width: 100%;
   height: 100%;
   height: 100dvh;
@@ -92,7 +84,6 @@ body {
 
 .menu {
   width: min(90vw, 800px);
-
   margin: 20px auto 0;
 
   display: flex;
@@ -114,6 +105,7 @@ body {
   align-items: center;
 
   padding: 12px 0;
+
   gap: 16px;
 
   color: #fff;
@@ -168,7 +160,9 @@ body {
 
 .row:hover img,
 .row.selected img {
-  filter: sepia(1) saturate(100);
+  filter:
+    sepia(1)
+    saturate(100);
 }
 
 /* =========================================================
@@ -209,7 +203,7 @@ body {
 
   z-index: 100;
 
-  font-family: "Deltarune", monospace;
+  font-family: Arial, sans-serif;
 }
 
 /* =========================================================
@@ -257,7 +251,7 @@ body {
 }
 
 /* =========================================================
-   JOYSTICK — DELTARUNE PIXEL
+   PIXEL JOYSTICK
 ========================================================= */
 
 #joystick {
@@ -269,6 +263,11 @@ body {
   width: 150px;
   height: 150px;
 
+  /*
+   * Círculo perfeitamente redondo.
+   */
+  border-radius: 50%;
+
   pointer-events: auto;
   touch-action: none;
 
@@ -278,80 +277,80 @@ body {
   transform-origin: center;
 
   /*
-   * Pixel-art visual
+   * Aparência pixel-art.
    */
-  border-radius: 0;
-
   background:
-    #000;
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255,255,255,.28) 0%,
+      rgba(255,255,255,.12) 22%,
+      rgba(255,255,255,.06) 45%,
+      rgba(0,0,0,.25) 100%
+    );
 
   border:
-    5px solid #fff;
+    4px solid rgba(255,255,255,.75);
 
+  /*
+   * Camadas quadradas simulando brilho pixelado.
+   */
   box-shadow:
-    5px 5px 0 #000,
-    0 0 0 2px #000;
+    0 0 0 3px rgba(0,0,0,.9),
+    0 0 0 6px rgba(255,255,255,.18),
+    0 0 22px rgba(255,255,255,.16),
+    inset 0 0 0 3px rgba(0,0,0,.35),
+    inset 8px 8px 0 rgba(255,255,255,.07),
+    inset -8px -8px 0 rgba(0,0,0,.25);
 
+  /*
+   * Faz a renderização ficar mais próxima
+   * de um sprite pixelado.
+   */
   image-rendering: pixelated;
 }
 
 /*
- * Inner pixel frame
+ * Brilho quadrado no canto da esfera.
  */
 #joystick::before {
   content: "";
 
   position: absolute;
 
-  left: 7px;
-  top: 7px;
-  right: 7px;
-  bottom: 7px;
+  width: 18px;
+  height: 18px;
 
-  border:
-    3px solid #555;
+  left: 29px;
+  top: 25px;
+
+  background: rgba(255,255,255,.42);
+
+  box-shadow:
+    8px 0 0 rgba(255,255,255,.20),
+    0 8px 0 rgba(255,255,255,.20);
 
   pointer-events: none;
 }
 
 /*
- * Crosshair / directional area
+ * Sombra interna pixelada.
  */
 #joystick::after {
   content: "";
 
   position: absolute;
 
-  left: 50%;
-  top: 50%;
+  width: 25px;
+  height: 25px;
 
-  width: 70px;
-  height: 70px;
+  right: 23px;
+  bottom: 20px;
 
-  transform:
-    translate(-50%, -50%);
+  background: rgba(0,0,0,.22);
 
-  background:
-    linear-gradient(
-      to right,
-      transparent 0,
-      transparent 42%,
-      #222 42%,
-      #222 58%,
-      transparent 58%,
-      transparent 100%
-    ),
-    linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 42%,
-      #222 42%,
-      #222 58%,
-      transparent 58%,
-      transparent 100%
-    );
-
-  opacity: .8;
+  box-shadow:
+    -8px 0 0 rgba(0,0,0,.16),
+    0 -8px 0 rgba(0,0,0,.16);
 
   pointer-events: none;
 }
@@ -366,22 +365,30 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 62px;
-  height: 62px;
+  width: 66px;
+  height: 66px;
 
-  margin-left: -31px;
-  margin-top: -31px;
+  margin-left: -33px;
+  margin-top: -33px;
 
-  border-radius: 0;
+  border-radius: 50%;
 
-  background: #fff;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #fff 0%,
+      #eee 35%,
+      #aaa 100%
+    );
 
   border:
-    5px solid #000;
+    4px solid #fff;
 
   box-shadow:
-    4px 4px 0 #555,
-    0 0 0 2px #fff;
+    0 0 0 3px #000,
+    0 0 0 5px rgba(255,255,255,.45),
+    0 6px 0 rgba(0,0,0,.5),
+    0 0 18px rgba(255,255,255,.2);
 
   pointer-events: none;
 
@@ -389,12 +396,10 @@ body {
     transform .04s linear;
 
   image-rendering: pixelated;
-
-  z-index: 2;
 }
 
 /* =========================================================
-   MOBILE BUTTONS
+   Z X C
 ========================================================= */
 
 #mobile-buttons {
@@ -406,7 +411,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  gap: 12px;
+  gap: 14px;
 
   pointer-events: auto;
   touch-action: none;
@@ -418,113 +423,99 @@ body {
 }
 
 /* =========================================================
-   Z X C BUTTONS
+   PIXEL BUTTONS
 ========================================================= */
 
 .game-btn {
-  width: 66px;
-  height: 66px;
+  position: relative;
+
+  width: 65px;
+  height: 65px;
+
+  border-radius: 50%;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   /*
-   * Pixel shape
-   */
-  border-radius: 0;
-
-  background: #000;
-
-  color: #fff;
-
-  border:
-    5px solid #fff;
-
-  /*
-   * IMPORTANT:
-   * usa a fonte Deltarune
+   * Fonte DELTARUNE.
    */
   font-family: "Deltarune", monospace;
 
-  font-size: 25px;
+  font-size: 27px;
   font-weight: normal;
 
-  line-height: 1;
+  color: #fff;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255,255,255,.30) 0%,
+      rgba(255,255,255,.13) 28%,
+      rgba(255,255,255,.06) 60%,
+      rgba(0,0,0,.35) 100%
+    );
+
+  border:
+    4px solid rgba(255,255,255,.78);
+
+  box-shadow:
+    0 0 0 3px #000,
+    0 0 0 5px rgba(255,255,255,.18),
+    0 0 18px rgba(255,255,255,.12),
+    inset 0 0 0 3px rgba(0,0,0,.35);
 
   touch-action: none;
   pointer-events: auto;
 
-  /*
-   * Pixel shadow
-   */
-  box-shadow:
-    5px 5px 0 #000,
-    0 0 0 2px #000;
-
   image-rendering: pixelated;
 
   transition:
-    transform .05s steps(1),
-    background .05s steps(1),
-    color .05s steps(1);
+    transform .07s linear,
+    background .07s linear;
 }
 
 /*
- * Pequeno detalhe interno
+ * Pequeno brilho pixelado.
  */
 .game-btn::before {
   content: "";
 
   position: absolute;
 
-  width: 54px;
-  height: 54px;
+  width: 10px;
+  height: 10px;
 
-  border:
-    2px solid #555;
+  left: 13px;
+  top: 12px;
+
+  background: rgba(255,255,255,.35);
+
+  box-shadow:
+    7px 0 0 rgba(255,255,255,.16),
+    0 7px 0 rgba(255,255,255,.16);
 
   pointer-events: none;
 }
 
-/* =========================================================
-   BUTTON PRESS
-========================================================= */
-
 .game-btn.active {
-  background: #fff;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.65),
+      rgba(255,255,255,.18)
+    );
 
-  color: #000;
-
-  transform:
-    translate(4px, 4px);
+  transform: scale(.90);
 
   border-color: #fff;
 
   box-shadow:
-    1px 1px 0 #000;
-
-  /*
-   * mantém o texto legível
-   */
-  text-shadow: none;
-}
-
-/* =========================================================
-   BUTTON HOVER
-========================================================= */
-
-@media (hover: hover) {
-
-  .game-btn:hover {
-    background: #222;
-
-    border-color: #fff;
-
-    color: #ffff00;
-  }
-
+    0 0 0 3px #000,
+    0 0 0 5px #fff,
+    0 0 25px rgba(255,255,255,.35),
+    inset 0 0 0 3px rgba(255,255,255,.25);
 }
 
 /* =========================================================
@@ -558,19 +549,17 @@ body {
 
   color: #fff;
 
-  background: #000;
+  background: rgba(20,20,20,.9);
 
-  border:
-    2px solid #fff;
+  border: 1px solid #777;
+  border-radius: 7px;
 
-  border-radius: 0;
-
-  font-family:
-    "Deltarune",
-    monospace;
-
-  font-size: 14px;
+  font-family: Arial, sans-serif;
 }
+
+/* =========================================================
+   SETTINGS PANEL
+========================================================= */
 
 #settings-panel {
   position: fixed;
@@ -593,12 +582,10 @@ body {
 
   display: none;
 
-  background: #000;
+  background: rgba(0,0,0,.96);
 
-  border:
-    2px solid #fff;
-
-  border-radius: 0;
+  border: 1px solid #444;
+  border-radius: 10px;
 
   z-index: 49;
 
@@ -616,25 +603,11 @@ body {
 
   padding: 10px;
 
-  background: #000;
-
+  background: #922;
   color: #fff;
 
-  border:
-    2px solid #fff;
-
-  border-radius: 0;
-
-  font-family:
-    "Deltarune",
-    monospace;
-
-  cursor: pointer;
-}
-
-#reset-pos:active {
-  background: #fff;
-  color: #000;
+  border: 0;
+  border-radius: 6px;
 }
 
 /* =========================================================
@@ -643,10 +616,9 @@ body {
 
 body.edit-mode #joystick,
 body.edit-mode #mobile-buttons {
-  outline:
-    2px dashed #00bfff;
+  outline: 2px dashed #00bfff;
 
-  background:
+  background-color:
     rgba(0,191,255,.12);
 }
 
@@ -700,35 +672,28 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick-stick {
-    width: 62px;
-    height: 62px;
+    width: 60px;
+    height: 60px;
 
-    margin-left: -31px;
-    margin-top: -31px;
+    margin-left: -30px;
+    margin-top: -30px;
   }
 
   #mobile-buttons {
     right: 45px;
     bottom: 65px;
-
-    gap: 11px;
   }
 
   .game-btn {
     width: 60px;
     height: 60px;
 
-    font-size: 23px;
-  }
-
-  .game-btn::before {
-    width: 48px;
-    height: 48px;
+    font-size: 25px;
   }
 }
 
 /* =========================================================
-   SMALL MOBILE
+   SMALL PHONES
 ========================================================= */
 
 @media (max-width: 450px) {
@@ -752,11 +717,11 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick-stick {
-    width: 55px;
-    height: 55px;
+    width: 54px;
+    height: 54px;
 
-    margin-left: -27.5px;
-    margin-top: -27.5px;
+    margin-left: -27px;
+    margin-top: -27px;
   }
 
   #mobile-buttons {
@@ -770,31 +735,30 @@ body.edit-mode #mobile-buttons {
     width: 55px;
     height: 55px;
 
-    font-size: 21px;
-
-    border-width: 4px;
-  }
-
-  .game-btn::before {
-    width: 43px;
-    height: 43px;
-
-    border-width: 2px;
+    font-size: 22px;
   }
 }
 
 /* =========================================================
-   VERY SMALL SCREENS
+   IPAD / TOUCH
 ========================================================= */
 
-@media (max-height: 500px) {
+@media (pointer: coarse) {
+
+  #joystick,
+  #mobile-buttons,
+  .game-btn {
+    -webkit-user-select: none;
+    user-select: none;
+
+    -webkit-touch-callout: none;
+  }
 
   #joystick {
-    bottom: 20px;
+    cursor: grab;
   }
 
-  #mobile-buttons {
-    bottom: 20px;
+  #joystick:active {
+    cursor: grabbing;
   }
-
 }
