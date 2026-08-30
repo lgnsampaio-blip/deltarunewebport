@@ -18,26 +18,26 @@
 
 <link rel="manifest" href="./manifest.json">
 
-<link
-  rel="icon"
-  type="image/png"
-  href="./icons/appicon.png"
->
-
-<link
-  rel="apple-touch-icon"
-  href="./icons/appicon.png"
->
+<link rel="icon" type="image/png" href="./icons/appicon.png">
+<link rel="apple-touch-icon" href="./icons/appicon.png">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
+
+/* =========================================================
+   FONT
+========================================================= */
 
 @font-face {
   font-family: "Deltarune";
   src: url("https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/font.otf")
        format("opentype");
 }
+
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 * {
   box-sizing: border-box;
@@ -53,8 +53,10 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+
   background: #000;
   color: #fff;
+
   overflow: hidden;
 }
 
@@ -89,11 +91,17 @@ body {
   background: #000;
 
   z-index: 10;
+
+  touch-action: pan-y;
 }
 
 #main-menu-ui::-webkit-scrollbar {
   display: none;
 }
+
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logo-container {
   width: 100%;
@@ -101,6 +109,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  pointer-events: none;
 }
 
 .logo {
@@ -110,6 +120,8 @@ body {
 
   object-fit: contain;
   display: block;
+
+  image-rendering: auto;
 }
 
 /* =========================================================
@@ -126,8 +138,14 @@ body {
   align-items: stretch;
 }
 
+/* =========================================================
+   ROWS
+========================================================= */
+
 .row,
 .disabled-row {
+  position: relative;
+
   width: 100%;
 
   display: grid;
@@ -140,12 +158,17 @@ body {
   align-items: center;
 
   padding: 12px 0;
+
   gap: 16px;
 
   color: #fff;
   text-decoration: none;
 
   touch-action: manipulation;
+
+  transition:
+    transform .08s ease,
+    filter .08s ease;
 }
 
 .row {
@@ -158,7 +181,8 @@ body {
 
 .chapter,
 .title,
-.disabled-title {
+.disabled-title,
+.badge {
   display: inline-block;
 
   transform: scaleY(1.1);
@@ -184,6 +208,10 @@ body {
   image-rendering: pixelated;
 }
 
+/* =========================================================
+   MENU HOVER / SELECT
+========================================================= */
+
 .row:hover .chapter,
 .row:hover .title,
 .row.selected .chapter,
@@ -193,6 +221,23 @@ body {
 
 .row:hover img,
 .row.selected img {
+  filter: sepia(1) saturate(100);
+}
+
+.row:active {
+  transform: scale(.985);
+}
+
+/* =========================================================
+   TOUCH SELECT
+========================================================= */
+
+.row.touch-selected .chapter,
+.row.touch-selected .title {
+  color: #fefe00;
+}
+
+.row.touch-selected img {
   filter: sepia(1) saturate(100);
 }
 
@@ -208,6 +253,7 @@ body {
   text-align: center;
 
   font-family: Arial, sans-serif;
+
   font-size: 15px;
   line-height: 1.4;
 }
@@ -246,6 +292,7 @@ body {
   inset: 0;
 
   width: 100vw;
+
   height: 100vh;
   height: 100dvh;
 
@@ -282,77 +329,54 @@ body {
 }
 
 /* =========================================================
-   PIXEL JOYSTICK
+   JOYSTICK
 ========================================================= */
 
 #joystick {
   position: absolute;
 
-  left: 65px;
-  bottom: 75px;
+  left: 90px;
+  bottom: 90px;
 
   width: 150px;
   height: 150px;
 
-  border-radius: 8px;
+  border-radius: 50%;
 
   pointer-events: auto;
   touch-action: none;
 
-  transform: scale(var(--ctrl-scale, 1.15));
+  transform: scale(var(--ctrl-scale, 1.3));
   transform-origin: center;
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.08),
-      rgba(255,255,255,.025)
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.08) 0%,
+      rgba(255,255,255,.03) 55%,
+      rgba(0,0,0,.5) 100%
     );
 
   border:
     3px solid rgba(255,255,255,.65);
 
   box-shadow:
-    0 0 0 3px #000,
-    0 0 0 5px rgba(255,255,255,.18),
-    inset 0 0 0 3px rgba(0,0,0,.8),
-    inset 0 0 25px rgba(255,255,255,.06);
-
-  image-rendering: pixelated;
+    0 0 0 2px rgba(0,0,0,.8),
+    0 0 20px rgba(255,255,255,.12),
+    inset 0 0 20px rgba(0,0,0,.7);
 }
 
 #joystick::before {
   content: "";
 
   position: absolute;
+
   inset: 12px;
 
-  border: 2px dashed rgba(255,255,255,.18);
+  border-radius: 50%;
 
-  pointer-events: none;
-}
-
-#joystick::after {
-  content: "";
-
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 8px;
-  height: 8px;
-
-  margin-left: -4px;
-  margin-top: -4px;
-
-  background: rgba(255,255,255,.22);
-
-  box-shadow:
-    -18px 0 rgba(255,255,255,.10),
-    18px 0 rgba(255,255,255,.10),
-    0 -18px rgba(255,255,255,.10),
-    0 18px rgba(255,255,255,.10);
+  border:
+    2px dashed rgba(255,255,255,.25);
 
   pointer-events: none;
 }
@@ -363,43 +387,44 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 70px;
-  height: 70px;
+  width: 68px;
+  height: 68px;
 
-  margin-left: -35px;
-  margin-top: -35px;
+  margin-left: -34px;
+  margin-top: -34px;
 
-  border-radius: 4px;
+  border-radius: 50%;
 
   background:
-    linear-gradient(
-      135deg,
-      #fff,
-      #bdbdbd
+    radial-gradient(
+      circle at 35% 30%,
+      #fff 0%,
+      #ddd 35%,
+      #999 100%
     );
 
   border:
-    3px solid #000;
+    3px solid #fff;
 
   box-shadow:
-    0 0 0 2px #fff,
-    5px 5px 0 rgba(0,0,0,.7);
+    0 0 0 2px #000,
+    0 5px 15px rgba(0,0,0,.8);
 
   pointer-events: none;
 
   transition:
-    transform .035s linear;
+    transform .04s linear;
 }
 
 /* =========================================================
-   Z X C BUTTONS
+   MOBILE BUTTONS
 ========================================================= */
 
 #mobile-buttons {
   position: absolute;
 
-  right: 50px;
-  bottom: 55px;
+  right: 70px;
+  bottom: 80px;
 
   display: flex;
   flex-direction: column;
@@ -409,27 +434,28 @@ body {
   pointer-events: auto;
   touch-action: none;
 
-  transform: scale(var(--ctrl-scale, 1.15));
+  transform: scale(var(--ctrl-scale, 1.3));
   transform-origin: center;
 }
 
 .game-btn {
   position: relative;
 
-  width: 66px;
-  height: 66px;
+  width: 65px;
+  height: 65px;
 
-  border-radius: 5px;
+  border-radius: 50%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.20),
-      rgba(255,255,255,.06)
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255,255,255,.32),
+      rgba(255,255,255,.08) 55%,
+      rgba(0,0,0,.7)
     );
 
   border:
@@ -437,109 +463,54 @@ body {
 
   color: #fff;
 
-  font-family: Arial, sans-serif;
-  font-size: 24px;
-  font-weight: 900;
+  font-family: "Deltarune", monospace;
+
+  font-size: 25px;
+  font-weight: bold;
 
   text-shadow:
     2px 2px 0 #000;
 
   touch-action: none;
+
   pointer-events: auto;
 
   box-shadow:
-    4px 4px 0 #000,
-    0 0 0 2px rgba(255,255,255,.25);
+    0 0 0 2px #000,
+    0 0 12px rgba(255,255,255,.12),
+    inset 0 0 15px rgba(0,0,0,.7);
 
   transition:
-    transform .05s linear,
-    background .05s linear;
+    transform .06s ease,
+    background .06s ease;
 }
 
 .game-btn::before {
   content: "";
 
   position: absolute;
+
   inset: 5px;
 
+  border-radius: 50%;
+
   border:
-    1px solid rgba(255,255,255,.25);
+    1px solid rgba(255,255,255,.22);
 
   pointer-events: none;
 }
 
 .game-btn.active {
-  background: #fff;
-
-  color: #000;
-
-  text-shadow: none;
-
-  transform:
-    translate(3px, 3px)
-    scale(.92);
-
-  box-shadow:
-    1px 1px 0 #000;
-}
-
-/* =========================================================
-   MENU JOYSTICK
-========================================================= */
-
-#menu-joystick {
-  position: fixed;
-
-  left: 25px;
-  bottom: 25px;
-
-  width: 92px;
-  height: 92px;
-
-  display: none;
-
-  z-index: 30;
-
-  pointer-events: auto;
-  touch-action: none;
-
-  border:
-    3px solid rgba(255,255,255,.55);
-
-  border-radius: 6px;
-
   background:
-    rgba(0,0,0,.8);
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.75),
+      rgba(255,255,255,.25)
+    );
 
-  box-shadow:
-    0 0 0 2px #000,
-    0 0 0 4px rgba(255,255,255,.15);
-}
+  transform: scale(.9);
 
-#menu-joystick-stick {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 42px;
-  height: 42px;
-
-  margin-left: -21px;
-  margin-top: -21px;
-
-  background: #fff;
-
-  border:
-    3px solid #000;
-
-  border-radius: 4px;
-
-  box-shadow:
-    0 0 0 2px #fff;
-
-  transition:
-    transform .04s linear;
+  border-color: #fff;
 }
 
 /* =========================================================
@@ -567,14 +538,19 @@ body {
 
   color: #fff;
 
-  background: rgba(20,20,20,.9);
+  background: rgba(20,20,20,.95);
 
   border:
     2px solid #fff;
 
   border-radius: 4px;
 
-  font-family: Arial, sans-serif;
+  font-family: "Deltarune", monospace;
+
+  box-shadow:
+    3px 3px 0 #000;
+
+  cursor: pointer;
 }
 
 #settings-panel {
@@ -598,7 +574,8 @@ body {
 
   display: none;
 
-  background: rgba(0,0,0,.96);
+  background:
+    rgba(0,0,0,.97);
 
   border:
     2px solid #fff;
@@ -607,7 +584,10 @@ body {
 
   z-index: 49;
 
-  font-family: Arial, sans-serif;
+  font-family: "Deltarune", monospace;
+
+  box-shadow:
+    5px 5px 0 #000;
 }
 
 #settings-panel input {
@@ -621,7 +601,7 @@ body {
 
   padding: 10px;
 
-  background: #222;
+  background: #000;
 
   color: #fff;
 
@@ -629,6 +609,8 @@ body {
     2px solid #fff;
 
   border-radius: 3px;
+
+  font-family: "Deltarune", monospace;
 }
 
 /* =========================================================
@@ -685,18 +667,29 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick {
-    left: 50px;
-    bottom: 65px;
+    left: 65px;
+    bottom: 75px;
+
+    width: 135px;
+    height: 135px;
+  }
+
+  #joystick-stick {
+    width: 62px;
+    height: 62px;
+
+    margin-left: -31px;
+    margin-top: -31px;
   }
 
   #mobile-buttons {
-    right: 35px;
-    bottom: 55px;
+    right: 45px;
+    bottom: 65px;
   }
 
   .game-btn {
-    width: 62px;
-    height: 62px;
+    width: 60px;
+    height: 60px;
   }
 }
 
@@ -713,24 +706,24 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick {
-    left: 25px;
-    bottom: 30px;
+    left: 30px;
+    bottom: 35px;
 
     width: 120px;
     height: 120px;
   }
 
   #joystick-stick {
-    width: 56px;
-    height: 56px;
+    width: 55px;
+    height: 55px;
 
-    margin-left: -28px;
-    margin-top: -28px;
+    margin-left: -27.5px;
+    margin-top: -27.5px;
   }
 
   #mobile-buttons {
-    right: 20px;
-    bottom: 25px;
+    right: 25px;
+    bottom: 30px;
 
     gap: 8px;
   }
@@ -740,11 +733,6 @@ body.edit-mode #mobile-buttons {
     height: 55px;
 
     font-size: 21px;
-  }
-
-  #menu-joystick {
-    left: 18px;
-    bottom: 18px;
   }
 }
 
@@ -777,6 +765,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="1">
       <span class="chapter">CHAPTER 1</span>
       <span class="title">The Beginning</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/1.png"
         draggable="false"
@@ -786,6 +775,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="2">
       <span class="chapter">CHAPTER 2</span>
       <span class="title">A Cyber's World</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/2.png"
         draggable="false"
@@ -795,6 +785,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="3">
       <span class="chapter">CHAPTER 3</span>
       <span class="title">Late Night</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/3.png"
         draggable="false"
@@ -804,6 +795,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="4">
       <span class="chapter">CHAPTER 4</span>
       <span class="title">Prophecy</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/4.png"
         draggable="false"
@@ -813,6 +805,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="5">
       <span class="chapter">CHAPTER 5</span>
       <span class="title">Festival Day</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/5.png"
         draggable="false"
@@ -822,6 +815,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="disabled-row">
       <span class="chapter">CHAPTER 6</span>
       <span class="disabled-title">--</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
         draggable="false"
@@ -831,6 +825,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="disabled-row">
       <span class="chapter">CHAPTER 7</span>
       <span class="disabled-title">--</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
         draggable="false"
@@ -839,9 +834,14 @@ body.edit-mode #mobile-buttons {
 
     <a href="#" class="row" id="mobile-controls-row">
       <span class="chapter">SYSTEM</span>
-      <span class="title" id="mobile-controls-status-text">
+
+      <span
+        class="title"
+        id="mobile-controls-status-text"
+      >
         Mobile controls: OFF
       </span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/mobile.png"
         draggable="false"
@@ -851,6 +851,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" id="export-row">
       <span class="chapter">SAVE DATA</span>
       <span class="title">Export Save (.zip)</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/export.png"
         draggable="false"
@@ -860,6 +861,7 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" id="import-row">
       <span class="chapter">SAVE DATA</span>
       <span class="title">Import Save (.zip)</span>
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/import.png"
         draggable="false"
@@ -874,14 +876,6 @@ body.edit-mode #mobile-buttons {
     >
 
   </div>
-</div>
-
-<!-- =====================================================
-     MENU JOYSTICK
-===================================================== -->
-
-<div id="menu-joystick">
-  <div id="menu-joystick-stick"></div>
 </div>
 
 <!-- =====================================================
@@ -980,7 +974,7 @@ body.edit-mode #mobile-buttons {
     min="0.5"
     max="3"
     step="0.1"
-    value="1.15"
+    value="1.3"
   >
 
   <button id="reset-pos">
@@ -1022,12 +1016,6 @@ const joystick =
 const joystickStick =
   document.getElementById("joystick-stick");
 
-const menuJoystick =
-  document.getElementById("menu-joystick");
-
-const menuJoystickStick =
-  document.getElementById("menu-joystick-stick");
-
 const mobileRow =
   document.getElementById("mobile-controls-row");
 
@@ -1062,7 +1050,8 @@ function playSelect() {
 
     sndSelect.currentTime = 0;
 
-    const p = sndSelect.play();
+    const p =
+      sndSelect.play();
 
     if (p) {
       p.catch(() => {});
@@ -1084,13 +1073,8 @@ let selectedIndex = null;
 
 let joystickPointer = null;
 
-let menuJoystickPointer = null;
-
-let menuRepeatTimer = null;
-
-let menuRepeatDirection = null;
-
-const activeKeys = new Set();
+const activeKeys =
+  new Set();
 
 const MOBILE_KEY =
   "deltarune-mobile-toggle";
@@ -1099,11 +1083,8 @@ const CONFIG_KEY =
   "deltarune-mobile-config";
 
 let config = {
-
   opacity: 1,
-
-  scale: 1.15
-
+  scale: 1.3
 };
 
 /* =========================================================
@@ -1124,18 +1105,8 @@ const keyMap = {
 };
 
 /* =========================================================
-   SEND INPUT TO GAME
+   SEND INPUT
 ========================================================= */
-
-/*
- * O jogo fica dentro de um iframe.
- *
- * Portanto não basta usar postMessage sozinho:
- * o capítulo precisa receber a mensagem e transformar
- * isso em KeyboardEvent.
- *
- * O bridge abaixo é colocado no HTML do capítulo.
- */
 
 function sendGameKey(type, key) {
 
@@ -1212,109 +1183,6 @@ function releaseAllKeys() {
 }
 
 /* =========================================================
-   KEYBOARD BRIDGE
-========================================================= */
-
-function createInputBridge() {
-
-  return `
-<script>
-(function() {
-
-  if (window.__DELTARUNE_INPUT_BRIDGE__) {
-    return;
-  }
-
-  window.__DELTARUNE_INPUT_BRIDGE__ = true;
-
-  window.addEventListener(
-    "message",
-    function(event) {
-
-      var data = event.data;
-
-      if (!data || data.type !== "keydown" &&
-          data.type !== "keyup") {
-        return;
-      }
-
-      var type =
-        data.type === "keydown"
-          ? "keydown"
-          : "keyup";
-
-      var key =
-        data.key || "";
-
-      var code =
-        data.keyCode || 0;
-
-      try {
-
-        var eventObject =
-          new KeyboardEvent(
-            type,
-            {
-              key: key,
-              code:
-                key === "ArrowUp"
-                  ? "ArrowUp"
-                  : key === "ArrowDown"
-                    ? "ArrowDown"
-                    : key === "ArrowLeft"
-                      ? "ArrowLeft"
-                      : key === "ArrowRight"
-                        ? "ArrowRight"
-                        : key.toUpperCase(),
-
-              keyCode: code,
-              which: code,
-
-              bubbles: true,
-              cancelable: true
-            }
-          );
-
-        Object.defineProperty(
-          eventObject,
-          "keyCode",
-          {
-            get: function() {
-              return code;
-            }
-          }
-        );
-
-        Object.defineProperty(
-          eventObject,
-          "which",
-          {
-            get: function() {
-              return code;
-            }
-          }
-        );
-
-        document.dispatchEvent(
-          eventObject
-        );
-
-        window.dispatchEvent(
-          eventObject
-        );
-
-      } catch (_) {}
-
-    }
-  );
-
-})();
-<\/script>
-`;
-
-}
-
-/* =========================================================
    MOBILE TOGGLE
 ========================================================= */
 
@@ -1356,6 +1224,13 @@ function toggleMobile() {
 
 function updateHUD() {
 
+  /*
+   * IMPORTANT:
+   *
+   * HUD is only visible after
+   * the actual game has started.
+   */
+
   if (
     gameStarted &&
     mobileControls
@@ -1366,9 +1241,6 @@ function updateHUD() {
 
     settingsBar.style.display =
       "flex";
-
-    menuJoystick.style.display =
-      "none";
 
   } else {
 
@@ -1381,15 +1253,6 @@ function updateHUD() {
     settingsPanel.style.display =
       "none";
 
-    if (!gameStarted) {
-
-      menuJoystick.style.display =
-        mobileControls
-          ? "block"
-          : "none";
-
-    }
-
     releaseAllKeys();
 
   }
@@ -1397,324 +1260,7 @@ function updateHUD() {
 }
 
 /* =========================================================
-   MENU SELECTION
-========================================================= */
-
-function moveMenuSelection(direction) {
-
-  if (gameStarted) {
-    return;
-  }
-
-  if (
-    !chapterRows.length
-  ) {
-    return;
-  }
-
-  if (
-    selectedIndex === null
-  ) {
-
-    selectedIndex =
-      direction > 0
-        ? 0
-        : chapterRows.length - 1;
-
-  } else {
-
-    selectedIndex += direction;
-
-    if (
-      selectedIndex >=
-      chapterRows.length
-    ) {
-
-      selectedIndex = 0;
-
-    }
-
-    if (
-      selectedIndex < 0
-    ) {
-
-      selectedIndex =
-        chapterRows.length - 1;
-
-    }
-
-  }
-
-  chapterRows.forEach(
-    row =>
-      row.classList.remove(
-        "selected"
-      )
-  );
-
-  const row =
-    chapterRows[selectedIndex];
-
-  if (!row) {
-    return;
-  }
-
-  row.classList.add(
-    "selected"
-  );
-
-  row.scrollIntoView({
-    block: "nearest"
-  });
-
-  playSelect();
-
-}
-
-/* =========================================================
-   MENU JOYSTICK
-========================================================= */
-
-function stopMenuRepeat() {
-
-  if (
-    menuRepeatTimer !== null
-  ) {
-
-    clearInterval(
-      menuRepeatTimer
-    );
-
-    menuRepeatTimer = null;
-
-  }
-
-  menuRepeatDirection =
-    null;
-
-  menuJoystickStick.style.transform =
-    "translate(0px, 0px)";
-
-}
-
-function startMenuRepeat(direction) {
-
-  if (
-    menuRepeatDirection ===
-    direction
-  ) {
-    return;
-  }
-
-  stopMenuRepeat();
-
-  menuRepeatDirection =
-    direction;
-
-  moveMenuSelection(
-    direction
-  );
-
-  /*
-   * Segurando o joystick:
-   * começa devagar e depois repete.
-   */
-
-  let delay = 420;
-
-  setTimeout(
-    () => {
-
-      if (
-        menuRepeatDirection !==
-        direction
-      ) {
-        return;
-      }
-
-      menuRepeatTimer =
-        setInterval(
-          () => {
-
-            if (
-              menuRepeatDirection ===
-              direction
-            ) {
-
-              moveMenuSelection(
-                direction
-              );
-
-            }
-
-          },
-          115
-        );
-
-    },
-    delay
-  );
-
-}
-
-function menuJoystickMove(
-  x,
-  y
-) {
-
-  const rect =
-    menuJoystick.getBoundingClientRect();
-
-  const cx =
-    rect.left +
-    rect.width / 2;
-
-  const cy =
-    rect.top +
-    rect.height / 2;
-
-  let dx =
-    x - cx;
-
-  let dy =
-    y - cy;
-
-  const radius =
-    rect.width * .30;
-
-  const distance =
-    Math.sqrt(
-      dx * dx +
-      dy * dy
-    );
-
-  if (
-    distance > radius
-  ) {
-
-    const factor =
-      radius / distance;
-
-    dx *= factor;
-    dy *= factor;
-
-  }
-
-  menuJoystickStick.style.transform =
-    `translate(${dx}px, ${dy}px)`;
-
-  const deadzone = 15;
-
-  if (
-    dy < -deadzone
-  ) {
-
-    startMenuRepeat(-1);
-
-  } else if (
-    dy > deadzone
-  ) {
-
-    startMenuRepeat(1);
-
-  } else {
-
-    stopMenuRepeat();
-
-  }
-
-}
-
-menuJoystick.addEventListener(
-  "pointerdown",
-  event => {
-
-    if (gameStarted) {
-      return;
-    }
-
-    event.preventDefault();
-
-    menuJoystickPointer =
-      event.pointerId;
-
-    try {
-
-      menuJoystick.setPointerCapture(
-        event.pointerId
-      );
-
-    } catch (_) {}
-
-    menuJoystickMove(
-      event.clientX,
-      event.clientY
-    );
-
-  },
-  {
-    passive: false
-  }
-);
-
-menuJoystick.addEventListener(
-  "pointermove",
-  event => {
-
-    if (
-      event.pointerId !==
-      menuJoystickPointer
-    ) {
-      return;
-    }
-
-    event.preventDefault();
-
-    menuJoystickMove(
-      event.clientX,
-      event.clientY
-    );
-
-  },
-  {
-    passive: false
-  }
-);
-
-function releaseMenuJoystick(event) {
-
-  if (
-    menuJoystickPointer !== null &&
-    event.pointerId !==
-    menuJoystickPointer
-  ) {
-    return;
-  }
-
-  menuJoystickPointer =
-    null;
-
-  stopMenuRepeat();
-
-}
-
-menuJoystick.addEventListener(
-  "pointerup",
-  releaseMenuJoystick
-);
-
-menuJoystick.addEventListener(
-  "pointercancel",
-  releaseMenuJoystick
-);
-
-menuJoystick.addEventListener(
-  "lostpointercapture",
-  releaseMenuJoystick
-);
-
-/* =========================================================
-   GAME JOYSTICK
+   JOYSTICK
 ========================================================= */
 
 function resetJoystick() {
@@ -1724,10 +1270,7 @@ function resetJoystick() {
 
 }
 
-function joystickMove(
-  x,
-  y
-) {
+function joystickMove(x, y) {
 
   const rect =
     joystick.getBoundingClientRect();
@@ -1755,9 +1298,7 @@ function joystickMove(
       dy * dy
     );
 
-  if (
-    distance > radius
-  ) {
+  if (distance > radius) {
 
     const factor =
       radius / distance;
@@ -1772,40 +1313,24 @@ function joystickMove(
 
   const deadzone = 18;
 
-  const keys = {
-
-    ArrowUp:
-      dy < -deadzone,
-
-    ArrowDown:
-      dy > deadzone,
-
-    ArrowLeft:
-      dx < -deadzone,
-
-    ArrowRight:
-      dx > deadzone
-
-  };
-
   updateKey(
     "ArrowUp",
-    keys.ArrowUp
+    dy < -deadzone
   );
 
   updateKey(
     "ArrowDown",
-    keys.ArrowDown
+    dy > deadzone
   );
 
   updateKey(
     "ArrowLeft",
-    keys.ArrowLeft
+    dx < -deadzone
   );
 
   updateKey(
     "ArrowRight",
-    keys.ArrowRight
+    dx > deadzone
   );
 
 }
@@ -1872,30 +1397,14 @@ function releaseJoystick(event) {
     return;
   }
 
-  joystickPointer =
-    null;
+  joystickPointer = null;
 
   resetJoystick();
 
-  updateKey(
-    "ArrowUp",
-    false
-  );
-
-  updateKey(
-    "ArrowDown",
-    false
-  );
-
-  updateKey(
-    "ArrowLeft",
-    false
-  );
-
-  updateKey(
-    "ArrowRight",
-    false
-  );
+  updateKey("ArrowUp", false);
+  updateKey("ArrowDown", false);
+  updateKey("ArrowLeft", false);
+  updateKey("ArrowRight", false);
 
 }
 
@@ -1915,7 +1424,7 @@ joystick.addEventListener(
 );
 
 /* =========================================================
-   Z X C
+   Z X C BUTTONS
 ========================================================= */
 
 document
@@ -2032,12 +1541,7 @@ async function loadChapter(chapter) {
 
   releaseAllKeys();
 
-  stopMenuRepeat();
-
   menu.style.display =
-    "none";
-
-  menuJoystick.style.display =
     "none";
 
   loader.style.display =
@@ -2046,7 +1550,16 @@ async function loadChapter(chapter) {
   frame.style.display =
     "block";
 
-  updateHUD();
+  /*
+   * HUD stays hidden until
+   * the iframe actually loads.
+   */
+
+  hud.style.display =
+    "none";
+
+  settingsBar.style.display =
+    "none";
 
   const chapterPath =
     `${REPO_BASE}chapter${chapter}/`;
@@ -2084,30 +1597,11 @@ async function loadChapter(chapter) {
 
     }
 
-    /*
-     * Remove <base> antigo.
-     */
-
     let finalHTML =
       html.replace(
         /<base\b[^>]*>/gi,
         ""
       );
-
-    /*
-     * Adiciona base correta.
-     */
-
-    const baseTag =
-      `<base href="${chapterPath}">`;
-
-    /*
-     * Adiciona o bridge de controles
-     * dentro do capítulo.
-     */
-
-    const inputBridge =
-      createInputBridge();
 
     if (
       /<head[^>]*>/i.test(
@@ -2120,8 +1614,7 @@ async function loadChapter(chapter) {
           /<head[^>]*>/i,
           match =>
             match +
-            baseTag +
-            inputBridge
+            `<base href="${chapterPath}">`
         );
 
     } else {
@@ -2132,8 +1625,7 @@ async function loadChapter(chapter) {
 <html>
 <head>
 <meta charset="UTF-8">
-${baseTag}
-${inputBridge}
+<base href="${chapterPath}">
 </head>
 <body>
 ${finalHTML}
@@ -2143,10 +1635,6 @@ ${finalHTML}
 
     }
 
-    /*
-     * Cria Blob.
-     */
-
     const blob =
       new Blob(
         [finalHTML],
@@ -2154,10 +1642,6 @@ ${finalHTML}
           type: "text/html"
         }
       );
-
-    /*
-     * Libera Blob antigo.
-     */
 
     if (
       frame.dataset.blobUrl
@@ -2186,6 +1670,10 @@ ${finalHTML}
 
         loader.style.display =
           "none";
+
+        /*
+         * NOW the HUD can appear.
+         */
 
         updateHUD();
 
@@ -2219,10 +1707,6 @@ ${finalHTML}
       error
     );
 
-    /*
-     * Fallback direto.
-     */
-
     frame.onload =
       () => {
 
@@ -2251,21 +1735,303 @@ const chapterRows =
     )
   );
 
+/* =========================================================
+   NORMAL CLICK
+========================================================= */
+
+chapterRows.forEach(row => {
+
+  row.addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+      if (gameStarted) {
+        return;
+      }
+
+      const chapter =
+        Number(
+          row.dataset.chapter
+        );
+
+      if (
+        Number.isFinite(chapter)
+      ) {
+
+        loadChapter(
+          chapter
+        );
+
+      }
+
+    }
+  );
+
+});
+
+/* =========================================================
+   TOUCH CHAPTER NAVIGATION
+========================================================= */
+
+let touchStartY = null;
+let touchStartX = null;
+let touchMoved = false;
+
+menu.addEventListener(
+  "touchstart",
+  event => {
+
+    if (gameStarted) {
+      return;
+    }
+
+    if (
+      !event.touches ||
+      !event.touches.length
+    ) {
+      return;
+    }
+
+    const touch =
+      event.touches[0];
+
+    touchStartY =
+      touch.clientY;
+
+    touchStartX =
+      touch.clientX;
+
+    touchMoved = false;
+
+  },
+  {
+    passive: true
+  }
+);
+
+menu.addEventListener(
+  "touchmove",
+  event => {
+
+    if (
+      touchStartY === null ||
+      !event.touches.length
+    ) {
+      return;
+    }
+
+    const touch =
+      event.touches[0];
+
+    const dy =
+      touch.clientY -
+      touchStartY;
+
+    const dx =
+      touch.clientX -
+      touchStartX;
+
+    if (
+      Math.abs(dy) > 10 ||
+      Math.abs(dx) > 10
+    ) {
+
+      touchMoved = true;
+
+    }
+
+  },
+  {
+    passive: true
+  }
+);
+
+menu.addEventListener(
+  "touchend",
+  event => {
+
+    if (
+      gameStarted ||
+      touchStartY === null
+    ) {
+      return;
+    }
+
+    const touch =
+      event.changedTouches &&
+      event.changedTouches[0];
+
+    if (!touch) {
+      return;
+    }
+
+    const dy =
+      touch.clientY -
+      touchStartY;
+
+    const dx =
+      touch.clientX -
+      touchStartX;
+
+    const distance =
+      Math.sqrt(
+        dx * dx +
+        dy * dy
+      );
+
+    /*
+     * Swipe vertically through chapters.
+     */
+
+    if (
+      distance > 35 &&
+      Math.abs(dy) >
+      Math.abs(dx)
+    ) {
+
+      if (
+        dy < 0
+      ) {
+
+        moveSelection(1);
+
+      } else {
+
+        moveSelection(-1);
+
+      }
+
+    }
+
+    touchStartY = null;
+    touchStartX = null;
+    touchMoved = false;
+
+  },
+  {
+    passive: true
+  }
+);
+
+/* =========================================================
+   MENU SELECTION
+========================================================= */
+
+function setSelected(index) {
+
+  if (
+    !chapterRows.length
+  ) {
+    return;
+  }
+
+  if (
+    index < 0
+  ) {
+
+    index =
+      chapterRows.length - 1;
+
+  }
+
+  if (
+    index >=
+    chapterRows.length
+  ) {
+
+    index = 0;
+
+  }
+
+  selectedIndex =
+    index;
+
+  chapterRows.forEach(
+    row => {
+
+      row.classList.remove(
+        "selected"
+      );
+
+      row.classList.remove(
+        "touch-selected"
+      );
+
+    }
+  );
+
+  const row =
+    chapterRows[
+      selectedIndex
+    ];
+
+  if (!row) {
+    return;
+  }
+
+  row.classList.add(
+    "selected"
+  );
+
+  row.scrollIntoView({
+    block: "nearest",
+    behavior: "smooth"
+  });
+
+  playSelect();
+
+}
+
+function moveSelection(direction) {
+
+  if (
+    !chapterRows.length ||
+    gameStarted
+  ) {
+    return;
+  }
+
+  if (
+    selectedIndex === null
+  ) {
+
+    selectedIndex =
+      direction > 0
+        ? 0
+        : chapterRows.length - 1;
+
+    setSelected(
+      selectedIndex
+    );
+
+    return;
+  }
+
+  setSelected(
+    selectedIndex + direction
+  );
+
+}
+
+/* =========================================================
+   TAP A CHAPTER
+========================================================= */
+
 chapterRows.forEach(
-  (row, index) => {
+  row => {
 
     row.addEventListener(
-      "click",
+      "touchend",
       event => {
 
-        event.preventDefault();
-
-        if (gameStarted) {
+        if (
+          touchMoved ||
+          gameStarted
+        ) {
           return;
         }
-
-        selectedIndex =
-          index;
 
         const chapter =
           Number(
@@ -2273,15 +2039,37 @@ chapterRows.forEach(
           );
 
         if (
-          Number.isFinite(chapter)
-        ) {
-
-          loadChapter(
+          !Number.isFinite(
             chapter
-          );
-
+          )
+        ) {
+          return;
         }
 
+        row.classList.add(
+          "touch-selected"
+        );
+
+        setTimeout(
+          () => {
+
+            if (
+              !gameStarted
+            ) {
+
+              loadChapter(
+                chapter
+              );
+
+            }
+
+          },
+          60
+        );
+
+      },
+      {
+        passive: true
       }
     );
 
@@ -2308,7 +2096,7 @@ mobileRow.addEventListener(
 );
 
 /* =========================================================
-   MENU KEYBOARD
+   KEYBOARD MENU
 ========================================================= */
 
 document.addEventListener(
@@ -2325,7 +2113,7 @@ document.addEventListener(
 
       event.preventDefault();
 
-      moveMenuSelection(1);
+      moveSelection(1);
 
     }
 
@@ -2335,7 +2123,7 @@ document.addEventListener(
 
       event.preventDefault();
 
-      moveMenuSelection(-1);
+      moveSelection(-1);
 
     }
 
@@ -2478,11 +2266,8 @@ document
       event.preventDefault();
 
       config = {
-
         opacity: 1,
-
-        scale: 1.15
-
+        scale: 1.3
       };
 
       document
@@ -2495,7 +2280,7 @@ document
         .getElementById(
           "size-slider"
         )
-        .value = "1.15";
+        .value = "1.3";
 
       applyConfig();
 
@@ -2644,15 +2429,9 @@ async function setSaveItem(
         )
         .put(
           {
-            timestamp:
-              new Date(),
-
-            mode:
-              33206,
-
-            contents:
-              bytes
-
+            timestamp: new Date(),
+            mode: 33206,
+            contents: bytes
           },
           key
         );
@@ -2672,7 +2451,7 @@ async function setSaveItem(
 }
 
 /* =========================================================
-   EXPORT
+   EXPORT SAVE
 ========================================================= */
 
 document
@@ -2800,8 +2579,7 @@ document
             "a"
           );
 
-        link.href =
-          url;
+        link.href = url;
 
         link.download =
           "deltarune_saves.zip";
@@ -2839,7 +2617,7 @@ document
   );
 
 /* =========================================================
-   IMPORT
+   IMPORT SAVE
 ========================================================= */
 
 document
@@ -3012,7 +2790,8 @@ function loadConfig() {
 
       if (
         parsed &&
-        typeof parsed === "object"
+        typeof parsed ===
+        "object"
       ) {
 
         if (
@@ -3088,23 +2867,22 @@ function initialize() {
 
   applyConfig();
 
-  updateHUD();
+  /*
+   * Force HUD off on startup.
+   * It appears only after entering a chapter.
+   */
+
+  hud.style.display =
+    "none";
+
+  settingsBar.style.display =
+    "none";
 
 }
 
-/* =========================================================
-   GLOBAL RELEASE
-========================================================= */
-
 window.addEventListener(
   "blur",
-  () => {
-
-    releaseAllKeys();
-    stopMenuRepeat();
-    resetJoystick();
-
-  }
+  releaseAllKeys
 );
 
 document.addEventListener(
@@ -3114,8 +2892,6 @@ document.addEventListener(
     if (document.hidden) {
 
       releaseAllKeys();
-
-      stopMenuRepeat();
 
       resetJoystick();
 
