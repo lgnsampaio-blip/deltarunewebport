@@ -69,6 +69,7 @@ body {
 #main-menu-ui {
   position: fixed;
   inset: 0;
+
   width: 100%;
   height: 100%;
   height: 100dvh;
@@ -96,6 +97,7 @@ body {
 
 .logo-container {
   width: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -105,6 +107,7 @@ body {
   width: min(700px, 90vw);
   height: auto;
   max-height: 200px;
+
   object-fit: contain;
   display: block;
 }
@@ -115,6 +118,7 @@ body {
 
 .menu {
   width: min(90vw, 800px);
+
   margin: 20px auto 0;
 
   display: flex;
@@ -136,7 +140,6 @@ body {
   align-items: center;
 
   padding: 12px 0;
-
   gap: 16px;
 
   color: #fff;
@@ -157,6 +160,7 @@ body {
 .title,
 .disabled-title {
   display: inline-block;
+
   transform: scaleY(1.1);
   transform-origin: bottom;
 }
@@ -174,7 +178,9 @@ body {
 .disabled-row img {
   width: 60px;
   height: 50px;
+
   object-fit: contain;
+
   image-rendering: pixelated;
 }
 
@@ -196,6 +202,7 @@ body {
 
 .deactivation-warning {
   width: min(90vw, 700px);
+
   margin: 10px auto 20px;
 
   text-align: center;
@@ -275,35 +282,79 @@ body {
 }
 
 /* =========================================================
-   JOYSTICK
+   PIXEL JOYSTICK
 ========================================================= */
 
 #joystick {
   position: absolute;
 
-  left: 90px;
-  bottom: 90px;
+  left: 65px;
+  bottom: 75px;
 
   width: 150px;
   height: 150px;
 
-  border-radius: 50%;
+  border-radius: 8px;
 
   pointer-events: auto;
   touch-action: none;
 
-  transform: scale(var(--ctrl-scale, 1.3));
+  transform: scale(var(--ctrl-scale, 1.15));
   transform-origin: center;
 
   background:
-    rgba(255,255,255,.10);
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.08),
+      rgba(255,255,255,.025)
+    );
 
   border:
-    3px solid rgba(255,255,255,.30);
+    3px solid rgba(255,255,255,.65);
 
   box-shadow:
-    0 0 25px rgba(255,255,255,.08),
-    inset 0 0 25px rgba(0,0,0,.5);
+    0 0 0 3px #000,
+    0 0 0 5px rgba(255,255,255,.18),
+    inset 0 0 0 3px rgba(0,0,0,.8),
+    inset 0 0 25px rgba(255,255,255,.06);
+
+  image-rendering: pixelated;
+}
+
+#joystick::before {
+  content: "";
+
+  position: absolute;
+  inset: 12px;
+
+  border: 2px dashed rgba(255,255,255,.18);
+
+  pointer-events: none;
+}
+
+#joystick::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 8px;
+  height: 8px;
+
+  margin-left: -4px;
+  margin-top: -4px;
+
+  background: rgba(255,255,255,.22);
+
+  box-shadow:
+    -18px 0 rgba(255,255,255,.10),
+    18px 0 rgba(255,255,255,.10),
+    0 -18px rgba(255,255,255,.10),
+    0 18px rgba(255,255,255,.10);
+
+  pointer-events: none;
 }
 
 #joystick-stick {
@@ -312,38 +363,43 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 68px;
-  height: 68px;
+  width: 70px;
+  height: 70px;
 
-  margin-left: -34px;
-  margin-top: -34px;
+  margin-left: -35px;
+  margin-top: -35px;
 
-  border-radius: 50%;
+  border-radius: 4px;
 
   background:
-    rgba(255,255,255,.78);
+    linear-gradient(
+      135deg,
+      #fff,
+      #bdbdbd
+    );
 
   border:
-    3px solid rgba(255,255,255,.95);
+    3px solid #000;
 
   box-shadow:
-    0 5px 20px rgba(0,0,0,.6);
+    0 0 0 2px #fff,
+    5px 5px 0 rgba(0,0,0,.7);
 
   pointer-events: none;
 
   transition:
-    transform .04s linear;
+    transform .035s linear;
 }
 
 /* =========================================================
-   Z X C
+   Z X C BUTTONS
 ========================================================= */
 
 #mobile-buttons {
   position: absolute;
 
-  right: 70px;
-  bottom: 80px;
+  right: 50px;
+  bottom: 55px;
 
   display: flex;
   flex-direction: column;
@@ -353,47 +409,137 @@ body {
   pointer-events: auto;
   touch-action: none;
 
-  transform: scale(var(--ctrl-scale, 1.3));
+  transform: scale(var(--ctrl-scale, 1.15));
   transform-origin: center;
 }
 
 .game-btn {
-  width: 65px;
-  height: 65px;
+  position: relative;
 
-  border-radius: 50%;
+  width: 66px;
+  height: 66px;
+
+  border-radius: 5px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   background:
-    rgba(255,255,255,.14);
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.20),
+      rgba(255,255,255,.06)
+    );
 
   border:
-    2px solid rgba(255,255,255,.4);
+    3px solid #fff;
 
   color: #fff;
 
   font-family: Arial, sans-serif;
-  font-size: 25px;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 900;
+
+  text-shadow:
+    2px 2px 0 #000;
 
   touch-action: none;
-
   pointer-events: auto;
 
   box-shadow:
-    0 0 15px rgba(255,255,255,.08),
-    inset 0 0 15px rgba(0,0,0,.4);
+    4px 4px 0 #000,
+    0 0 0 2px rgba(255,255,255,.25);
+
+  transition:
+    transform .05s linear,
+    background .05s linear;
+}
+
+.game-btn::before {
+  content: "";
+
+  position: absolute;
+  inset: 5px;
+
+  border:
+    1px solid rgba(255,255,255,.25);
+
+  pointer-events: none;
 }
 
 .game-btn.active {
-  background: rgba(255,255,255,.55);
+  background: #fff;
 
-  transform: scale(.92);
+  color: #000;
 
-  border-color: #fff;
+  text-shadow: none;
+
+  transform:
+    translate(3px, 3px)
+    scale(.92);
+
+  box-shadow:
+    1px 1px 0 #000;
+}
+
+/* =========================================================
+   MENU JOYSTICK
+========================================================= */
+
+#menu-joystick {
+  position: fixed;
+
+  left: 25px;
+  bottom: 25px;
+
+  width: 92px;
+  height: 92px;
+
+  display: none;
+
+  z-index: 30;
+
+  pointer-events: auto;
+  touch-action: none;
+
+  border:
+    3px solid rgba(255,255,255,.55);
+
+  border-radius: 6px;
+
+  background:
+    rgba(0,0,0,.8);
+
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 0 4px rgba(255,255,255,.15);
+}
+
+#menu-joystick-stick {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 42px;
+  height: 42px;
+
+  margin-left: -21px;
+  margin-top: -21px;
+
+  background: #fff;
+
+  border:
+    3px solid #000;
+
+  border-radius: 4px;
+
+  box-shadow:
+    0 0 0 2px #fff;
+
+  transition:
+    transform .04s linear;
 }
 
 /* =========================================================
@@ -403,8 +549,11 @@ body {
 #settings-bar {
   position: fixed;
 
-  top: max(10px, env(safe-area-inset-top));
-  right: max(10px, env(safe-area-inset-right));
+  top:
+    max(10px, env(safe-area-inset-top));
+
+  right:
+    max(10px, env(safe-area-inset-right));
 
   z-index: 50;
 
@@ -417,10 +566,13 @@ body {
   padding: 9px 12px;
 
   color: #fff;
+
   background: rgba(20,20,20,.9);
 
-  border: 1px solid #777;
-  border-radius: 7px;
+  border:
+    2px solid #fff;
+
+  border-radius: 4px;
 
   font-family: Arial, sans-serif;
 }
@@ -448,8 +600,10 @@ body {
 
   background: rgba(0,0,0,.96);
 
-  border: 1px solid #444;
-  border-radius: 10px;
+  border:
+    2px solid #fff;
+
+  border-radius: 4px;
 
   z-index: 49;
 
@@ -462,15 +616,19 @@ body {
 
 #reset-pos {
   width: 100%;
+
   margin-top: 10px;
 
   padding: 10px;
 
-  background: #922;
+  background: #222;
+
   color: #fff;
 
-  border: 0;
-  border-radius: 6px;
+  border:
+    2px solid #fff;
+
+  border-radius: 3px;
 }
 
 /* =========================================================
@@ -480,7 +638,9 @@ body {
 body.edit-mode #joystick,
 body.edit-mode #mobile-buttons {
   outline: 2px dashed #00bfff;
-  background: rgba(0,191,255,.12);
+
+  background:
+    rgba(0,191,255,.12);
 }
 
 /* =========================================================
@@ -525,29 +685,18 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick {
-    left: 65px;
-    bottom: 75px;
-
-    width: 135px;
-    height: 135px;
-  }
-
-  #joystick-stick {
-    width: 62px;
-    height: 62px;
-
-    margin-left: -31px;
-    margin-top: -31px;
-  }
-
-  #mobile-buttons {
-    right: 45px;
+    left: 50px;
     bottom: 65px;
   }
 
+  #mobile-buttons {
+    right: 35px;
+    bottom: 55px;
+  }
+
   .game-btn {
-    width: 60px;
-    height: 60px;
+    width: 62px;
+    height: 62px;
   }
 }
 
@@ -564,24 +713,24 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick {
-    left: 30px;
-    bottom: 35px;
+    left: 25px;
+    bottom: 30px;
 
     width: 120px;
     height: 120px;
   }
 
   #joystick-stick {
-    width: 55px;
-    height: 55px;
+    width: 56px;
+    height: 56px;
 
-    margin-left: -27.5px;
-    margin-top: -27.5px;
+    margin-left: -28px;
+    margin-top: -28px;
   }
 
   #mobile-buttons {
-    right: 25px;
-    bottom: 30px;
+    right: 20px;
+    bottom: 25px;
 
     gap: 8px;
   }
@@ -589,7 +738,13 @@ body.edit-mode #mobile-buttons {
   .game-btn {
     width: 55px;
     height: 55px;
+
     font-size: 21px;
+  }
+
+  #menu-joystick {
+    left: 18px;
+    bottom: 18px;
   }
 }
 
@@ -722,6 +877,14 @@ body.edit-mode #mobile-buttons {
 </div>
 
 <!-- =====================================================
+     MENU JOYSTICK
+===================================================== -->
+
+<div id="menu-joystick">
+  <div id="menu-joystick-stick"></div>
+</div>
+
+<!-- =====================================================
      LOADER
 ===================================================== -->
 
@@ -817,7 +980,7 @@ body.edit-mode #mobile-buttons {
     min="0.5"
     max="3"
     step="0.1"
-    value="1.3"
+    value="1.15"
   >
 
   <button id="reset-pos">
@@ -858,6 +1021,12 @@ const joystick =
 
 const joystickStick =
   document.getElementById("joystick-stick");
+
+const menuJoystick =
+  document.getElementById("menu-joystick");
+
+const menuJoystickStick =
+  document.getElementById("menu-joystick-stick");
 
 const mobileRow =
   document.getElementById("mobile-controls-row");
@@ -915,6 +1084,12 @@ let selectedIndex = null;
 
 let joystickPointer = null;
 
+let menuJoystickPointer = null;
+
+let menuRepeatTimer = null;
+
+let menuRepeatDirection = null;
+
 const activeKeys = new Set();
 
 const MOBILE_KEY =
@@ -924,8 +1099,11 @@ const CONFIG_KEY =
   "deltarune-mobile-config";
 
 let config = {
+
   opacity: 1,
-  scale: 1.3
+
+  scale: 1.15
+
 };
 
 /* =========================================================
@@ -934,241 +1112,53 @@ let config = {
 
 const keyMap = {
 
-  ArrowUp: {
-    keyCode: 38,
-    which: 38
-  },
+  ArrowUp: 38,
+  ArrowDown: 40,
+  ArrowLeft: 37,
+  ArrowRight: 39,
 
-  ArrowDown: {
-    keyCode: 40,
-    which: 40
-  },
-
-  ArrowLeft: {
-    keyCode: 37,
-    which: 37
-  },
-
-  ArrowRight: {
-    keyCode: 39,
-    which: 39
-  },
-
-  z: {
-    keyCode: 90,
-    which: 90
-  },
-
-  x: {
-    keyCode: 88,
-    which: 88
-  },
-
-  c: {
-    keyCode: 67,
-    which: 67
-  }
+  z: 90,
+  x: 88,
+  c: 67
 
 };
 
 /* =========================================================
-   CREATE REAL KEYBOARD EVENT
+   SEND INPUT TO GAME
 ========================================================= */
 
-function createKeyboardEvent(
-  type,
-  key
-) {
+/*
+ * O jogo fica dentro de um iframe.
+ *
+ * Portanto não basta usar postMessage sozinho:
+ * o capítulo precisa receber a mensagem e transformar
+ * isso em KeyboardEvent.
+ *
+ * O bridge abaixo é colocado no HTML do capítulo.
+ */
 
-  const info =
-    keyMap[key];
-
-  if (!info) {
-    return null;
-  }
-
-  let event;
+function sendGameKey(type, key) {
 
   try {
 
-    event =
-      new KeyboardEvent(
-        type,
-        {
-          key: key,
-          code:
-            key === "z"
-              ? "KeyZ"
-              : key === "x"
-                ? "KeyX"
-                : key === "c"
-                  ? "KeyC"
-                  : key,
-
-          keyCode: info.keyCode,
-          which: info.which,
-
-          bubbles: true,
-          cancelable: true,
-
-          composed: true
-        }
-      );
-
-  } catch (_) {
-
-    event =
-      document.createEvent(
-        "KeyboardEvent"
-      );
-
-    event.initKeyboardEvent(
-      type,
-      true,
-      true,
-      window,
-      key,
-      0,
-      "",
-      false,
-      ""
-    );
-
-  }
-
-  /*
-   * Alguns jogos HTML5 antigos,
-   * especialmente engines que usam
-   * keyCode/which, ignoram o valor
-   * fornecido pelo construtor.
-   *
-   * Por isso tentamos sobrescrever
-   * explicitamente esses campos.
-   */
-
-  try {
-
-    Object.defineProperty(
-      event,
-      "keyCode",
-      {
-        get: () =>
-          info.keyCode
-      }
-    );
-
-  } catch (_) {}
-
-  try {
-
-    Object.defineProperty(
-      event,
-      "which",
-      {
-        get: () =>
-          info.which
-      }
-    );
-
-  } catch (_) {}
-
-  return event;
-
-}
-
-/* =========================================================
-   SEND REAL INPUT INTO GAME
-========================================================= */
-
-function sendGameKey(
-  type,
-  key
-) {
-
-  try {
-
-    const gameWindow =
-      frame.contentWindow;
-
-    if (!gameWindow) {
+    if (!frame.contentWindow) {
       return;
     }
 
-    /*
-     * Primeiro enviamos a mensagem
-     * para o adaptador dentro do jogo.
-     */
-
-    gameWindow.postMessage(
+    frame.contentWindow.postMessage(
       {
-        type: "deltarune-key",
-        action: type,
+        type: type,
         key: key,
-        keyCode:
-          keyMap[key]
-            ? keyMap[key].keyCode
-            : 0
+        keyCode: keyMap[key] || 0
       },
       "*"
     );
 
-    /*
-     * Também tentamos enviar o evento
-     * diretamente ao documento do iframe.
-     * Isso funciona quando o iframe possui
-     * o mesmo contexto de acesso permitido.
-     */
-
-    try {
-
-      const targetDocument =
-        gameWindow.document;
-
-      const event =
-        createKeyboardEvent(
-          type,
-          key
-        );
-
-      if (event) {
-
-        targetDocument.dispatchEvent(
-          event
-        );
-
-        if (
-          targetDocument.body
-        ) {
-
-          targetDocument.body.dispatchEvent(
-            event
-          );
-
-        }
-
-      }
-
-    } catch (_) {}
-
-  } catch (error) {
-
-    console.error(
-      "Input error:",
-      error
-    );
-
-  }
+  } catch (_) {}
 
 }
 
-/* =========================================================
-   UPDATE KEY
-========================================================= */
-
-function updateKey(
-  key,
-  down
-) {
+function updateKey(key, down) {
 
   if (!keyMap[key]) {
     return;
@@ -1204,10 +1194,6 @@ function updateKey(
 
 }
 
-/* =========================================================
-   RELEASE ALL
-========================================================= */
-
 function releaseAllKeys() {
 
   for (
@@ -1222,6 +1208,109 @@ function releaseAllKeys() {
     activeKeys.delete(key);
 
   }
+
+}
+
+/* =========================================================
+   KEYBOARD BRIDGE
+========================================================= */
+
+function createInputBridge() {
+
+  return `
+<script>
+(function() {
+
+  if (window.__DELTARUNE_INPUT_BRIDGE__) {
+    return;
+  }
+
+  window.__DELTARUNE_INPUT_BRIDGE__ = true;
+
+  window.addEventListener(
+    "message",
+    function(event) {
+
+      var data = event.data;
+
+      if (!data || data.type !== "keydown" &&
+          data.type !== "keyup") {
+        return;
+      }
+
+      var type =
+        data.type === "keydown"
+          ? "keydown"
+          : "keyup";
+
+      var key =
+        data.key || "";
+
+      var code =
+        data.keyCode || 0;
+
+      try {
+
+        var eventObject =
+          new KeyboardEvent(
+            type,
+            {
+              key: key,
+              code:
+                key === "ArrowUp"
+                  ? "ArrowUp"
+                  : key === "ArrowDown"
+                    ? "ArrowDown"
+                    : key === "ArrowLeft"
+                      ? "ArrowLeft"
+                      : key === "ArrowRight"
+                        ? "ArrowRight"
+                        : key.toUpperCase(),
+
+              keyCode: code,
+              which: code,
+
+              bubbles: true,
+              cancelable: true
+            }
+          );
+
+        Object.defineProperty(
+          eventObject,
+          "keyCode",
+          {
+            get: function() {
+              return code;
+            }
+          }
+        );
+
+        Object.defineProperty(
+          eventObject,
+          "which",
+          {
+            get: function() {
+              return code;
+            }
+          }
+        );
+
+        document.dispatchEvent(
+          eventObject
+        );
+
+        window.dispatchEvent(
+          eventObject
+        );
+
+      } catch (_) {}
+
+    }
+  );
+
+})();
+<\/script>
+`;
 
 }
 
@@ -1278,6 +1367,9 @@ function updateHUD() {
     settingsBar.style.display =
       "flex";
 
+    menuJoystick.style.display =
+      "none";
+
   } else {
 
     hud.style.display =
@@ -1289,6 +1381,15 @@ function updateHUD() {
     settingsPanel.style.display =
       "none";
 
+    if (!gameStarted) {
+
+      menuJoystick.style.display =
+        mobileControls
+          ? "block"
+          : "none";
+
+    }
+
     releaseAllKeys();
 
   }
@@ -1296,7 +1397,324 @@ function updateHUD() {
 }
 
 /* =========================================================
-   JOYSTICK
+   MENU SELECTION
+========================================================= */
+
+function moveMenuSelection(direction) {
+
+  if (gameStarted) {
+    return;
+  }
+
+  if (
+    !chapterRows.length
+  ) {
+    return;
+  }
+
+  if (
+    selectedIndex === null
+  ) {
+
+    selectedIndex =
+      direction > 0
+        ? 0
+        : chapterRows.length - 1;
+
+  } else {
+
+    selectedIndex += direction;
+
+    if (
+      selectedIndex >=
+      chapterRows.length
+    ) {
+
+      selectedIndex = 0;
+
+    }
+
+    if (
+      selectedIndex < 0
+    ) {
+
+      selectedIndex =
+        chapterRows.length - 1;
+
+    }
+
+  }
+
+  chapterRows.forEach(
+    row =>
+      row.classList.remove(
+        "selected"
+      )
+  );
+
+  const row =
+    chapterRows[selectedIndex];
+
+  if (!row) {
+    return;
+  }
+
+  row.classList.add(
+    "selected"
+  );
+
+  row.scrollIntoView({
+    block: "nearest"
+  });
+
+  playSelect();
+
+}
+
+/* =========================================================
+   MENU JOYSTICK
+========================================================= */
+
+function stopMenuRepeat() {
+
+  if (
+    menuRepeatTimer !== null
+  ) {
+
+    clearInterval(
+      menuRepeatTimer
+    );
+
+    menuRepeatTimer = null;
+
+  }
+
+  menuRepeatDirection =
+    null;
+
+  menuJoystickStick.style.transform =
+    "translate(0px, 0px)";
+
+}
+
+function startMenuRepeat(direction) {
+
+  if (
+    menuRepeatDirection ===
+    direction
+  ) {
+    return;
+  }
+
+  stopMenuRepeat();
+
+  menuRepeatDirection =
+    direction;
+
+  moveMenuSelection(
+    direction
+  );
+
+  /*
+   * Segurando o joystick:
+   * começa devagar e depois repete.
+   */
+
+  let delay = 420;
+
+  setTimeout(
+    () => {
+
+      if (
+        menuRepeatDirection !==
+        direction
+      ) {
+        return;
+      }
+
+      menuRepeatTimer =
+        setInterval(
+          () => {
+
+            if (
+              menuRepeatDirection ===
+              direction
+            ) {
+
+              moveMenuSelection(
+                direction
+              );
+
+            }
+
+          },
+          115
+        );
+
+    },
+    delay
+  );
+
+}
+
+function menuJoystickMove(
+  x,
+  y
+) {
+
+  const rect =
+    menuJoystick.getBoundingClientRect();
+
+  const cx =
+    rect.left +
+    rect.width / 2;
+
+  const cy =
+    rect.top +
+    rect.height / 2;
+
+  let dx =
+    x - cx;
+
+  let dy =
+    y - cy;
+
+  const radius =
+    rect.width * .30;
+
+  const distance =
+    Math.sqrt(
+      dx * dx +
+      dy * dy
+    );
+
+  if (
+    distance > radius
+  ) {
+
+    const factor =
+      radius / distance;
+
+    dx *= factor;
+    dy *= factor;
+
+  }
+
+  menuJoystickStick.style.transform =
+    `translate(${dx}px, ${dy}px)`;
+
+  const deadzone = 15;
+
+  if (
+    dy < -deadzone
+  ) {
+
+    startMenuRepeat(-1);
+
+  } else if (
+    dy > deadzone
+  ) {
+
+    startMenuRepeat(1);
+
+  } else {
+
+    stopMenuRepeat();
+
+  }
+
+}
+
+menuJoystick.addEventListener(
+  "pointerdown",
+  event => {
+
+    if (gameStarted) {
+      return;
+    }
+
+    event.preventDefault();
+
+    menuJoystickPointer =
+      event.pointerId;
+
+    try {
+
+      menuJoystick.setPointerCapture(
+        event.pointerId
+      );
+
+    } catch (_) {}
+
+    menuJoystickMove(
+      event.clientX,
+      event.clientY
+    );
+
+  },
+  {
+    passive: false
+  }
+);
+
+menuJoystick.addEventListener(
+  "pointermove",
+  event => {
+
+    if (
+      event.pointerId !==
+      menuJoystickPointer
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    menuJoystickMove(
+      event.clientX,
+      event.clientY
+    );
+
+  },
+  {
+    passive: false
+  }
+);
+
+function releaseMenuJoystick(event) {
+
+  if (
+    menuJoystickPointer !== null &&
+    event.pointerId !==
+    menuJoystickPointer
+  ) {
+    return;
+  }
+
+  menuJoystickPointer =
+    null;
+
+  stopMenuRepeat();
+
+}
+
+menuJoystick.addEventListener(
+  "pointerup",
+  releaseMenuJoystick
+);
+
+menuJoystick.addEventListener(
+  "pointercancel",
+  releaseMenuJoystick
+);
+
+menuJoystick.addEventListener(
+  "lostpointercapture",
+  releaseMenuJoystick
+);
+
+/* =========================================================
+   GAME JOYSTICK
 ========================================================= */
 
 function resetJoystick() {
@@ -1354,24 +1772,40 @@ function joystickMove(
 
   const deadzone = 18;
 
+  const keys = {
+
+    ArrowUp:
+      dy < -deadzone,
+
+    ArrowDown:
+      dy > deadzone,
+
+    ArrowLeft:
+      dx < -deadzone,
+
+    ArrowRight:
+      dx > deadzone
+
+  };
+
   updateKey(
     "ArrowUp",
-    dy < -deadzone
+    keys.ArrowUp
   );
 
   updateKey(
     "ArrowDown",
-    dy > deadzone
+    keys.ArrowDown
   );
 
   updateKey(
     "ArrowLeft",
-    dx < -deadzone
+    keys.ArrowLeft
   );
 
   updateKey(
     "ArrowRight",
-    dx > deadzone
+    keys.ArrowRight
   );
 
 }
@@ -1428,21 +1862,18 @@ joystick.addEventListener(
   }
 );
 
-function releaseJoystick(
-  event
-) {
+function releaseJoystick(event) {
 
   if (
     joystickPointer !== null &&
     event.pointerId !==
     joystickPointer
   ) {
-
     return;
-
   }
 
-  joystickPointer = null;
+  joystickPointer =
+    null;
 
   resetJoystick();
 
@@ -1470,18 +1901,12 @@ function releaseJoystick(
 
 joystick.addEventListener(
   "pointerup",
-  releaseJoystick,
-  {
-    passive: false
-  }
+  releaseJoystick
 );
 
 joystick.addEventListener(
   "pointercancel",
-  releaseJoystick,
-  {
-    passive: false
-  }
+  releaseJoystick
 );
 
 joystick.addEventListener(
@@ -1490,7 +1915,7 @@ joystick.addEventListener(
 );
 
 /* =========================================================
-   Z X C BUTTONS
+   Z X C
 ========================================================= */
 
 document
@@ -1534,18 +1959,14 @@ document
       }
     );
 
-    function release(
-      event
-    ) {
+    function release(event) {
 
       if (
         pointerId !== null &&
         event.pointerId !==
         pointerId
       ) {
-
         return;
-
       }
 
       event.preventDefault();
@@ -1600,296 +2021,10 @@ document
   });
 
 /* =========================================================
-   CHAPTER INPUT ADAPTER
-========================================================= */
-
-/*
- * Este código é colocado DENTRO do capítulo.
- *
- * O iframe recebe:
- *
- *     postMessage()
- *
- * e transforma isso em:
- *
- *     KeyboardEvent
- *
- * real para o jogo.
- */
-
-function createInputBridge() {
-
-  return `
-<script>
-(function() {
-
-  "use strict";
-
-  var keyCodes = {
-    ArrowUp: 38,
-    ArrowDown: 40,
-    ArrowLeft: 37,
-    ArrowRight: 39,
-    z: 90,
-    x: 88,
-    c: 67
-  };
-
-  function makeEvent(type, key) {
-
-    var code =
-      keyCodes[key] || 0;
-
-    var event;
-
-    try {
-
-      event =
-        new KeyboardEvent(
-          type,
-          {
-            key: key,
-            code:
-              key === "z"
-                ? "KeyZ"
-                : key === "x"
-                  ? "KeyX"
-                  : key === "c"
-                    ? "KeyC"
-                    : key,
-
-            keyCode: code,
-            which: code,
-
-            bubbles: true,
-            cancelable: true,
-            composed: true
-          }
-        );
-
-    } catch (_) {
-
-      event =
-        document.createEvent(
-          "KeyboardEvent"
-        );
-
-      event.initKeyboardEvent(
-        type,
-        true,
-        true,
-        window,
-        key,
-        0,
-        "",
-        false,
-        ""
-      );
-
-    }
-
-    try {
-
-      Object.defineProperty(
-        event,
-        "keyCode",
-        {
-          get: function() {
-            return code;
-          }
-        }
-      );
-
-    } catch (_) {}
-
-    try {
-
-      Object.defineProperty(
-        event,
-        "which",
-        {
-          get: function() {
-            return code;
-          }
-        }
-      );
-
-    } catch (_) {}
-
-    return event;
-
-  }
-
-  function dispatch(type, key) {
-
-    if (!keyCodes[key]) {
-      return;
-    }
-
-    var event =
-      makeEvent(
-        type,
-        key
-      );
-
-    /*
-     * Envia para window.
-     */
-
-    try {
-      window.dispatchEvent(event);
-    } catch (_) {}
-
-    /*
-     * Envia para document.
-     */
-
-    try {
-      document.dispatchEvent(
-        makeEvent(type, key)
-      );
-    } catch (_) {}
-
-    /*
-     * Envia para body.
-     */
-
-    try {
-
-      if (document.body) {
-
-        document.body.dispatchEvent(
-          makeEvent(type, key)
-        );
-
-      }
-
-    } catch (_) {}
-
-    /*
-     * Envia para o elemento focado.
-     */
-
-    try {
-
-      if (
-        document.activeElement &&
-        document.activeElement !==
-        document.body
-      ) {
-
-        document.activeElement.dispatchEvent(
-          makeEvent(type, key)
-        );
-
-      }
-
-    } catch (_) {}
-
-  }
-
-  window.addEventListener(
-    "message",
-    function(event) {
-
-      var data =
-        event.data;
-
-      if (
-        !data ||
-        data.type !==
-        "deltarune-key"
-      ) {
-
-        return;
-
-      }
-
-      if (
-        data.action !== "keydown" &&
-        data.action !== "keyup"
-      ) {
-
-        return;
-
-      }
-
-      dispatch(
-        data.action,
-        data.key
-      );
-
-    },
-    false
-  );
-
-})();
-<\/script>
-`;
-}
-
-/* =========================================================
-   INJECT INPUT BRIDGE
-========================================================= */
-
-function injectInputBridge(
-  html
-) {
-
-  const bridge =
-    createInputBridge();
-
-  /*
-   * Remove qualquer ponte anterior
-   * caso exista.
-   */
-
-  html =
-    html.replace(
-      /<script[^>]*data-deltarune-input-bridge[^>]*>[\s\S]*?<\/script>/gi,
-      ""
-    );
-
-  const markedBridge =
-    bridge.replace(
-      "<script>",
-      '<script data-deltarune-input-bridge="true">'
-    );
-
-  /*
-   * Coloca antes de </body>.
-   */
-
-  if (
-    /<\/body>/i.test(html)
-  ) {
-
-    return html.replace(
-      /<\/body>/i,
-      markedBridge +
-      "</body>"
-    );
-
-  }
-
-  /*
-   * Caso o capítulo não tenha body.
-   */
-
-  return (
-    html +
-    markedBridge
-  );
-
-}
-
-/* =========================================================
    LOAD CHAPTER
 ========================================================= */
 
-async function loadChapter(
-  chapter
-) {
+async function loadChapter(chapter) {
 
   playSelect();
 
@@ -1897,7 +2032,12 @@ async function loadChapter(
 
   releaseAllKeys();
 
+  stopMenuRepeat();
+
   menu.style.display =
+    "none";
+
+  menuJoystick.style.display =
     "none";
 
   loader.style.display =
@@ -1933,7 +2073,7 @@ async function loadChapter(
 
     }
 
-    let html =
+    const html =
       await response.text();
 
     if (!html.trim()) {
@@ -1945,45 +2085,58 @@ async function loadChapter(
     }
 
     /*
-     * Remove bases antigas.
+     * Remove <base> antigo.
      */
 
-    html =
+    let finalHTML =
       html.replace(
         /<base\b[^>]*>/gi,
         ""
       );
 
     /*
-     * Cria a base correta
-     * para imagens, JS, CSS,
-     * sons etc.
+     * Adiciona base correta.
      */
 
+    const baseTag =
+      `<base href="${chapterPath}">`;
+
+    /*
+     * Adiciona o bridge de controles
+     * dentro do capítulo.
+     */
+
+    const inputBridge =
+      createInputBridge();
+
     if (
-      /<head[^>]*>/i.test(html)
+      /<head[^>]*>/i.test(
+        finalHTML
+      )
     ) {
 
-      html =
-        html.replace(
+      finalHTML =
+        finalHTML.replace(
           /<head[^>]*>/i,
           match =>
             match +
-            `<base href="${chapterPath}">`
+            baseTag +
+            inputBridge
         );
 
     } else {
 
-      html =
-        `
+      finalHTML =
+`
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<base href="${chapterPath}">
+${baseTag}
+${inputBridge}
 </head>
 <body>
-${html}
+${finalHTML}
 </body>
 </html>
 `;
@@ -1991,21 +2144,19 @@ ${html}
     }
 
     /*
-     * =====================================================
-     * CORREÇÃO PRINCIPAL
-     * =====================================================
-     *
-     * Injeta o adaptador que transforma
-     * postMessage em KeyboardEvent.
+     * Cria Blob.
      */
 
-    html =
-      injectInputBridge(
-        html
+    const blob =
+      new Blob(
+        [finalHTML],
+        {
+          type: "text/html"
+        }
       );
 
     /*
-     * Libera Blob anterior.
+     * Libera Blob antigo.
      */
 
     if (
@@ -2020,18 +2171,7 @@ ${html}
 
       } catch (_) {}
 
-      frame.dataset.blobUrl =
-        "";
-
     }
-
-    const blob =
-      new Blob(
-        [html],
-        {
-          type: "text/html"
-        }
-      );
 
     const blobURL =
       URL.createObjectURL(
@@ -2047,26 +2187,11 @@ ${html}
         loader.style.display =
           "none";
 
+        updateHUD();
+
         try {
 
           frame.contentWindow.focus();
-
-        } catch (_) {}
-
-        /*
-         * Garante que o jogo receba
-         * foco depois de carregar.
-         */
-
-        try {
-
-          frame.contentWindow.postMessage(
-            {
-              type:
-                "deltarune-focus"
-            },
-            "*"
-          );
 
         } catch (_) {}
 
@@ -2096,10 +2221,6 @@ ${html}
 
     /*
      * Fallback direto.
-     *
-     * O fallback não possui a ponte
-     * porque o HTML não passou pelo
-     * processo de injeção.
      */
 
     frame.onload =
@@ -2107,6 +2228,8 @@ ${html}
 
         loader.style.display =
           "none";
+
+        updateHUD();
 
       };
 
@@ -2129,7 +2252,7 @@ const chapterRows =
   );
 
 chapterRows.forEach(
-  row => {
+  (row, index) => {
 
     row.addEventListener(
       "click",
@@ -2140,6 +2263,9 @@ chapterRows.forEach(
         if (gameStarted) {
           return;
         }
+
+        selectedIndex =
+          index;
 
         const chapter =
           Number(
@@ -2194,71 +2320,22 @@ document.addEventListener(
     }
 
     if (
-      event.key === "ArrowDown" ||
+      event.key === "ArrowDown"
+    ) {
+
+      event.preventDefault();
+
+      moveMenuSelection(1);
+
+    }
+
+    if (
       event.key === "ArrowUp"
     ) {
 
       event.preventDefault();
 
-      if (
-        selectedIndex === null
-      ) {
-
-        selectedIndex = 0;
-
-      } else if (
-        event.key === "ArrowDown"
-      ) {
-
-        selectedIndex++;
-
-        if (
-          selectedIndex >=
-          chapterRows.length
-        ) {
-
-          selectedIndex = 0;
-
-        }
-
-      } else {
-
-        selectedIndex--;
-
-        if (
-          selectedIndex < 0
-        ) {
-
-          selectedIndex =
-            chapterRows.length - 1;
-
-        }
-
-      }
-
-      chapterRows.forEach(
-        row =>
-          row.classList.remove(
-            "selected"
-          )
-      );
-
-      const row =
-        chapterRows[
-          selectedIndex
-        ];
-
-      if (row) {
-
-        row.classList.add(
-          "selected"
-        );
-
-        row.scrollIntoView({
-          block: "nearest"
-        });
-
-      }
+      moveMenuSelection(-1);
 
     }
 
@@ -2379,9 +2456,7 @@ function applyConfig() {
 
     localStorage.setItem(
       CONFIG_KEY,
-      JSON.stringify(
-        config
-      )
+      JSON.stringify(config)
     );
 
   } catch (_) {}
@@ -2403,8 +2478,11 @@ document
       event.preventDefault();
 
       config = {
+
         opacity: 1,
-        scale: 1.3
+
+        scale: 1.15
+
       };
 
       document
@@ -2417,7 +2495,7 @@ document
         .getElementById(
           "size-slider"
         )
-        .value = "1.3";
+        .value = "1.15";
 
       applyConfig();
 
@@ -2425,7 +2503,7 @@ document
   );
 
 /* =========================================================
-   SAVE / IMPORT
+   SAVE DATABASE
 ========================================================= */
 
 const DB_NAME =
@@ -2558,9 +2636,7 @@ async function setSaveItem(
 
       const bytes =
         new TextEncoder()
-          .encode(
-            content
-          );
+          .encode(content);
 
       transaction
         .objectStore(
@@ -2576,6 +2652,7 @@ async function setSaveItem(
 
             contents:
               bytes
+
           },
           key
         );
@@ -2638,9 +2715,7 @@ document
               key.includes("_savedata")
             )
           ) {
-
             continue;
-
           }
 
           let cleanKey =
@@ -2725,7 +2800,8 @@ document
             "a"
           );
 
-        link.href = url;
+        link.href =
+          url;
 
         link.download =
           "deltarune_saves.zip";
@@ -2894,10 +2970,13 @@ function checkOldDomain() {
 
     notice.innerHTML = `
       <div class="deactivation-warning">
+
         This domain might get deactivated soon.
         Please export your saves and switch to
         the new official domain:
+
         <br><br>
+
         <a
           href="https://byalvaro19.github.io/deltarune/"
           target="_blank"
@@ -2905,6 +2984,7 @@ function checkOldDomain() {
         >
           byalvaro19.github.io/deltarune/
         </a>
+
       </div>
     `;
 
@@ -2928,14 +3008,11 @@ function loadConfig() {
     if (saved) {
 
       const parsed =
-        JSON.parse(
-          saved
-        );
+        JSON.parse(saved);
 
       if (
         parsed &&
-        typeof parsed ===
-        "object"
+        typeof parsed === "object"
       ) {
 
         if (
@@ -3021,7 +3098,13 @@ function initialize() {
 
 window.addEventListener(
   "blur",
-  releaseAllKeys
+  () => {
+
+    releaseAllKeys();
+    stopMenuRepeat();
+    resetJoystick();
+
+  }
 );
 
 document.addEventListener(
@@ -3031,6 +3114,8 @@ document.addEventListener(
     if (document.hidden) {
 
       releaseAllKeys();
+
+      stopMenuRepeat();
 
       resetJoystick();
 
