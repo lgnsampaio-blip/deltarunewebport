@@ -1,1198 +1,2085 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-  >
-
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="DELTARUNE">
-
-  <title>DELTARUNE</title>
-
-  <link rel="manifest" href="./manifest.json">
-
-  <link
-    rel="icon"
-    type="image/png"
-    href="./icons/appicon.png"
-  >
-
-  <link
-    rel="apple-touch-icon"
-    href="./icons/appicon.png"
-  >
-
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/style.css"
-  >
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-  <style>
-
-    :root {
-      --ctrl-scale: 1.3;
-      --ctrl-opacity: 1;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background: #000;
-      overflow: hidden;
-      overscroll-behavior: none;
-      touch-action: none;
-    }
-
-    body {
-      position: fixed;
-      inset: 0;
-    }
-
-    button,
-    input,
-    a {
-      font: inherit;
-    }
-
-    /* =====================================================
-       MENU CENTRALIZADO
-    ====================================================== */
-
-    #main-menu-ui {
-      position: fixed;
-      inset: 0;
-
-      width: 100%;
-      height: 100%;
-      height: 100dvh;
-
-      z-index: 5;
-
-      overflow-x: hidden;
-      overflow-y: auto;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      padding:
-        max(20px, env(safe-area-inset-top))
-        20px
-        120px
-        20px;
-
-      -webkit-overflow-scrolling: touch;
-
-      overscroll-behavior-y: contain;
-
-      touch-action: pan-y;
-    }
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1,
+  maximum-scale=1, user-scalable=no, viewport-fit=cover"
+>
+
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="DELTARUNE">
+
+<title>DELTARUNE</title>
+
+<link rel="manifest" href="./manifest.json">
+
+<link
+  rel="icon"
+  type="image/png"
+  href="./icons/appicon.png"
+>
+
+<link
+  rel="apple-touch-icon"
+  href="./icons/appicon.png"
+>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+
+@font-face {
+  font-family: "Deltarune";
+  src: url("https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/font.otf")
+       format("opentype");
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Deltarune", monospace;
+}
+
+/* =========================================================
+   MENU
+========================================================= */
+
+#main-menu-ui {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding:
+    max(20px, env(safe-area-inset-top))
+    20px
+    100px;
+
+  background: #000;
+
+  z-index: 10;
+}
+
+#main-menu-ui::-webkit-scrollbar {
+  display: none;
+}
+
+.logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: min(700px, 90vw);
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
+}
+
+/* =========================================================
+   MENU CENTRALIZADO
+========================================================= */
+
+.menu {
+  width: min(90vw, 800px);
+  margin: 20px auto 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.row,
+.disabled-row {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(150px, 200px)
+    minmax(0, 1fr)
+    60px;
+
+  align-items: center;
+
+  padding: 12px 0;
+
+  gap: 16px;
+
+  color: #fff;
+  text-decoration: none;
+
+  touch-action: manipulation;
+}
+
+.row {
+  cursor: pointer;
+}
+
+.disabled-row {
+  opacity: .55;
+}
 
-    #main-menu-ui .logo-container {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-shrink: 0;
-    }
+.chapter,
+.title,
+.disabled-title,
+.badge {
+  display: inline-block;
+  transform: scaleY(1.1);
+  transform-origin: bottom;
+}
 
-    #main-menu-ui .menu {
-      width: min(90vw, 800px);
-      margin-left: auto;
-      margin-right: auto;
-    }
+.chapter {
+  text-align: left;
+}
 
-    #main-menu-ui .row,
-    #main-menu-ui .disabled-row {
-      touch-action: manipulation;
-    }
+.title {
+  text-align: center;
+}
 
-    #main-menu-ui::-webkit-scrollbar {
-      display: none;
-    }
+.disabled-title {
+  text-align: center;
+}
 
-    .deactivation-warning {
-      width: 90%;
-      max-width: 700px;
-      margin: 20px auto;
-      color: #fff;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      font-weight: bold;
-      line-height: 1.4;
-    }
+.row img,
+.disabled-row img {
+  width: 60px;
+  height: 50px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
 
-    .deactivation-warning a {
-      color: #ffff00;
-      text-decoration: underline;
-      -webkit-user-select: text;
-      user-select: text;
-    }
+.row:hover .chapter,
+.row:hover .title,
+.row.selected .chapter,
+.row.selected .title {
+  color: #fefe00;
+}
 
-    /* =====================================================
-       GAME
-    ====================================================== */
+.row:hover img,
+.row.selected img {
+  filter: sepia(1) saturate(100);
+}
 
-    #game-frame {
-      position: fixed;
-      inset: 0;
+/* =========================================================
+   WARNING
+========================================================= */
 
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
+.deactivation-warning {
+  width: min(90vw, 700px);
+  margin: 10px auto 20px;
 
-      border: 0;
-      outline: 0;
+  text-align: center;
 
-      display: none;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+}
 
-      background: #000;
+.deactivation-warning a {
+  color: #ffff00;
+}
 
-      z-index: 1;
-    }
+/* =========================================================
+   LOADER
+========================================================= */
 
-    /* =====================================================
-       LOADER
-    ====================================================== */
+#loader-screen {
+  position: fixed;
+  inset: 0;
 
-    #loader-screen {
-      position: fixed;
-      inset: 0;
+  display: none;
 
-      display: none;
+  align-items: center;
+  justify-content: center;
 
-      align-items: center;
-      justify-content: center;
+  background: #000;
+  color: #fff;
 
-      background: #000;
-      color: #fff;
+  z-index: 100;
 
-      z-index: 100;
+  font-family: Arial, sans-serif;
+}
 
-      font-family: Arial, sans-serif;
-      font-size: 18px;
-    }
+/* =========================================================
+   GAME
+========================================================= */
 
-    /* =====================================================
-       MOBILE HUD
-    ====================================================== */
+#game-frame {
+  position: fixed;
+  inset: 0;
 
-    #hud-layer {
-      position: fixed;
-      inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
 
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
+  border: 0;
+  outline: 0;
 
-      z-index: 10;
+  display: none;
 
-      display: none;
+  background: #000;
 
-      pointer-events: none;
+  z-index: 1;
+}
 
-      opacity: var(--ctrl-opacity);
+/* =========================================================
+   MOBILE HUD
+========================================================= */
 
-      touch-action: none;
-    }
+#hud-layer {
+  position: fixed;
+  inset: 0;
 
-    .touch-group {
-      position: absolute;
+  width: 100%;
+  height: 100%;
 
-      pointer-events: auto;
+  z-index: 20;
 
-      touch-action: none;
+  display: none;
 
-      transform:
-        translate(-50%, -50%)
-        scale(var(--ctrl-scale));
+  pointer-events: none;
 
-      transform-origin: center center;
+  opacity: var(--ctrl-opacity, 1);
 
-      cursor: grab;
+  touch-action: none;
+}
 
-      -webkit-user-select: none;
-      user-select: none;
-    }
+/* =========================================================
+   JOYSTICK
+========================================================= */
 
-    .touch-group:active {
-      cursor: grabbing;
-    }
+#joystick {
+  position: absolute;
 
-    body.edit-mode .touch-group {
-      border: 2px dashed #00bfff !important;
-      background: rgba(0, 191, 255, 0.18) !important;
-      opacity: 1 !important;
-    }
+  left: 90px;
+  bottom: 90px;
 
-    body.edit-mode #hud-layer {
-      pointer-events: auto;
-    }
+  width: 150px;
+  height: 150px;
 
-    /* =====================================================
-       JOYSTICK
-    ====================================================== */
+  border-radius: 50%;
 
-    #joystick-group {
-      left: 18%;
-      top: 78%;
+  pointer-events: auto;
+  touch-action: none;
 
-      width: 180px;
-      height: 180px;
+  transform: scale(var(--ctrl-scale, 1.3));
+  transform-origin: center;
 
-      z-index: 20;
-    }
+  background:
+    rgba(255,255,255,.10);
 
-    #virtualJoystick {
-      position: relative;
+  border:
+    3px solid rgba(255,255,255,.30);
 
-      width: 180px;
-      height: 180px;
+  box-shadow:
+    0 0 25px rgba(255,255,255,.08),
+    inset 0 0 25px rgba(0,0,0,.5);
+}
 
-      touch-action: none;
-      user-select: none;
-      -webkit-user-select: none;
+#joystick-stick {
+  position: absolute;
 
-      pointer-events: auto;
-    }
+  left: 50%;
+  top: 50%;
 
-    #joystickBase {
-      position: absolute;
-      inset: 0;
+  width: 68px;
+  height: 68px;
 
-      width: 180px;
-      height: 180px;
+  margin-left: -34px;
+  margin-top: -34px;
 
-      border-radius: 50%;
+  border-radius: 50%;
 
-      background:
-        radial-gradient(
-          circle,
-          rgba(255,255,255,0.10),
-          rgba(255,255,255,0.04)
-        );
+  background:
+    rgba(255,255,255,.78);
 
-      border:
-        2px solid
-        rgba(255,255,255,0.35);
+  border:
+    3px solid rgba(255,255,255,.95);
 
-      box-shadow:
-        0 0 20px rgba(255,255,255,0.08),
-        inset 0 0 25px rgba(0,0,0,0.6);
+  box-shadow:
+    0 5px 20px rgba(0,0,0,.6);
 
-      pointer-events: auto;
-    }
+  pointer-events: none;
 
-    #joystickStick {
-      position: absolute;
+  transition:
+    transform .04s linear;
+}
 
-      width: 72px;
-      height: 72px;
+/* =========================================================
+   Z X C
+========================================================= */
 
-      left: 50%;
-      top: 50%;
+#mobile-buttons {
+  position: absolute;
 
-      transform:
-        translate(-50%, -50%);
+  right: 70px;
+  bottom: 80px;
 
-      border-radius: 50%;
+  display: flex;
+  flex-direction: column;
 
-      background:
-        rgba(255,255,255,0.78);
+  gap: 14px;
 
-      border:
-        3px solid
-        rgba(255,255,255,0.95);
+  pointer-events: auto;
+  touch-action: none;
 
-      box-shadow:
-        0 4px 18px rgba(0,0,0,0.55);
+  transform: scale(var(--ctrl-scale, 1.3));
+  transform-origin: center;
+}
 
-      pointer-events: none;
+.game-btn {
+  width: 65px;
+  height: 65px;
 
-      transition:
-        transform 0.04s linear;
-    }
+  border-radius: 50%;
 
-    #joystickStick.active {
-      background:
-        rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      box-shadow:
-        0 0 20px rgba(255,255,255,0.35);
-    }
+  background:
+    rgba(255,255,255,.14);
 
-    /* =====================================================
-       Z X C
-    ====================================================== */
+  border:
+    2px solid rgba(255,255,255,.4);
 
-    #btn-z {
-      left: 72%;
-      top: 84%;
-    }
+  color: #fff;
 
-    #btn-x {
-      left: 82%;
-      top: 75%;
-    }
+  font-family: Arial, sans-serif;
+  font-size: 25px;
+  font-weight: bold;
 
-    #btn-c {
-      left: 91%;
-      top: 65%;
-    }
+  touch-action: none;
 
-    .btn {
-      width: 65px;
-      height: 65px;
+  pointer-events: auto;
 
-      display: flex;
+  box-shadow:
+    0 0 15px rgba(255,255,255,.08),
+    inset 0 0 15px rgba(0,0,0,.4);
+}
 
-      align-items: center;
-      justify-content: center;
+.game-btn.active {
+  background: rgba(255,255,255,.55);
 
-      background:
-        rgba(255,255,255,0.2);
+  transform: scale(.92);
 
-      border:
-        2px solid
-        rgba(255,255,255,0.4);
+  border-color: #fff;
+}
 
-      border-radius: 50%;
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-      color: #fff;
+#settings-bar {
+  position: fixed;
 
-      font-family: Arial, sans-serif;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, env(safe-area-inset-right));
 
-      font-size: 1.4rem;
+  z-index: 50;
 
-      font-weight: bold;
+  display: none;
 
-      pointer-events: auto;
+  gap: 5px;
+}
 
-      touch-action: none;
+#settings-toggle {
+  padding: 9px 12px;
 
-      -webkit-user-select: none;
-      user-select: none;
-    }
+  color: #fff;
+  background: rgba(20,20,20,.9);
 
-    .btn.active {
-      background:
-        rgba(255,255,255,0.6);
+  border: 1px solid #777;
+  border-radius: 7px;
 
-      border-color: #fff;
+  font-family: Arial, sans-serif;
+}
 
-      transform: scale(0.92);
-    }
+#settings-panel {
+  position: fixed;
 
-    /* =====================================================
-       SETTINGS
-    ====================================================== */
+  top:
+    max(
+      60px,
+      calc(env(safe-area-inset-top) + 50px)
+    );
 
-    #settings-bar {
-      position: fixed;
+  right:
+    max(
+      10px,
+      env(safe-area-inset-right)
+    );
 
-      top:
-        max(
-          10px,
-          env(safe-area-inset-top)
-        );
+  width: 230px;
 
-      right:
-        max(
-          10px,
-          env(safe-area-inset-right)
-        );
+  padding: 18px;
 
-      z-index: 50;
+  display: none;
 
-      display: none;
+  background: rgba(0,0,0,.96);
 
-      gap: 5px;
+  border: 1px solid #444;
+  border-radius: 10px;
 
-      pointer-events: auto;
-    }
+  z-index: 49;
 
-    #settings-bar button {
-      padding: 10px 12px;
+  font-family: Arial, sans-serif;
+}
 
-      background:
-        rgba(30,30,30,0.9);
+#settings-panel input {
+  width: 100%;
+}
 
-      color: #fff;
+#reset-pos {
+  width: 100%;
+  margin-top: 10px;
 
-      border:
-        1px solid #777;
+  padding: 10px;
 
-      border-radius: 8px;
+  background: #922;
+  color: #fff;
 
-      font-family: Arial, sans-serif;
+  border: 0;
+  border-radius: 6px;
+}
 
-      touch-action: manipulation;
-    }
+/* =========================================================
+   EDIT MODE
+========================================================= */
 
-    #settings-panel {
-      position: fixed;
+body.edit-mode #joystick,
+body.edit-mode #mobile-buttons {
+  outline: 2px dashed #00bfff;
+  background: rgba(0,191,255,.12);
+}
 
-      top:
-        max(
-          60px,
-          calc(
-            env(safe-area-inset-top)
-            + 50px
-          )
-        );
+/* =========================================================
+   MOBILE
+========================================================= */
 
-      right:
-        max(
-          10px,
-          env(safe-area-inset-right)
-        );
+@media (max-width: 700px) {
 
-      z-index: 49;
+  #main-menu-ui {
+    padding-top:
+      max(
+        10px,
+        env(safe-area-inset-top)
+      );
+  }
 
-      width: 230px;
+  .logo {
+    width: 90vw;
+    max-height: 150px;
+  }
 
-      max-width:
-        calc(100vw - 20px);
+  .menu {
+    width: 94vw;
+  }
 
-      padding: 18px;
+  .row,
+  .disabled-row {
+    grid-template-columns:
+      110px
+      minmax(0, 1fr)
+      48px;
 
-      display: none;
+    gap: 8px;
 
-      background:
-        rgba(0,0,0,0.95);
+    font-size: 22px;
+  }
 
-      color: #fff;
+  .row img,
+  .disabled-row img {
+    width: 48px;
+    height: 42px;
+  }
 
-      border:
-        1px solid #444;
+  #joystick {
+    left: 65px;
+    bottom: 75px;
 
-      border-radius: 12px;
+    width: 135px;
+    height: 135px;
+  }
 
-      font-family: Arial, sans-serif;
+  #joystick-stick {
+    width: 62px;
+    height: 62px;
 
-      pointer-events: auto;
+    margin-left: -31px;
+    margin-top: -31px;
+  }
 
-      touch-action: manipulation;
-    }
+  #mobile-buttons {
+    right: 45px;
+    bottom: 65px;
+  }
 
-    #settings-panel input[type="range"] {
-      width: 100%;
-      height: 6px;
+  .game-btn {
+    width: 60px;
+    height: 60px;
+  }
+}
 
-      appearance: none;
-      -webkit-appearance: none;
+@media (max-width: 450px) {
 
-      background: #444;
+  .row,
+  .disabled-row {
+    grid-template-columns:
+      90px
+      minmax(0,1fr)
+      42px;
 
-      border-radius: 3px;
-    }
+    font-size: 18px;
+  }
 
-    #settings-panel
-    input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      -webkit-appearance: none;
+  #joystick {
+    left: 30px;
+    bottom: 35px;
 
-      width: 18px;
-      height: 18px;
+    width: 120px;
+    height: 120px;
+  }
 
-      background: #00bfff;
+  #joystick-stick {
+    width: 55px;
+    height: 55px;
 
-      border-radius: 50%;
-    }
+    margin-left: -27.5px;
+    margin-top: -27.5px;
+  }
 
-    @media (max-width: 600px) {
+  #mobile-buttons {
+    right: 25px;
+    bottom: 30px;
 
-      #main-menu-ui {
-        padding-bottom: 140px;
-      }
+    gap: 8px;
+  }
 
-      #settings-panel {
-        width: 210px;
-      }
+  .game-btn {
+    width: 55px;
+    height: 55px;
+    font-size: 21px;
+  }
+}
 
-      #joystick-group {
-        width: 150px;
-        height: 150px;
-      }
-
-      #virtualJoystick,
-      #joystickBase {
-        width: 150px;
-        height: 150px;
-      }
-
-      #joystickStick {
-        width: 60px;
-        height: 60px;
-      }
-
-      .btn {
-        width: 60px;
-        height: 60px;
-      }
-    }
-
-  </style>
+</style>
 </head>
 
 <body>
 
-  <!-- =====================================================
-       MENU
-  ====================================================== -->
+<!-- =====================================================
+     MENU
+===================================================== -->
 
-  <div id="main-menu-ui">
+<div id="main-menu-ui">
 
-    <div class="logo-container">
+  <div class="logo-container">
 
+    <img
+      class="logo"
+      src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/logo.png"
+      alt="DELTARUNE"
+      draggable="false"
+    >
+
+  </div>
+
+  <div id="notice-container"></div>
+
+  <div class="menu">
+
+    <a href="#" class="row" data-chapter="1">
+      <span class="chapter">CHAPTER 1</span>
+      <span class="title">The Beginning</span>
       <img
-        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/logo.png"
-        alt="DELTARUNE"
-        class="logo"
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/1.png"
         draggable="false"
       >
+    </a>
 
-    </div>
-
-    <div id="notice-container"></div>
-
-    <div class="menu">
-
-      <a href="#" class="row" data-chapter="1">
-        <span class="chapter">CHAPTER 1</span>
-        <span class="title">The Beginning</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/1.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" data-chapter="2">
-        <span class="chapter">CHAPTER 2</span>
-        <span class="title">A Cyber's World</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/2.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" data-chapter="3">
-        <span class="chapter">CHAPTER 3</span>
-        <span class="title">Late Night</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/3.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" data-chapter="4">
-        <span class="chapter">CHAPTER 4</span>
-        <span class="title">Prophecy</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/4.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" data-chapter="5">
-        <span class="chapter">CHAPTER 5</span>
-        <span class="title">Festival Day</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/5.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="disabled-row" data-disabled="true">
-        <span class="chapter">CHAPTER 6</span>
-        <span class="disabled-title">--</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="disabled-row" data-disabled="true">
-        <span class="chapter">CHAPTER 7</span>
-        <span class="disabled-title">--</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" id="mobile-controls-row">
-        <span class="chapter">SYSTEM</span>
-        <span class="title" id="mobile-controls-status-text">
-          Mobile controls: OFF
-        </span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/mobile.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" id="export-row">
-        <span class="chapter">SAVE DATA</span>
-        <span class="title">Export Save (.zip)</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/export.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <a href="#" class="row" id="import-row">
-        <span class="chapter">SAVE DATA</span>
-        <span class="title">Import Save (.zip)</span>
-        <img
-          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/import.png"
-          alt=""
-          draggable="false"
-        >
-      </a>
-
-      <input
-        type="file"
-        id="importFile"
-        accept=".zip,application/zip"
-        hidden
+    <a href="#" class="row" data-chapter="2">
+      <span class="chapter">CHAPTER 2</span>
+      <span class="title">A Cyber's World</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/2.png"
+        draggable="false"
       >
+    </a>
 
-    </div>
-  </div>
-
-  <div id="loader-screen">
-    <p>Launching...</p>
-  </div>
-
-  <iframe
-    id="game-frame"
-    title="DELTARUNE"
-    allow="autoplay; fullscreen; gamepad"
-    allowfullscreen
-    scrolling="no"
-  ></iframe>
-
-  <!-- =====================================================
-       MOBILE HUD
-  ====================================================== -->
-
-  <div id="hud-layer">
-
-    <!-- JOYSTICK -->
-
-    <div
-      id="joystick-group"
-      class="touch-group draggable"
-      data-save-id="joystick"
-    >
-
-      <div id="virtualJoystick">
-
-        <div id="joystickBase"></div>
-
-        <div id="joystickStick"></div>
-
-      </div>
-
-    </div>
-
-    <!-- Z -->
-
-    <div
-      id="btn-z"
-      class="touch-group draggable"
-      data-save-id="z-btn"
-    >
-      <div class="btn game-btn" data-key="z">
-        Z
-      </div>
-    </div>
-
-    <!-- X -->
-
-    <div
-      id="btn-x"
-      class="touch-group draggable"
-      data-save-id="x-btn"
-    >
-      <div class="btn game-btn" data-key="x">
-        X
-      </div>
-    </div>
-
-    <!-- C -->
-
-    <div
-      id="btn-c"
-      class="touch-group draggable"
-      data-save-id="c-btn"
-    >
-      <div class="btn game-btn" data-key="c">
-        C
-      </div>
-    </div>
-
-  </div>
-
-  <!-- =====================================================
-       SETTINGS
-  ====================================================== -->
-
-  <div id="settings-bar">
-
-    <button id="settings-toggle" type="button">
-      Mobile Settings
-    </button>
-
-  </div>
-
-  <div id="settings-panel">
-
-    <div style="margin-bottom:15px">
-
-      <label for="opacity-slider">
-        Opacity
-      </label>
-
-      <input
-        type="range"
-        id="opacity-slider"
-        min="0.05"
-        max="1"
-        step="0.05"
-        value="1"
+    <a href="#" class="row" data-chapter="3">
+      <span class="chapter">CHAPTER 3</span>
+      <span class="title">Late Night</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/3.png"
+        draggable="false"
       >
+    </a>
 
-    </div>
-
-    <div style="margin-bottom:15px">
-
-      <label for="size-slider">
-        Size
-      </label>
-
-      <input
-        type="range"
-        id="size-slider"
-        min="0.5"
-        max="3"
-        step="0.1"
-        value="1.3"
+    <a href="#" class="row" data-chapter="4">
+      <span class="chapter">CHAPTER 4</span>
+      <span class="title">Prophecy</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/4.png"
+        draggable="false"
       >
+    </a>
 
-    </div>
+    <a href="#" class="row" data-chapter="5">
+      <span class="chapter">CHAPTER 5</span>
+      <span class="title">Festival Day</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/5.png"
+        draggable="false"
+      >
+    </a>
 
-    <button
-      id="reset-pos"
-      type="button"
-      style="
-        width:100%;
-        background:#922;
-        color:#fff;
-        border:0;
-        padding:10px;
-        border-radius:6px;
-      "
+    <a href="#" class="disabled-row">
+      <span class="chapter">CHAPTER 6</span>
+      <span class="disabled-title">--</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
+        draggable="false"
+      >
+    </a>
+
+    <a href="#" class="disabled-row">
+      <span class="chapter">CHAPTER 7</span>
+      <span class="disabled-title">--</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
+        draggable="false"
+      >
+    </a>
+
+    <a href="#" class="row" id="mobile-controls-row">
+      <span class="chapter">SYSTEM</span>
+      <span class="title" id="mobile-controls-status-text">
+        Mobile controls: OFF
+      </span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/mobile.png"
+        draggable="false"
+      >
+    </a>
+
+    <a href="#" class="row" id="export-row">
+      <span class="chapter">SAVE DATA</span>
+      <span class="title">Export Save (.zip)</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/export.png"
+        draggable="false"
+      >
+    </a>
+
+    <a href="#" class="row" id="import-row">
+      <span class="chapter">SAVE DATA</span>
+      <span class="title">Import Save (.zip)</span>
+      <img
+        src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/import.png"
+        draggable="false"
+      >
+    </a>
+
+    <input
+      id="importFile"
+      type="file"
+      accept=".zip,application/zip"
+      hidden
     >
-      Reset Layout
-    </button>
+
+  </div>
+</div>
+
+<!-- =====================================================
+     LOADER
+===================================================== -->
+
+<div id="loader-screen">
+  <p>Launching...</p>
+</div>
+
+<!-- =====================================================
+     GAME
+===================================================== -->
+
+<iframe
+  id="game-frame"
+  title="DELTARUNE"
+  allow="autoplay; fullscreen; gamepad"
+  allowfullscreen
+  scrolling="no"
+></iframe>
+
+<!-- =====================================================
+     MOBILE HUD
+===================================================== -->
+
+<div id="hud-layer">
+
+  <div id="joystick">
+
+    <div id="joystick-stick"></div>
 
   </div>
 
-  <script>
-    "use strict";
+  <div id="mobile-buttons">
 
-    const REPO_BASE =
-      "https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/";
+    <div
+      class="game-btn"
+      data-key="z"
+    >
+      Z
+    </div>
 
-    const frame =
-      document.getElementById("game-frame");
+    <div
+      class="game-btn"
+      data-key="x"
+    >
+      X
+    </div>
 
-    const hud =
-      document.getElementById("hud-layer");
+    <div
+      class="game-btn"
+      data-key="c"
+    >
+      C
+    </div>
 
-    const mainMenu =
-      document.getElementById("main-menu-ui");
+  </div>
 
-    const loader =
-      document.getElementById("loader-screen");
+</div>
 
-    const settingsBar =
-      document.getElementById("settings-bar");
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
 
-    const settingsPanel =
-      document.getElementById("settings-panel");
+<div id="settings-bar">
 
-    const mobileRow =
-      document.getElementById("mobile-controls-row");
+  <button id="settings-toggle">
+    Mobile Settings
+  </button>
 
-    const mobileStatus =
-      document.getElementById("mobile-controls-status-text");
+</div>
 
-    const importInput =
-      document.getElementById("importFile");
+<div id="settings-panel">
 
-    const joystick =
-      document.getElementById("virtualJoystick");
+  <label>
+    Opacity
+  </label>
 
-    const joystickStick =
-      document.getElementById("joystickStick");
+  <input
+    id="opacity-slider"
+    type="range"
+    min="0.05"
+    max="1"
+    step="0.05"
+    value="1"
+  >
 
-    /*
-      SOMENTE som de seleção.
-      snd_menumove foi removido.
-    */
+  <br><br>
 
-    const sndSelect =
-      new Audio(
-        REPO_BASE +
-        "audios/snd_select.mp3"
+  <label>
+    Size
+  </label>
+
+  <input
+    id="size-slider"
+    type="range"
+    min="0.5"
+    max="3"
+    step="0.1"
+    value="1.3"
+  >
+
+  <button id="reset-pos">
+    Reset Layout
+  </button>
+
+</div>
+
+<script>
+
+"use strict";
+
+/* =========================================================
+   REPOSITORY
+========================================================= */
+
+const REPO_BASE =
+  "https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/";
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const frame =
+  document.getElementById("game-frame");
+
+const hud =
+  document.getElementById("hud-layer");
+
+const menu =
+  document.getElementById("main-menu-ui");
+
+const loader =
+  document.getElementById("loader-screen");
+
+const joystick =
+  document.getElementById("joystick");
+
+const joystickStick =
+  document.getElementById("joystick-stick");
+
+const mobileRow =
+  document.getElementById("mobile-controls-row");
+
+const mobileStatus =
+  document.getElementById(
+    "mobile-controls-status-text"
+  );
+
+const settingsBar =
+  document.getElementById("settings-bar");
+
+const settingsPanel =
+  document.getElementById("settings-panel");
+
+const importFile =
+  document.getElementById("importFile");
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+/*
+ * IMPORTANTE:
+ *
+ * snd_menumove.mp3 FOI REMOVIDO.
+ *
+ * Não existe mais som ao passar pelos capítulos
+ * nem ao navegar pelo Chapter Choose.
+ */
+
+const sndSelect =
+  new Audio(
+    REPO_BASE + "audios/snd_select.mp3"
+  );
+
+sndSelect.preload = "auto";
+
+function playSelect() {
+
+  try {
+
+    sndSelect.currentTime = 0;
+
+    const p = sndSelect.play();
+
+    if (p) {
+      p.catch(() => {});
+    }
+
+  } catch (_) {}
+
+}
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let gameStarted = false;
+
+let mobileControls = false;
+
+let selectedIndex = null;
+
+let joystickPointer = null;
+
+const activeKeys = new Set();
+
+const MOBILE_KEY =
+  "deltarune-mobile-toggle";
+
+const CONFIG_KEY =
+  "deltarune-mobile-config";
+
+let config = {
+
+  opacity: 1,
+
+  scale: 1.3
+
+};
+
+/* =========================================================
+   KEY MAP
+========================================================= */
+
+const keyMap = {
+
+  ArrowUp: 38,
+  ArrowDown: 40,
+  ArrowLeft: 37,
+  ArrowRight: 39,
+
+  z: 90,
+  x: 88,
+  c: 67
+
+};
+
+/* =========================================================
+   SEND INPUT TO GAME
+========================================================= */
+
+function sendGameKey(type, key) {
+
+  try {
+
+    if (
+      !frame.contentWindow
+    ) {
+      return;
+    }
+
+    frame.contentWindow.postMessage(
+      {
+        type: type,
+        key: key,
+        keyCode: keyMap[key] || 0
+      },
+      "*"
+    );
+
+  } catch (_) {}
+
+}
+
+function updateKey(key, down) {
+
+  if (!keyMap[key]) {
+    return;
+  }
+
+  if (down) {
+
+    if (activeKeys.has(key)) {
+      return;
+    }
+
+    activeKeys.add(key);
+
+    sendGameKey(
+      "keydown",
+      key
+    );
+
+  } else {
+
+    if (!activeKeys.has(key)) {
+      return;
+    }
+
+    activeKeys.delete(key);
+
+    sendGameKey(
+      "keyup",
+      key
+    );
+
+  }
+
+}
+
+function releaseAllKeys() {
+
+  for (
+    const key of Array.from(activeKeys)
+  ) {
+
+    sendGameKey(
+      "keyup",
+      key
+    );
+
+    activeKeys.delete(key);
+
+  }
+
+}
+
+/* =========================================================
+   MOBILE TOGGLE
+========================================================= */
+
+function updateMobileText() {
+
+  mobileStatus.textContent =
+    "Mobile controls: " +
+    (
+      mobileControls
+        ? "ON"
+        : "OFF"
+    );
+
+}
+
+function toggleMobile() {
+
+  playSelect();
+
+  mobileControls =
+    !mobileControls;
+
+  try {
+
+    localStorage.setItem(
+      MOBILE_KEY,
+      mobileControls
+        ? "true"
+        : "false"
+    );
+
+  } catch (_) {}
+
+  updateMobileText();
+
+  updateHUD();
+
+}
+
+function updateHUD() {
+
+  if (
+    gameStarted &&
+    mobileControls
+  ) {
+
+    hud.style.display =
+      "block";
+
+    settingsBar.style.display =
+      "flex";
+
+  } else {
+
+    hud.style.display =
+      "none";
+
+    settingsBar.style.display =
+      "none";
+
+    settingsPanel.style.display =
+      "none";
+
+    releaseAllKeys();
+
+  }
+
+}
+
+/* =========================================================
+   JOYSTICK
+========================================================= */
+
+function resetJoystick() {
+
+  joystickStick.style.transform =
+    "translate(0px, 0px)";
+
+}
+
+function joystickMove(x, y) {
+
+  const rect =
+    joystick.getBoundingClientRect();
+
+  const cx =
+    rect.left +
+    rect.width / 2;
+
+  const cy =
+    rect.top +
+    rect.height / 2;
+
+  let dx = x - cx;
+  let dy = y - cy;
+
+  const radius =
+    rect.width * .34;
+
+  const distance =
+    Math.sqrt(
+      dx * dx +
+      dy * dy
+    );
+
+  if (distance > radius) {
+
+    const factor =
+      radius / distance;
+
+    dx *= factor;
+    dy *= factor;
+
+  }
+
+  joystickStick.style.transform =
+    `translate(${dx}px, ${dy}px)`;
+
+  const deadzone = 18;
+
+  const keys = {
+
+    ArrowUp:
+      dy < -deadzone,
+
+    ArrowDown:
+      dy > deadzone,
+
+    ArrowLeft:
+      dx < -deadzone,
+
+    ArrowRight:
+      dx > deadzone
+
+  };
+
+  updateKey(
+    "ArrowUp",
+    keys.ArrowUp
+  );
+
+  updateKey(
+    "ArrowDown",
+    keys.ArrowDown
+  );
+
+  updateKey(
+    "ArrowLeft",
+    keys.ArrowLeft
+  );
+
+  updateKey(
+    "ArrowRight",
+    keys.ArrowRight
+  );
+
+}
+
+joystick.addEventListener(
+  "pointerdown",
+  event => {
+
+    event.preventDefault();
+
+    joystickPointer =
+      event.pointerId;
+
+    try {
+      joystick.setPointerCapture(
+        event.pointerId
+      );
+    } catch (_) {}
+
+    joystickMove(
+      event.clientX,
+      event.clientY
+    );
+
+  },
+  {
+    passive: false
+  }
+);
+
+joystick.addEventListener(
+  "pointermove",
+  event => {
+
+    if (
+      event.pointerId !==
+      joystickPointer
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    joystickMove(
+      event.clientX,
+      event.clientY
+    );
+
+  },
+  {
+    passive: false
+  }
+);
+
+function releaseJoystick(event) {
+
+  if (
+    joystickPointer !== null &&
+    event.pointerId !==
+    joystickPointer
+  ) {
+    return;
+  }
+
+  joystickPointer = null;
+
+  resetJoystick();
+
+  updateKey(
+    "ArrowUp",
+    false
+  );
+
+  updateKey(
+    "ArrowDown",
+    false
+  );
+
+  updateKey(
+    "ArrowLeft",
+    false
+  );
+
+  updateKey(
+    "ArrowRight",
+    false
+  );
+
+}
+
+joystick.addEventListener(
+  "pointerup",
+  releaseJoystick,
+  {
+    passive: false
+  }
+);
+
+joystick.addEventListener(
+  "pointercancel",
+  releaseJoystick,
+  {
+    passive: false
+  }
+);
+
+joystick.addEventListener(
+  "lostpointercapture",
+  releaseJoystick
+);
+
+/* =========================================================
+   Z X C
+========================================================= */
+
+document
+  .querySelectorAll(".game-btn")
+  .forEach(button => {
+
+    const key =
+      button.dataset.key;
+
+    let pointerId = null;
+
+    button.addEventListener(
+      "pointerdown",
+      event => {
+
+        event.preventDefault();
+
+        pointerId =
+          event.pointerId;
+
+        try {
+
+          button.setPointerCapture(
+            pointerId
+          );
+
+        } catch (_) {}
+
+        updateKey(
+          key,
+          true
+        );
+
+        button.classList.add(
+          "active"
+        );
+
+      },
+      {
+        passive: false
+      }
+    );
+
+    function release(event) {
+
+      if (
+        pointerId !== null &&
+        event.pointerId !==
+        pointerId
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      updateKey(
+        key,
+        false
       );
 
-    sndSelect.preload = "auto";
+      button.classList.remove(
+        "active"
+      );
 
-    function playSelect() {
+      pointerId = null;
+
+    }
+
+    button.addEventListener(
+      "pointerup",
+      release,
+      {
+        passive: false
+      }
+    );
+
+    button.addEventListener(
+      "pointercancel",
+      release,
+      {
+        passive: false
+      }
+    );
+
+    button.addEventListener(
+      "lostpointercapture",
+      () => {
+
+        updateKey(
+          key,
+          false
+        );
+
+        button.classList.remove(
+          "active"
+        );
+
+        pointerId = null;
+
+      }
+    );
+
+  });
+
+/* =========================================================
+   LOAD CHAPTER
+========================================================= */
+
+async function loadChapter(chapter) {
+
+  playSelect();
+
+  gameStarted = true;
+
+  releaseAllKeys();
+
+  menu.style.display =
+    "none";
+
+  loader.style.display =
+    "flex";
+
+  frame.style.display =
+    "block";
+
+  updateHUD();
+
+  const chapterPath =
+    `${REPO_BASE}chapter${chapter}/`;
+
+  const chapterURL =
+    `${chapterPath}index.html`;
+
+  try {
+
+    const response =
+      await fetch(
+        chapterURL,
+        {
+          cache: "no-cache"
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "HTTP " +
+        response.status
+      );
+    }
+
+    const html =
+      await response.text();
+
+    if (!html.trim()) {
+      throw new Error(
+        "Empty chapter"
+      );
+    }
+
+    /*
+     * Apenas adiciona <base>.
+     * Não injeta KeyboardEvents no jogo.
+     */
+
+    let finalHTML =
+      html.replace(
+        /<base\b[^>]*>/gi,
+        ""
+      );
+
+    if (
+      /<head[^>]*>/i.test(
+        finalHTML
+      )
+    ) {
+
+      finalHTML =
+        finalHTML.replace(
+          /<head[^>]*>/i,
+          match =>
+            match +
+            `<base href="${chapterPath}">`
+        );
+
+    } else {
+
+      finalHTML =
+        `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<base href="${chapterPath}">
+</head>
+<body>
+${finalHTML}
+</body>
+</html>
+`;
+
+    }
+
+    const blob =
+      new Blob(
+        [finalHTML],
+        {
+          type: "text/html"
+        }
+      );
+
+    if (
+      frame.dataset.blobUrl
+    ) {
 
       try {
 
-        sndSelect.currentTime = 0;
-
-        const promise =
-          sndSelect.play();
-
-        if (promise) {
-          promise.catch(() => {});
-        }
-
-      } catch (_) {}
-    }
-
-    let gameStarted = false;
-
-    let useMobileControls = false;
-
-    let isEditing = false;
-
-    let selectedIndex = null;
-
-    let activeDragItem = null;
-
-    let dragPointerId = null;
-
-    let joystickPointerId = null;
-
-    const STORAGE_KEY =
-      "deltarune-v18-controls";
-
-    const MOBILE_KEY =
-      "deltarune-mobile-toggle";
-
-    let config = {
-      opacity: 1,
-      scale: 1.3,
-      positions: {}
-    };
-
-    const keyMap = {
-
-      ArrowUp: 38,
-      ArrowDown: 40,
-      ArrowLeft: 37,
-      ArrowRight: 39,
-
-      z: 90,
-      x: 88,
-      c: 67
-    };
-
-    const activeKeys =
-      new Set();
-
-    /* =====================================================
-       GAME INPUT
-    ====================================================== */
-
-    function sendGameKey(type, key) {
-
-      if (!frame.contentWindow) {
-        return;
-      }
-
-      try {
-
-        frame.contentWindow.postMessage(
-          {
-            type,
-            key,
-            keyCode:
-              keyMap[key] || 0
-          },
-          "*"
+        URL.revokeObjectURL(
+          frame.dataset.blobUrl
         );
 
       } catch (_) {}
+
     }
 
-    function updateKey(key, isDown) {
+    const blobURL =
+      URL.createObjectURL(
+        blob
+      );
 
-      if (isEditing) {
+    frame.dataset.blobUrl =
+      blobURL;
+
+    frame.onload =
+      () => {
+
+        loader.style.display =
+          "none";
+
+        try {
+          frame.contentWindow.focus();
+        } catch (_) {}
+
+      };
+
+    frame.src =
+      blobURL;
+
+  } catch (error) {
+
+    console.error(
+      "Chapter loading error:",
+      error
+    );
+
+    /*
+     * Fallback direto.
+     */
+
+    frame.onload =
+      () => {
+
+        loader.style.display =
+          "none";
+
+      };
+
+    frame.src =
+      chapterURL;
+
+  }
+
+}
+
+/* =========================================================
+   CHAPTER MENU
+========================================================= */
+
+const chapterRows =
+  Array.from(
+    document.querySelectorAll(
+      ".menu .row[data-chapter]"
+    )
+  );
+
+/*
+ * IMPORTANTE:
+ *
+ * NÃO existe mais pointerenter -> playMove().
+ *
+ * Portanto o menu não toca snd_menumove.mp3.
+ */
+
+chapterRows.forEach(row => {
+
+  row.addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+      if (gameStarted) {
         return;
       }
 
-      if (!keyMap[key]) {
-        return;
-      }
-
-      if (isDown) {
-
-        if (activeKeys.has(key)) {
-          return;
-        }
-
-        activeKeys.add(key);
-
-        sendGameKey(
-          "keydown",
-          key
+      const chapter =
+        Number(
+          row.dataset.chapter
         );
+
+      if (
+        Number.isFinite(chapter)
+      ) {
+
+        loadChapter(
+          chapter
+        );
+
+      }
+
+    }
+  );
+
+});
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+mobileRow.addEventListener(
+  "click",
+  event => {
+
+    event.preventDefault();
+
+    if (gameStarted) {
+      return;
+    }
+
+    toggleMobile();
+
+  }
+);
+
+/* =========================================================
+   MENU KEYBOARD
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (gameStarted) {
+      return;
+    }
+
+    if (
+      event.key === "ArrowDown" ||
+      event.key === "ArrowUp"
+    ) {
+
+      event.preventDefault();
+
+      if (
+        selectedIndex === null
+      ) {
+
+        selectedIndex = 0;
+
+      } else if (
+        event.key === "ArrowDown"
+      ) {
+
+        selectedIndex++;
+
+        if (
+          selectedIndex >=
+          chapterRows.length
+        ) {
+          selectedIndex = 0;
+        }
 
       } else {
 
-        if (!activeKeys.has(key)) {
-          return;
+        selectedIndex--;
+
+        if (
+          selectedIndex < 0
+        ) {
+
+          selectedIndex =
+            chapterRows.length - 1;
+
         }
 
-        activeKeys.delete(key);
-
-        sendGameKey(
-          "keyup",
-          key
-        );
       }
-    }
 
-    function releaseAllKeys() {
+      chapterRows.forEach(
+        row =>
+          row.classList.remove(
+            "selected"
+          )
+      );
 
-      for (
-        const key of Array.from(activeKeys)
-      ) {
+      const row =
+        chapterRows[
+          selectedIndex
+        ];
 
-        sendGameKey(
-          "keyup",
-          key
+      if (row) {
+
+        row.classList.add(
+          "selected"
         );
 
-        activeKeys.delete(key);
+        row.scrollIntoView({
+          block: "nearest"
+        });
+
       }
+
     }
 
-    /* =====================================================
-       DATABASE
-    ====================================================== */
-
-    const DB_NAME = "_savedata";
-    const STORE_NAME = "FILE_DATA";
-
-    function getDB() {
-
-      return new Promise(
-        (resolve, reject) => {
-
-          const request =
-            indexedDB.open(
-              DB_NAME,
-              1
-            );
-
-          request.onupgradeneeded =
-            event => {
-
-              const db =
-                event.target.result;
-
-              if (
-                !db.objectStoreNames.contains(
-                  STORE_NAME
-                )
-              ) {
-
-                db.createObjectStore(
-                  STORE_NAME
-                );
-              }
-            };
-
-          request.onsuccess =
-            event =>
-              resolve(
-                event.target.result
-              );
-
-          request.onerror =
-            event =>
-              reject(
-                event.target.error
-              );
-        }
-      );
-    }
-
-    async function getAllSaves() {
-
-      const db =
-        await getDB();
-
-      return new Promise(
-        (resolve, reject) => {
-
-          const transaction =
-            db.transaction(
-              STORE_NAME,
-              "readonly"
-            );
-
-          const store =
-            transaction.objectStore(
-              STORE_NAME
-            );
-
-          const request =
-            store.openCursor();
-
-          const data = {};
-
-          request.onsuccess =
-            event => {
-
-              const cursor =
-                event.target.result;
-
-              if (!cursor) {
-
-                resolve(data);
-
-                return;
-              }
-
-              data[cursor.key] =
-                cursor.value;
-
-              cursor.continue();
-            };
-
-          request.onerror =
-            event =>
-              reject(
-                event.target.error
-              );
-        }
-      );
-    }
-
-    async function setSaveItem(
-      key,
-      content
+    if (
+      event.key === "Enter"
     ) {
 
-      const db =
-        await getDB();
+      event.preventDefault();
 
-      return new Promise(
-        (resolve, reject) => {
+      if (
+        selectedIndex !== null
+      ) {
 
-          const transaction =
-            db.transaction(
-              STORE_NAME,
-              "readwrite"
-            );
+        const row =
+          chapterRows[
+            selectedIndex
+          ];
 
-          const bytes =
-            new TextEncoder()
-              .encode(content);
-
-          const fileObject = {
-
-            timestamp:
-              new Date(),
-
-            mode:
-              33206,
-
-            contents:
-              bytes
-          };
-
-          transaction
-            .objectStore(
-              STORE_NAME
-            )
-            .put(
-              fileObject,
-              key
-            );
-
-          transaction.oncomplete =
-            () => resolve();
-
-          transaction.onerror =
-            event =>
-              reject(
-                event.target.error
-              );
+        if (row) {
+          row.click();
         }
-      );
+
+      }
+
     }
 
-    /* =====================================================
-       EXPORT
-    ====================================================== */
+  }
+);
 
-    async function exportSave() {
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+const settingsToggle =
+  document.getElementById(
+    "settings-toggle"
+  );
+
+settingsToggle.addEventListener(
+  "click",
+  event => {
+
+    event.preventDefault();
+
+    if (
+      settingsPanel.style.display ===
+      "block"
+    ) {
+
+      settingsPanel.style.display =
+        "none";
+
+    } else {
+
+      settingsPanel.style.display =
+        "block";
+
+    }
+
+  }
+);
+
+document
+  .getElementById(
+    "opacity-slider"
+  )
+  .addEventListener(
+    "input",
+    event => {
+
+      config.opacity =
+        Number(
+          event.target.value
+        );
+
+      applyConfig();
+
+    }
+  );
+
+document
+  .getElementById(
+    "size-slider"
+  )
+  .addEventListener(
+    "input",
+    event => {
+
+      config.scale =
+        Number(
+          event.target.value
+        );
+
+      applyConfig();
+
+    }
+  );
+
+function applyConfig() {
+
+  document.documentElement
+    .style.setProperty(
+      "--ctrl-opacity",
+      String(
+        config.opacity
+      )
+    );
+
+  document.documentElement
+    .style.setProperty(
+      "--ctrl-scale",
+      String(
+        config.scale
+      )
+    );
+
+  try {
+
+    localStorage.setItem(
+      CONFIG_KEY,
+      JSON.stringify(config)
+    );
+
+  } catch (_) {}
+
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+document
+  .getElementById(
+    "reset-pos"
+  )
+  .addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+      config = {
+
+        opacity: 1,
+
+        scale: 1.3
+
+      };
+
+      document
+        .getElementById(
+          "opacity-slider"
+        )
+        .value = "1";
+
+      document
+        .getElementById(
+          "size-slider"
+        )
+        .value = "1.3";
+
+      applyConfig();
+
+    }
+  );
+
+/* =========================================================
+   SAVE / IMPORT
+========================================================= */
+
+const DB_NAME =
+  "_savedata";
+
+const STORE_NAME =
+  "FILE_DATA";
+
+function getDB() {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const request =
+        indexedDB.open(
+          DB_NAME,
+          1
+        );
+
+      request.onupgradeneeded =
+        event => {
+
+          const db =
+            event.target.result;
+
+          if (
+            !db.objectStoreNames
+              .contains(
+                STORE_NAME
+              )
+          ) {
+
+            db.createObjectStore(
+              STORE_NAME
+            );
+
+          }
+
+        };
+
+      request.onsuccess =
+        event =>
+          resolve(
+            event.target.result
+          );
+
+      request.onerror =
+        event =>
+          reject(
+            event.target.error
+          );
+
+    }
+  );
+
+}
+
+async function getAllSaves() {
+
+  const db =
+    await getDB();
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const transaction =
+        db.transaction(
+          STORE_NAME,
+          "readonly"
+        );
+
+      const store =
+        transaction.objectStore(
+          STORE_NAME
+        );
+
+      const request =
+        store.openCursor();
+
+      const data = {};
+
+      request.onsuccess =
+        event => {
+
+          const cursor =
+            event.target.result;
+
+          if (!cursor) {
+
+            resolve(data);
+
+            return;
+
+          }
+
+          data[cursor.key] =
+            cursor.value;
+
+          cursor.continue();
+
+        };
+
+      request.onerror =
+        event =>
+          reject(
+            event.target.error
+          );
+
+    }
+  );
+
+}
+
+async function setSaveItem(
+  key,
+  content
+) {
+
+  const db =
+    await getDB();
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const transaction =
+        db.transaction(
+          STORE_NAME,
+          "readwrite"
+        );
+
+      const bytes =
+        new TextEncoder()
+          .encode(content);
+
+      transaction
+        .objectStore(
+          STORE_NAME
+        )
+        .put(
+          {
+            timestamp: new Date(),
+            mode: 33206,
+            contents: bytes
+          },
+          key
+        );
+
+      transaction.oncomplete =
+        resolve;
+
+      transaction.onerror =
+        event =>
+          reject(
+            event.target.error
+          );
+
+    }
+  );
+
+}
+
+/* =========================================================
+   EXPORT
+========================================================= */
+
+document
+  .getElementById(
+    "export-row"
+  )
+  .addEventListener(
+    "click",
+    async event => {
+
+      event.preventDefault();
+
+      if (gameStarted) {
+        return;
+      }
 
       playSelect();
 
       try {
-
-        if (
-          typeof JSZip ===
-          "undefined"
-        ) {
-
-          alert(
-            "JSZip could not be loaded."
-          );
-
-          return;
-        }
 
         const allData =
           await getAllSaves();
@@ -1210,71 +2097,80 @@
             allData[key];
 
           if (
-            key.includes("filech") ||
-            key.includes("dr_") ||
-            key.includes("_savedata")
+            !(
+              key.includes("filech") ||
+              key.includes("dr_") ||
+              key.includes("_savedata")
+            )
+          ) {
+            continue;
+          }
+
+          let cleanKey =
+            String(key)
+              .replace(
+                /^\/_savedata\//,
+                ""
+              )
+              .replace(
+                /^_savedata\//,
+                ""
+              );
+
+          let text = "";
+
+          if (
+            value &&
+            value.contents
           ) {
 
-            let cleanKey =
-              String(key)
-                .replace(
-                  /^\/_savedata\//,
-                  ""
-                )
-                .replace(
-                  /^_savedata\//,
-                  ""
-                );
-
-            let text = "";
+            let contents =
+              value.contents;
 
             if (
-              value &&
-              value.contents
+              contents instanceof
+              ArrayBuffer
             ) {
 
-              let contents =
-                value.contents;
+              contents =
+                new Uint8Array(
+                  contents
+                );
 
-              if (
-                contents instanceof
-                ArrayBuffer
-              ) {
-
-                contents =
-                  new Uint8Array(
-                    contents
-                  );
-              }
-
-              text =
-                new TextDecoder()
-                  .decode(contents);
-
-            } else if (
-              typeof value ===
-              "string"
-            ) {
-
-              text = value;
             }
 
-            zip.file(
-              cleanKey,
-              text
-            );
+            text =
+              new TextDecoder()
+                .decode(
+                  contents
+                );
 
-            hasData = true;
+          } else if (
+            typeof value ===
+            "string"
+          ) {
+
+            text = value;
+
           }
+
+          zip.file(
+            cleanKey,
+            text
+          );
+
+          hasData = true;
+
         }
 
         if (!hasData) {
 
           alert(
-            "No save data found in the engine database!"
+            "No save data found!"
           );
 
           return;
+
         }
 
         const blob =
@@ -1283,17 +2179,23 @@
           });
 
         const url =
-          URL.createObjectURL(blob);
+          URL.createObjectURL(
+            blob
+          );
 
         const link =
-          document.createElement("a");
+          document.createElement(
+            "a"
+          );
 
         link.href = url;
 
         link.download =
           "deltarune_saves.zip";
 
-        document.body.appendChild(link);
+        document.body.appendChild(
+          link
+        );
 
         link.click();
 
@@ -1301,7 +2203,9 @@
 
         setTimeout(
           () =>
-            URL.revokeObjectURL(url),
+            URL.revokeObjectURL(
+              url
+            ),
           1000
         );
 
@@ -1315,1657 +2219,285 @@
         alert(
           "Failed to export saves."
         );
+
       }
-    }
-
-    /* =====================================================
-       IMPORT
-    ====================================================== */
-
-    async function importSave(input) {
-
-      playSelect();
-
-      const file =
-        input.files &&
-        input.files[0];
-
-      if (!file) {
-        return;
-      }
-
-      try {
-
-        if (
-          typeof JSZip ===
-          "undefined"
-        ) {
-
-          alert(
-            "JSZip could not be loaded."
-          );
-
-          return;
-        }
-
-        const zip =
-          await JSZip.loadAsync(file);
-
-        const promises = [];
-
-        zip.forEach(
-          (path, entry) => {
-
-            if (entry.dir) {
-              return;
-            }
-
-            promises.push(
-              entry
-                .async("string")
-                .then(
-                  content => {
-
-                    let key =
-                      entry.name;
-
-                    key =
-                      key.replace(
-                        /^\/+/,
-                        ""
-                      );
-
-                    key =
-                      key.replace(
-                        /^_savedata\//,
-                        ""
-                      );
-
-                    key =
-                      "/_savedata/" +
-                      key;
-
-                    return setSaveItem(
-                      key,
-                      content
-                    );
-                  }
-                )
-            );
-          }
-        );
-
-        if (!promises.length) {
-          throw new Error(
-            "Zip file is empty."
-          );
-        }
-
-        await Promise.all(promises);
-
-        alert(
-          "Saves imported successfully! Reloading..."
-        );
-
-        location.reload();
-
-      } catch (error) {
-
-        console.error(
-          "Import error:",
-          error
-        );
-
-        alert(
-          "Error importing zip file."
-        );
-
-      } finally {
-
-        input.value = "";
-      }
-    }
-
-    /* =====================================================
-       MOBILE TOGGLE
-    ====================================================== */
-
-    function toggleMobileHardware() {
-
-      playSelect();
-
-      useMobileControls =
-        !useMobileControls;
-
-      try {
-
-        localStorage.setItem(
-          MOBILE_KEY,
-          useMobileControls
-            ? "true"
-            : "false"
-        );
-
-      } catch (_) {}
-
-      updateMobileText();
-
-      applyConfig();
-    }
-
-    function updateMobileText() {
-
-      if (!mobileStatus) {
-        return;
-      }
-
-      mobileStatus.textContent =
-        "Mobile controls: " +
-        (
-          useMobileControls
-            ? "ON"
-            : "OFF"
-        );
-    }
-
-    /* =====================================================
-       JOYSTICK
-    ====================================================== */
-
-    function processJoystick(
-      clientX,
-      clientY
-    ) {
-
-      if (isEditing) {
-        return;
-      }
-
-      const rect =
-        joystick.getBoundingClientRect();
-
-      const centerX =
-        rect.left +
-        rect.width / 2;
-
-      const centerY =
-        rect.top +
-        rect.height / 2;
-
-      let dx =
-        clientX - centerX;
-
-      let dy =
-        clientY - centerY;
-
-      const maxDistance =
-        rect.width * 0.34;
-
-      const distance =
-        Math.sqrt(
-          dx * dx +
-          dy * dy
-        );
-
-      if (
-        distance > maxDistance
-      ) {
-
-        const ratio =
-          maxDistance /
-          distance;
-
-        dx *= ratio;
-        dy *= ratio;
-      }
-
-      joystickStick.style.transform =
-        `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-
-      const deadzone = 15;
-
-      const keys = new Set();
-
-      if (
-        Math.abs(dx) > deadzone
-      ) {
-
-        if (dx < 0) {
-          keys.add("ArrowLeft");
-        } else {
-          keys.add("ArrowRight");
-        }
-      }
-
-      if (
-        Math.abs(dy) > deadzone
-      ) {
-
-        if (dy < 0) {
-          keys.add("ArrowUp");
-        } else {
-          keys.add("ArrowDown");
-        }
-      }
-
-      const directions = [
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight"
-      ];
-
-      for (
-        const key of directions
-      ) {
-
-        updateKey(
-          key,
-          keys.has(key)
-        );
-      }
-    }
-
-    function releaseJoystick() {
-
-      joystickPointerId =
-        null;
-
-      joystickStick.classList.remove(
-        "active"
-      );
-
-      joystickStick.style.transform =
-        "translate(-50%, -50%)";
-
-      updateKey(
-        "ArrowUp",
-        false
-      );
-
-      updateKey(
-        "ArrowDown",
-        false
-      );
-
-      updateKey(
-        "ArrowLeft",
-        false
-      );
-
-      updateKey(
-        "ArrowRight",
-        false
-      );
-    }
-
-    joystick.addEventListener(
-      "pointerdown",
-      event => {
-
-        if (isEditing) {
-          return;
-        }
-
-        event.preventDefault();
-
-        joystickPointerId =
-          event.pointerId;
-
-        joystickStick.classList.add(
-          "active"
-        );
-
-        try {
-
-          joystick.setPointerCapture(
-            event.pointerId
-          );
-
-        } catch (_) {}
-
-        processJoystick(
-          event.clientX,
-          event.clientY
-        );
-      },
-      {
-        passive: false
-      }
-    );
-
-    joystick.addEventListener(
-      "pointermove",
-      event => {
-
-        if (
-          joystickPointerId !==
-          event.pointerId
-        ) {
-          return;
-        }
-
-        event.preventDefault();
-
-        processJoystick(
-          event.clientX,
-          event.clientY
-        );
-      },
-      {
-        passive: false
-      }
-    );
-
-    joystick.addEventListener(
-      "pointerup",
-      event => {
-
-        if (
-          joystickPointerId !==
-          event.pointerId
-        ) {
-          return;
-        }
-
-        event.preventDefault();
-
-        releaseJoystick();
-      },
-      {
-        passive: false
-      }
-    );
-
-    joystick.addEventListener(
-      "pointercancel",
-      releaseJoystick
-    );
-
-    joystick.addEventListener(
-      "lostpointercapture",
-      releaseJoystick
-    );
-
-    /* =====================================================
-       Z X C
-    ====================================================== */
-
-    document
-      .querySelectorAll(".game-btn")
-      .forEach(button => {
-
-        const key =
-          button.dataset.key;
-
-        let pointerId = null;
-
-        button.addEventListener(
-          "pointerdown",
-          event => {
-
-            if (isEditing) {
-              return;
-            }
-
-            event.preventDefault();
-
-            pointerId =
-              event.pointerId;
-
-            try {
-              button.setPointerCapture(
-                pointerId
-              );
-            } catch (_) {}
-
-            updateKey(
-              key,
-              true
-            );
-
-            button.classList.add(
-              "active"
-            );
-          },
-          {
-            passive: false
-          }
-        );
-
-        const release =
-          event => {
-
-            if (
-              pointerId !== null &&
-              event.pointerId !==
-                pointerId
-            ) {
-              return;
-            }
-
-            event.preventDefault();
-
-            updateKey(
-              key,
-              false
-            );
-
-            button.classList.remove(
-              "active"
-            );
-
-            pointerId = null;
-          };
-
-        button.addEventListener(
-          "pointerup",
-          release,
-          {
-            passive: false
-          }
-        );
-
-        button.addEventListener(
-          "pointercancel",
-          release,
-          {
-            passive: false
-          }
-        );
-
-        button.addEventListener(
-          "lostpointercapture",
-          () => {
-
-            updateKey(
-              key,
-              false
-            );
-
-            button.classList.remove(
-              "active"
-            );
-
-            pointerId = null;
-          }
-        );
-      });
-
-    /* =====================================================
-       DRAG
-    ====================================================== */
-
-    document
-      .querySelectorAll(".draggable")
-      .forEach(element => {
-
-        element.addEventListener(
-          "pointerdown",
-          event => {
-
-            if (!isEditing) {
-              return;
-            }
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            activeDragItem =
-              element;
-
-            dragPointerId =
-              event.pointerId;
-
-            try {
-              element.setPointerCapture(
-                event.pointerId
-              );
-            } catch (_) {}
-
-            element.style.cursor =
-              "grabbing";
-          },
-          {
-            passive: false
-          }
-        );
-
-        element.addEventListener(
-          "pointermove",
-          event => {
-
-            if (
-              activeDragItem !==
-                element ||
-              dragPointerId !==
-                event.pointerId
-            ) {
-              return;
-            }
-
-            event.preventDefault();
-
-            const x =
-              Math.max(
-                0,
-                Math.min(
-                  window.innerWidth,
-                  event.clientX
-                )
-              );
-
-            const y =
-              Math.max(
-                0,
-                Math.min(
-                  window.innerHeight,
-                  event.clientY
-                )
-              );
-
-            element.style.left =
-              (
-                x /
-                window.innerWidth *
-                100
-              ).toFixed(2) + "%";
-
-            element.style.top =
-              (
-                y /
-                window.innerHeight *
-                100
-              ).toFixed(2) + "%";
-          },
-          {
-            passive: false
-          }
-        );
-
-        const stopDrag =
-          event => {
-
-            if (
-              activeDragItem !==
-              element
-            ) {
-              return;
-            }
-
-            if (
-              dragPointerId !== null &&
-              event.pointerId !==
-                dragPointerId
-            ) {
-              return;
-            }
-
-            element.style.cursor =
-              "grab";
-
-            activeDragItem = null;
-            dragPointerId = null;
-
-            savePositions();
-          };
-
-        element.addEventListener(
-          "pointerup",
-          stopDrag
-        );
-
-        element.addEventListener(
-          "pointercancel",
-          stopDrag
-        );
-
-        element.addEventListener(
-          "lostpointercapture",
-          stopDrag
-        );
-      });
-
-    function savePositions() {
-
-      if (!config.positions) {
-        config.positions = {};
-      }
-
-      document
-        .querySelectorAll(".draggable")
-        .forEach(element => {
-
-          const id =
-            element.dataset.saveId;
-
-          if (!id) {
-            return;
-          }
-
-          config.positions[id] = {
-
-            x:
-              element.style.left || "",
-
-            y:
-              element.style.top || ""
-          };
-        });
-
-      saveConfig();
-    }
-
-    /* =====================================================
-       CONFIG
-    ====================================================== */
-
-    function saveConfig() {
-
-      try {
-
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify(config)
-        );
-
-      } catch (_) {}
-    }
-
-    function loadConfig() {
-
-      try {
-
-        const saved =
-          localStorage.getItem(
-            STORAGE_KEY
-          );
-
-        if (!saved) {
-          return;
-        }
-
-        const parsed =
-          JSON.parse(saved);
-
-        if (
-          parsed &&
-          typeof parsed ===
-            "object"
-        ) {
-
-          config = {
-
-            opacity:
-              typeof parsed.opacity ===
-              "number"
-                ? parsed.opacity
-                : 1,
-
-            scale:
-              typeof parsed.scale ===
-              "number"
-                ? parsed.scale
-                : 1.3,
-
-            positions:
-              parsed.positions &&
-              typeof parsed.positions ===
-                "object"
-                ? parsed.positions
-                : {}
-          };
-        }
-
-      } catch (_) {
-
-        config = {
-          opacity: 1,
-          scale: 1.3,
-          positions: {}
-        };
-      }
-    }
-
-    function applyConfig() {
-
-      document.documentElement
-        .style.setProperty(
-          "--ctrl-scale",
-          String(config.scale)
-        );
-
-      document.documentElement
-        .style.setProperty(
-          "--ctrl-opacity",
-          String(config.opacity)
-        );
-
-      Object.entries(
-        config.positions || {}
-      ).forEach(
-        ([id, position]) => {
-
-          const element =
-            document.querySelector(
-              `[data-save-id="${id}"]`
-            );
-
-          if (!element || !position) {
-            return;
-          }
-
-          if (
-            typeof position.x ===
-              "string" &&
-            position.x
-          ) {
-            element.style.left =
-              position.x;
-          }
-
-          if (
-            typeof position.y ===
-              "string" &&
-            position.y
-          ) {
-            element.style.top =
-              position.y;
-          }
-        }
-      );
-
-      /*
-        IMPORTANTE:
-        HUD só aparece quando:
-        1. o jogo começou
-        2. controles mobile estão ON
-      */
-
-      if (
-        gameStarted &&
-        useMobileControls
-      ) {
-
-        hud.style.display =
-          "block";
-
-        settingsBar.style.display =
-          "flex";
-
-      } else {
-
-        hud.style.display =
-          "none";
-
-        settingsBar.style.display =
-          "none";
-
-        settingsPanel.style.display =
-          "none";
-
-        isEditing = false;
-
-        document.body.classList.remove(
-          "edit-mode"
-        );
-      }
-    }
-
-    /* =====================================================
-       SETTINGS
-    ====================================================== */
-
-    const settingsToggle =
-      document.getElementById(
-        "settings-toggle"
-      );
-
-    settingsToggle.addEventListener(
-      "click",
-      event => {
-
-        event.preventDefault();
-
-        if (
-          settingsPanel.style.display ===
-          "block"
-        ) {
-
-          settingsPanel.style.display =
-            "none";
-
-          isEditing = false;
-
-          document.body.classList.remove(
-            "edit-mode"
-          );
-
-          savePositions();
-
-        } else {
-
-          settingsPanel.style.display =
-            "block";
-
-          isEditing = true;
-
-          releaseAllKeys();
-
-          document.body.classList.add(
-            "edit-mode"
-          );
-        }
-      }
-    );
-
-    document
-      .getElementById("opacity-slider")
-      .addEventListener(
-        "input",
-        event => {
-
-          config.opacity =
-            Number(
-              event.target.value
-            );
-
-          applyConfig();
-          saveConfig();
-        }
-      );
-
-    document
-      .getElementById("size-slider")
-      .addEventListener(
-        "input",
-        event => {
-
-          config.scale =
-            Number(
-              event.target.value
-            );
-
-          applyConfig();
-          saveConfig();
-        }
-      );
-
-    document
-      .getElementById("reset-pos")
-      .addEventListener(
-        "click",
-        event => {
-
-          event.preventDefault();
-
-          config = {
-            opacity: 1,
-            scale: 1.3,
-            positions: {}
-          };
-
-          document
-            .getElementById(
-              "opacity-slider"
-            )
-            .value = "1";
-
-          document
-            .getElementById(
-              "size-slider"
-            )
-            .value = "1.3";
-
-          document
-            .querySelectorAll(
-              ".draggable"
-            )
-            .forEach(element => {
-
-              element.style.left = "";
-              element.style.top = "";
-            });
-
-          saveConfig();
-          applyConfig();
-        }
-      );
-
-    /* =====================================================
-       LOAD GAME
-    ====================================================== */
-
-    function injectAndLoad(
-      htmlText,
-      baseURL
-    ) {
-
-      let finalHTML =
-        String(htmlText);
-
-      finalHTML =
-        finalHTML.replace(
-          /<base\b[^>]*>/gi,
-          ""
-        );
-
-      const receiver = `
-<script>
-(function () {
-
-  "use strict";
-
-  function resizeGame() {
-
-    try {
-      window.dispatchEvent(
-        new Event("resize")
-      );
-    } catch (_) {}
-
-    try {
-
-      const canvas =
-        document.querySelector("canvas");
-
-      if (canvas) {
-
-        canvas.style.maxWidth =
-          "100vw";
-
-        canvas.style.maxHeight =
-          "100vh";
-
-        canvas.style.touchAction =
-          "none";
-      }
-
-    } catch (_) {}
-  }
-
-  function createKeyboardEvent(
-    type,
-    data
-  ) {
-
-    try {
-
-      return new KeyboardEvent(
-        type,
-        {
-          key: data.key,
-
-          code:
-            data.key === "ArrowUp"
-              ? "ArrowUp"
-              : data.key === "ArrowDown"
-                ? "ArrowDown"
-                : data.key === "ArrowLeft"
-                  ? "ArrowLeft"
-                  : data.key === "ArrowRight"
-                    ? "ArrowRight"
-                    : "Key" +
-                      String(
-                        data.key
-                      ).toUpperCase(),
-
-          keyCode:
-            data.keyCode || 0,
-
-          which:
-            data.keyCode || 0,
-
-          bubbles: true,
-          cancelable: true
-        }
-      );
-
-    } catch (_) {
-
-      return null;
-    }
-  }
-
-  window.addEventListener(
-    "message",
-    function (event) {
-
-      const data =
-        event.data;
-
-      if (
-        !data ||
-        (
-          data.type !== "keydown" &&
-          data.type !== "keyup"
-        )
-      ) {
-        return;
-      }
-
-      const keyboardEvent =
-        createKeyboardEvent(
-          data.type,
-          data
-        );
-
-      if (!keyboardEvent) {
-        return;
-      }
-
-      try {
-        window.dispatchEvent(
-          keyboardEvent
-        );
-      } catch (_) {}
-
-      try {
-        document.dispatchEvent(
-          keyboardEvent
-        );
-      } catch (_) {}
-
-      try {
-
-        if (document.activeElement) {
-
-          document.activeElement
-            .dispatchEvent(
-              keyboardEvent
-            );
-        }
-
-      } catch (_) {}
-
-    },
-    false
-  );
-
-  let count = 0;
-
-  const interval =
-    setInterval(
-      function () {
-
-        resizeGame();
-
-        count++;
-
-        if (count >= 60) {
-          clearInterval(interval);
-        }
-
-      },
-      100
-    );
-
-  window.addEventListener(
-    "resize",
-    resizeGame
-  );
-
-  window.addEventListener(
-    "orientationchange",
-    function () {
-
-      setTimeout(
-        resizeGame,
-        150
-      );
 
     }
   );
 
-})();
-<\/script>
-`;
-
-      if (
-        /<head[^>]*>/i.test(
-          finalHTML
-        )
-      ) {
-
-        finalHTML =
-          finalHTML.replace(
-            /<head[^>]*>/i,
-            match =>
-              match +
-              `<base href="${baseURL}">` +
-              receiver
-          );
-
-      } else {
-
-        finalHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<base href="${baseURL}">
-${receiver}
-</head>
-<body>
-${finalHTML}
-</body>
-</html>
-`;
-      }
-
-      if (
-        frame.dataset.blobUrl
-      ) {
-
-        try {
-          URL.revokeObjectURL(
-            frame.dataset.blobUrl
-          );
-        } catch (_) {}
-      }
-
-      const blob =
-        new Blob(
-          [finalHTML],
-          {
-            type: "text/html"
-          }
-        );
-
-      const url =
-        URL.createObjectURL(blob);
-
-      frame.dataset.blobUrl =
-        url;
-
-      frame.onload =
-        () => {
-
-          loader.style.display =
-            "none";
-
-          try {
-            frame.contentWindow.focus();
-          } catch (_) {}
-        };
-
-      frame.src = url;
-    }
-
-    /* =====================================================
-       CHAPTER
-    ====================================================== */
-
-    async function loadChapter(
-      chapter
-    ) {
-
-      playSelect();
-
-      gameStarted = true;
-
-      releaseAllKeys();
-
-      mainMenu.style.display =
-        "none";
-
-      loader.style.display =
-        "flex";
-
-      frame.style.display =
-        "block";
-
-      applyConfig();
-
-      const chapterPath =
-        `${REPO_BASE}chapter${chapter}/`;
-
-      const chapterURL =
-        `${chapterPath}index.html`;
-
-      try {
-
-        const response =
-          await fetch(
-            chapterURL,
-            {
-              method: "GET",
-              cache: "no-cache"
-            }
-          );
-
-        if (!response.ok) {
-
-          throw new Error(
-            "HTTP " +
-            response.status
-          );
-        }
-
-        const html =
-          await response.text();
-
-        if (!html.trim()) {
-
-          throw new Error(
-            "Chapter HTML is empty."
-          );
-        }
-
-        injectAndLoad(
-          html,
-          chapterPath
-        );
-
-      } catch (error) {
-
-        console.error(
-          "Chapter loading failed:",
-          error
-        );
-
-        frame.onload =
-          () => {
-
-            loader.style.display =
-              "none";
-          };
-
-        frame.src =
-          chapterURL;
-      }
-    }
-
-    /* =====================================================
-       MENU
-    ====================================================== */
-
-    const chapterRows =
-      Array.from(
-        document.querySelectorAll(
-          ".menu .row"
-        )
-      );
-
-    /*
-      NÃO existe mais pointerenter
-      chamando snd_menumove.
-    */
-
-    chapterRows.forEach(
-      row => {
-
-        row.addEventListener(
-          "click",
-          event => {
-
-            event.preventDefault();
-
-            if (gameStarted) {
-              return;
-            }
-
-            const chapter =
-              row.dataset.chapter;
-
-            if (chapter) {
-
-              loadChapter(
-                Number(chapter)
-              );
-            }
-          }
-        );
-      }
-    );
-
-    mobileRow.addEventListener(
-      "click",
-      event => {
-
-        event.preventDefault();
-
-        if (gameStarted) {
-          return;
-        }
-
-        toggleMobileHardware();
-      }
-    );
-
-    document
-      .getElementById("export-row")
-      .addEventListener(
-        "click",
-        event => {
-
-          event.preventDefault();
-
-          if (gameStarted) {
-            return;
-          }
-
-          exportSave();
-        }
-      );
-
-    document
-      .getElementById("import-row")
-      .addEventListener(
-        "click",
-        event => {
-
-          event.preventDefault();
-
-          if (gameStarted) {
-            return;
-          }
-
-          playSelect();
-
-          importInput.click();
-        }
-      );
-
-    importInput.addEventListener(
-      "change",
-      () => {
-
-        importSave(
-          importInput
-        );
-      }
-    );
-
-    /* =====================================================
-       MENU KEYBOARD
-    ====================================================== */
-
-    function updateSelectedRow() {
-
-      chapterRows.forEach(
-        row => {
-
-          row.classList.remove(
-            "selected"
-          );
-        }
-      );
-
-      if (
-        selectedIndex === null
-      ) {
-        return;
-      }
-
-      const row =
-        chapterRows[
-          selectedIndex
-        ];
-
-      if (!row) {
-        return;
-      }
-
-      row.classList.add(
-        "selected"
-      );
-
-      try {
-
-        row.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest"
-        });
-
-      } catch (_) {}
-    }
-
-    function activateSelectedRow() {
-
-      if (
-        selectedIndex === null
-      ) {
-        return;
-      }
-
-      const row =
-        chapterRows[
-          selectedIndex
-        ];
-
-      if (row) {
-        row.click();
-      }
-    }
-
-    function handleMenuNavigation(
-      event
-    ) {
+/* =========================================================
+   IMPORT
+========================================================= */
+
+document
+  .getElementById(
+    "import-row"
+  )
+  .addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
 
       if (gameStarted) {
         return;
       }
 
-      if (
-        event.key === "ArrowDown" ||
-        event.key === "ArrowUp"
-      ) {
+      playSelect();
 
-        event.preventDefault();
+      importFile.click();
 
-        if (
-          selectedIndex === null
-        ) {
+    }
+  );
 
-          selectedIndex = 0;
+importFile.addEventListener(
+  "change",
+  async () => {
 
-        } else if (
-          event.key === "ArrowDown"
-        ) {
+    const file =
+      importFile.files &&
+      importFile.files[0];
 
-          selectedIndex++;
+    if (!file) {
+      return;
+    }
 
-          if (
-            selectedIndex >=
-            chapterRows.length
-          ) {
-            selectedIndex = 0;
+    try {
+
+      const zip =
+        await JSZip.loadAsync(
+          file
+        );
+
+      const promises = [];
+
+      zip.forEach(
+        (path, entry) => {
+
+          if (entry.dir) {
+            return;
           }
 
-        } else {
+          promises.push(
+            entry
+              .async("string")
+              .then(
+                content => {
 
-          selectedIndex--;
+                  let key =
+                    entry.name
+                      .replace(
+                        /^\/+/,
+                        ""
+                      )
+                      .replace(
+                        /^_savedata\//,
+                        ""
+                      );
 
-          if (
-            selectedIndex < 0
-          ) {
+                  key =
+                    "/_savedata/" +
+                    key;
 
-            selectedIndex =
-              chapterRows.length - 1;
-          }
-        }
+                  return setSaveItem(
+                    key,
+                    content
+                  );
 
-        /*
-          SEM SOM DE MOVIMENTO.
-        */
-
-        updateSelectedRow();
-
-      } else if (
-        event.key === "Enter"
-      ) {
-
-        event.preventDefault();
-
-        activateSelectedRow();
-      }
-    }
-
-    document.addEventListener(
-      "keydown",
-      handleMenuNavigation
-    );
-
-    /* =====================================================
-       RELEASE
-    ====================================================== */
-
-    window.addEventListener(
-      "blur",
-      releaseAllKeys
-    );
-
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-
-        if (document.hidden) {
-
-          releaseAllKeys();
-
-          releaseJoystick();
-        }
-      }
-    );
-
-    /* =====================================================
-       OLD DOMAIN
-    ====================================================== */
-
-    function checkOldDomain() {
-
-      if (
-        window.location.hostname ===
-        "deltarunefullwebport.vercel.app"
-      ) {
-
-        const notice =
-          document.getElementById(
-            "notice-container"
+                }
+              )
           );
 
-        if (!notice) {
-          return;
-        }
-
-        notice.innerHTML = `
-<div class="deactivation-warning">
-
-This domain might get deactivated soon.
-Please export your saves and switch to
-the new official domain:
-
-<br><br>
-
-<a
-  href="https://byalvaro19.github.io/deltarune/"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  byalvaro19.github.io/deltarune/
-</a>
-
-</div>
-`;
-      }
-    }
-
-    /* =====================================================
-       SERVICE WORKER
-    ====================================================== */
-
-    function registerServiceWorker() {
-
-      if (
-        "serviceWorker" in navigator &&
-        (
-          location.protocol === "https:" ||
-          location.hostname === "localhost" ||
-          location.hostname === "127.0.0.1"
-        )
-      ) {
-
-        navigator.serviceWorker
-          .register("./sw.js")
-          .catch(
-            error => {
-
-              console.warn(
-                "Service worker registration failed:",
-                error
-              );
-            }
-          );
-      }
-    }
-
-    /* =====================================================
-       INIT
-    ====================================================== */
-
-    function initialize() {
-
-      checkOldDomain();
-
-      try {
-
-        const savedMobile =
-          localStorage.getItem(
-            MOBILE_KEY
-          );
-
-        useMobileControls =
-          savedMobile === "true";
-
-      } catch (_) {
-
-        useMobileControls =
-          false;
-      }
-
-      updateMobileText();
-
-      loadConfig();
-
-      document
-        .getElementById(
-          "opacity-slider"
-        )
-        .value =
-        String(config.opacity);
-
-      document
-        .getElementById(
-          "size-slider"
-        )
-        .value =
-        String(config.scale);
-
-      applyConfig();
-
-      registerServiceWorker();
-    }
-
-    if (
-      document.readyState ===
-      "loading"
-    ) {
-
-      document.addEventListener(
-        "DOMContentLoaded",
-        initialize,
-        {
-          once: true
         }
       );
 
-    } else {
+      await Promise.all(
+        promises
+      );
 
-      initialize();
+      alert(
+        "Saves imported successfully!"
+      );
+
+      location.reload();
+
+    } catch (error) {
+
+      console.error(
+        "Import error:",
+        error
+      );
+
+      alert(
+        "Error importing save ZIP."
+      );
+
     }
 
-  </script>
+    importFile.value = "";
+
+  }
+);
+
+/* =========================================================
+   OLD DOMAIN
+========================================================= */
+
+function checkOldDomain() {
+
+  if (
+    location.hostname ===
+    "deltarunefullwebport.vercel.app"
+  ) {
+
+    const notice =
+      document.getElementById(
+        "notice-container"
+      );
+
+    notice.innerHTML = `
+      <div class="deactivation-warning">
+        This domain might get deactivated soon.
+        Please export your saves and switch to
+        the new official domain:
+        <br><br>
+        <a
+          href="https://byalvaro19.github.io/deltarune/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          byalvaro19.github.io/deltarune/
+        </a>
+      </div>
+    `;
+
+  }
+
+}
+
+/* =========================================================
+   LOAD CONFIG
+========================================================= */
+
+function loadConfig() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        CONFIG_KEY
+      );
+
+    if (saved) {
+
+      const parsed =
+        JSON.parse(saved);
+
+      if (
+        parsed &&
+        typeof parsed === "object"
+      ) {
+
+        if (
+          typeof parsed.opacity ===
+          "number"
+        ) {
+          config.opacity =
+            parsed.opacity;
+        }
+
+        if (
+          typeof parsed.scale ===
+          "number"
+        ) {
+          config.scale =
+            parsed.scale;
+        }
+
+      }
+
+    }
+
+  } catch (_) {}
+
+}
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+function initialize() {
+
+  checkOldDomain();
+
+  try {
+
+    mobileControls =
+      localStorage.getItem(
+        MOBILE_KEY
+      ) === "true";
+
+  } catch (_) {
+
+    mobileControls = false;
+
+  }
+
+  loadConfig();
+
+  document
+    .getElementById(
+      "opacity-slider"
+    )
+    .value =
+    String(
+      config.opacity
+    );
+
+  document
+    .getElementById(
+      "size-slider"
+    )
+    .value =
+    String(
+      config.scale
+    );
+
+  updateMobileText();
+
+  applyConfig();
+
+  updateHUD();
+
+}
+
+/* =========================================================
+   GLOBAL RELEASE
+========================================================= */
+
+window.addEventListener(
+  "blur",
+  releaseAllKeys
+);
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if (document.hidden) {
+
+      releaseAllKeys();
+
+      resetJoystick();
+
+    }
+
+  }
+);
+
+initialize();
+
+</script>
 
 </body>
 </html>
