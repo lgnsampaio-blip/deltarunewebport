@@ -1,53 +1,42 @@
 function injectAndLoad(htmlText, baseURL) {
-
   try {
-
     let finalHTML = String(htmlText);
 
-    // Remove bases antigas
+    // Remove qualquer <base> existente
     finalHTML = finalHTML.replace(
       /<base\b[^>]*>/gi,
       ""
     );
 
-    // Cria a base para imagens, JS, CSS, sons etc.
+    // Adiciona a base correta para carregar
+    // JS, CSS, imagens, sons e outros arquivos.
     const baseTag =
-      `<base href="${baseURL}">`;
+      '<base href="' + baseURL + '">';
 
-    /*
-     * NÃO injeta código dentro do jogo.
-     *
-     * O jogo original precisa executar exatamente
-     * o JavaScript que veio do capítulo.
-     */
-
-    if (/<head[^>]*>/i.test(finalHTML)) {
-
+    // Coloca a base dentro do <head>
+    if (/<head\b[^>]*>/i.test(finalHTML)) {
       finalHTML = finalHTML.replace(
-        /<head[^>]*>/i,
-        match =>
-          match + baseTag
+        /<head\b[^>]*>/i,
+        function (match) {
+          return match + baseTag;
+        }
       );
-
     } else {
-
-      finalHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-${baseTag}
-</head>
-<body>
-${finalHTML}
-</body>
-</html>
-      `;
+      finalHTML =
+        '<!DOCTYPE html>' +
+        '<html>' +
+        '<head>' +
+        '<meta charset="UTF-8">' +
+        baseTag +
+        '</head>' +
+        '<body>' +
+        finalHTML +
+        '</body>' +
+        '</html>';
     }
 
-    // Libera Blob anterior
+    // Remove Blob anterior
     if (frame.dataset.blobUrl) {
-
       try {
         URL.revokeObjectURL(
           frame.dataset.blobUrl
@@ -57,6 +46,7 @@ ${finalHTML}
       frame.dataset.blobUrl = "";
     }
 
+    // Cria o HTML do capítulo
     const blob = new Blob(
       [finalHTML],
       {
@@ -70,38 +60,26 @@ ${finalHTML}
     frame.dataset.blobUrl =
       blobURL;
 
-    frame.onload = () => {
+    frame.onload = function () {
+      loader.style.display = "none";
 
-      loader.style.display =
-        "none";
-
-      /*
-       * Mostra os controles depois que
-       * o jogo realmente carregou.
-       */
+      // Mostra os controles somente
+      // depois que o jogo carregou
       if (
         useMobileControls &&
         gameStarted
       ) {
-
-        hud.style.display =
-          "block";
-
-        settingsBar.style.display =
-          "flex";
+        hud.style.display = "block";
+        settingsBar.style.display = "flex";
       }
 
       try {
-
         frame.contentWindow.focus();
-
       } catch (_) {}
     };
 
-    frame.onerror = () => {
-
-      loader.style.display =
-        "none";
+    frame.onerror = function () {
+      loader.style.display = "none";
 
       console.error(
         "Failed to load chapter iframe."
@@ -111,14 +89,12 @@ ${finalHTML}
     frame.src = blobURL;
 
   } catch (error) {
-
     console.error(
       "injectAndLoad error:",
       error
     );
 
-    loader.style.display =
-      "none";
+    loader.style.display = "none";
 
     alert(
       "Erro ao carregar o capítulo: " +
