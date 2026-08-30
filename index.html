@@ -3,514 +3,1026 @@
 <head>
   <meta charset="UTF-8">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0,
-                 maximum-scale=1.0, user-scalable=no,
-                 viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="DELTARUNE">
 
   <title>DELTARUNE</title>
 
-  <!-- PWA -->
-  <link rel="icon" type="image/png" href="./icons/appicon.png">
-  <link rel="apple-touch-icon" href="./icons/appicon.png">
+  <!-- =====================================================
+       PWA
+  ====================================================== -->
+
   <link rel="manifest" href="./manifest.json">
 
-  <!-- Game icon -->
-  <link rel="icon"
-        type="image/png"
-        href="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/soul.png">
+  <link
+    rel="icon"
+    type="image/png"
+    href="./icons/appicon.png"
+  >
 
-  <!-- Original stylesheet -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/style.css">
+  <link
+    rel="apple-touch-icon"
+    href="./icons/appicon.png"
+  >
 
-  <!-- JSZip -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- =====================================================
+       MAIN CSS
+  ====================================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/style.css"
+  >
+
+  <!-- =====================================================
+       JSZIP
+  ====================================================== -->
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+  ></script>
+
+  <!-- =====================================================
+       MOBILE CSS
+  ====================================================== -->
 
   <style>
+
     :root {
       --ctrl-scale: 1.3;
       --ctrl-opacity: 1;
     }
 
     * {
-      -webkit-appearance: none;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-text-size-adjust: none;
-      -webkit-font-smoothing: antialiased;
       box-sizing: border-box;
-    }
-
-    *:focus {
-      outline: none;
-      -webkit-focus-ring-color: transparent;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     html,
     body {
-      margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
+      margin: 0;
+      padding: 0;
+
+      background: #000;
+
       overflow: hidden;
-      background: #000;
+
+      overscroll-behavior: none;
+
       touch-action: none;
     }
 
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* =========================================================
-       GAME FRAME
-       ========================================================= */
-
-    #game-frame {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      border: none;
-      z-index: 1;
-      outline: none;
-      display: none;
-      background: #000;
-    }
-
-    /* =========================================================
-       HUD
-       ========================================================= */
-
-    #hud-layer {
+    body {
       position: fixed;
       inset: 0;
-      z-index: 10;
-      pointer-events: none;
-      transition: opacity 0.2s;
-      display: none;
     }
 
-    .touch-group {
-      position: absolute;
-      pointer-events: auto;
-      touch-action: none;
-      transform:
-        translate(-50%, -50%)
-        scale(var(--ctrl-scale));
-      transform-origin: center;
-      cursor: grab;
-      user-select: none;
-      -webkit-user-select: none;
+    button,
+    input,
+    a {
+      font: inherit;
     }
 
-    body.edit-mode .touch-group {
-      border: 2px dashed #00bfff !important;
-      background: rgba(0, 191, 255, 0.2) !important;
-      opacity: 1 !important;
-    }
+    /* =====================================================
+       MENU
+    ====================================================== */
 
-    /* =========================================================
-       VIRTUAL JOYSTICK
-       ========================================================= */
+    #main-menu-ui {
 
-    #joystick-group {
-      top: 75%;
-      left: 20%;
-      width: 180px;
-      height: 180px;
-    }
-
-    #virtualJoystick {
-      position: relative;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #joystickBase {
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.13);
-      border: 3px solid rgba(255, 255, 255, 0.32);
-      box-shadow:
-        inset 0 0 15px rgba(255, 255, 255, 0.05),
-        0 0 15px rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #joystickBase::before {
-      content: "";
-      position: absolute;
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.12);
-    }
-
-    #joystickStick {
-      position: absolute;
-      width: 66px;
-      height: 66px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.28);
-      border: 3px solid rgba(255, 255, 255, 0.48);
-      box-shadow:
-        inset 0 0 12px rgba(255, 255, 255, 0.08),
-        0 3px 10px rgba(0, 0, 0, 0.4);
-      transform: translate(0, 0);
-      transition:
-        transform 0.05s linear,
-        background 0.08s;
-      pointer-events: none;
-    }
-
-    #joystickStick.active {
-      background: rgba(255, 255, 255, 0.55);
-      border-color: #fff;
-    }
-
-    /* =========================================================
-       ACTION BUTTONS
-       ========================================================= */
-
-    #btn-z {
-      top: 85%;
-      left: 70%;
-    }
-
-    #btn-x {
-      top: 75%;
-      left: 80%;
-    }
-
-    #btn-c {
-      top: 65%;
-      left: 90%;
-    }
-
-    .btn {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      font-size: 1.4rem;
-      width: 65px;
-      height: 65px;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .btn.active {
-      background: rgba(255, 255, 255, 0.6);
-      border-color: #fff;
-    }
-
-    /* =========================================================
-       SETTINGS
-       ========================================================= */
-
-    #settings-bar {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 50;
-      display: none;
-      gap: 5px;
-      pointer-events: auto;
-    }
-
-    #settings-bar button {
-      padding: 10px;
-      background: rgba(68, 68, 68, 0.8);
-      color: white;
-      border: 1px solid #777;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: sans-serif;
-    }
-
-    #settings-panel {
-      position: fixed;
-      top: 70px;
-      right: 10px;
-      z-index: 49;
-      background: rgba(0, 0, 0, 0.95);
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-      display: none;
-      width: 220px;
-      border: 1px solid #444;
-      pointer-events: auto;
-      font-family: sans-serif;
-    }
-
-    #settings-panel input[type="range"] {
-      -webkit-appearance: none !important;
-      appearance: none !important;
-      background: #444 !important;
-      height: 6px;
-      border-radius: 3px;
-      outline: none;
-    }
-
-    #settings-panel input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none !important;
-      appearance: none !important;
-      background: #00bfff !important;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    /* =========================================================
-       LOADER
-       ========================================================= */
-
-    #loader-screen {
       position: fixed;
       inset: 0;
-      background: #111;
-      color: white;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      font-family: sans-serif;
+
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+
+      z-index: 5;
+
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      -webkit-overflow-scrolling: touch;
+
+      overscroll-behavior-y: contain;
+
+      touch-action: pan-y;
+
+      padding-bottom: 120px;
     }
 
-    /* =========================================================
+    #main-menu-ui .logo-container,
+    #main-menu-ui .menu,
+    #main-menu-ui #notice-container {
+      touch-action: pan-y;
+    }
+
+    #main-menu-ui .row,
+    #main-menu-ui .disabled-row {
+      touch-action: manipulation;
+    }
+
+    #main-menu-ui::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* =====================================================
        WARNING
-       ========================================================= */
+    ====================================================== */
 
     .deactivation-warning {
-      text-align: center;
-      color: #fff;
-      font-family: sans-serif;
-      font-weight: bold;
+
+      width: 90%;
+      max-width: 700px;
+
       margin: 20px auto;
-      max-width: 80%;
-      font-size: 16px;
+
+      color: #fff;
+
+      text-align: center;
+
+      font-family: Arial, sans-serif;
+
+      font-weight: bold;
+
       line-height: 1.4;
     }
 
     .deactivation-warning a {
+
       color: #ffff00;
+
       text-decoration: underline;
+
+      -webkit-user-select: text;
+      user-select: text;
     }
+
+    /* =====================================================
+       GAME FRAME
+    ====================================================== */
+
+    #game-frame {
+
+      position: fixed;
+      inset: 0;
+
+      width: 100vw;
+
+      height: 100vh;
+      height: 100dvh;
+
+      border: 0;
+      outline: 0;
+
+      display: none;
+
+      background: #000;
+
+      z-index: 1;
+    }
+
+    /* =====================================================
+       LOADER
+    ====================================================== */
+
+    #loader-screen {
+
+      position: fixed;
+      inset: 0;
+
+      display: none;
+
+      align-items: center;
+      justify-content: center;
+
+      background: #000;
+
+      color: #fff;
+
+      z-index: 100;
+
+      font-family: Arial, sans-serif;
+
+      font-size: 18px;
+    }
+
+    /* =====================================================
+       HUD
+    ====================================================== */
+
+    #hud-layer {
+
+      position: fixed;
+      inset: 0;
+
+      width: 100vw;
+
+      height: 100vh;
+      height: 100dvh;
+
+      z-index: 10;
+
+      display: none;
+
+      pointer-events: none;
+
+      opacity: var(--ctrl-opacity);
+
+      touch-action: none;
+    }
+
+    .touch-group {
+
+      position: absolute;
+
+      pointer-events: auto;
+
+      touch-action: none;
+
+      transform:
+        translate(-50%, -50%)
+        scale(var(--ctrl-scale));
+
+      transform-origin: center center;
+
+      cursor: grab;
+
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .touch-group:active {
+      cursor: grabbing;
+    }
+
+    /* =====================================================
+       EDIT MODE
+    ====================================================== */
+
+    body.edit-mode .touch-group {
+
+      border: 2px dashed #00bfff !important;
+
+      background: rgba(
+        0,
+        191,
+        255,
+        0.18
+      ) !important;
+
+      opacity: 1 !important;
+    }
+
+    body.edit-mode #hud-layer {
+      pointer-events: auto;
+    }
+
+    /* =====================================================
+       D-PAD
+    ====================================================== */
+
+    #dpad-group {
+
+      left: 20%;
+      top: 75%;
+
+      width: 180px;
+      height: 180px;
+    }
+
+    .dpad-container {
+
+      position: relative;
+
+      width: 100%;
+      height: 100%;
+
+      touch-action: none;
+
+      pointer-events: auto;
+    }
+
+    .dpad-btn {
+
+      position: absolute;
+
+      width: 55px;
+      height: 55px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.15
+        );
+
+      border:
+        2px solid
+        rgba(
+          255,
+          255,
+          255,
+          0.3
+        );
+
+      border-radius: 8px;
+
+      color: #fff;
+
+      font-family: Arial, sans-serif;
+
+      font-size: 22px;
+
+      pointer-events: none;
+    }
+
+    #up {
+
+      top: 0;
+      left: 50%;
+
+      transform:
+        translateX(-50%);
+    }
+
+    #down {
+
+      bottom: 0;
+      left: 50%;
+
+      transform:
+        translateX(-50%);
+    }
+
+    #left {
+
+      left: 0;
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+    }
+
+    #right {
+
+      right: 0;
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+    }
+
+    /* =====================================================
+       Z X C
+    ====================================================== */
+
+    #btn-z {
+
+      left: 70%;
+      top: 85%;
+    }
+
+    #btn-x {
+
+      left: 80%;
+      top: 75%;
+    }
+
+    #btn-c {
+
+      left: 90%;
+      top: 65%;
+    }
+
+    .btn {
+
+      width: 65px;
+      height: 65px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.2
+        );
+
+      border:
+        2px solid
+        rgba(
+          255,
+          255,
+          255,
+          0.4
+        );
+
+      border-radius: 50%;
+
+      color: #fff;
+
+      font-family: Arial, sans-serif;
+
+      font-size: 1.4rem;
+
+      font-weight: bold;
+
+      pointer-events: auto;
+
+      touch-action: none;
+
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .btn.active {
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.6
+        );
+
+      border-color: #fff;
+    }
+
+    /* =====================================================
+       SETTINGS BUTTON
+    ====================================================== */
+
+    #settings-bar {
+
+      position: fixed;
+
+      top:
+        max(
+          10px,
+          env(safe-area-inset-top)
+        );
+
+      right:
+        max(
+          10px,
+          env(safe-area-inset-right)
+        );
+
+      z-index: 50;
+
+      display: none;
+
+      gap: 5px;
+
+      pointer-events: auto;
+    }
+
+    #settings-bar button {
+
+      padding: 10px 12px;
+
+      background:
+        rgba(
+          30,
+          30,
+          30,
+          0.9
+        );
+
+      color: #fff;
+
+      border:
+        1px solid #777;
+
+      border-radius: 8px;
+
+      font-family: Arial, sans-serif;
+
+      touch-action: manipulation;
+    }
+
+    /* =====================================================
+       SETTINGS PANEL
+    ====================================================== */
+
+    #settings-panel {
+
+      position: fixed;
+
+      top:
+        max(
+          60px,
+          calc(
+            env(safe-area-inset-top)
+            + 50px
+          )
+        );
+
+      right:
+        max(
+          10px,
+          env(safe-area-inset-right)
+        );
+
+      z-index: 49;
+
+      width: 230px;
+
+      max-width:
+        calc(
+          100vw - 20px
+        );
+
+      padding: 18px;
+
+      display: none;
+
+      background:
+        rgba(
+          0,
+          0,
+          0,
+          0.95
+        );
+
+      color: #fff;
+
+      border:
+        1px solid #444;
+
+      border-radius: 12px;
+
+      font-family: Arial, sans-serif;
+
+      pointer-events: auto;
+
+      touch-action: manipulation;
+    }
+
+    #settings-panel input[type="range"] {
+
+      width: 100%;
+
+      height: 6px;
+
+      appearance: none;
+
+      -webkit-appearance: none;
+
+      background: #444;
+
+      border-radius: 3px;
+    }
+
+    #settings-panel
+    input[type="range"]::-webkit-slider-thumb {
+
+      appearance: none;
+
+      -webkit-appearance: none;
+
+      width: 18px;
+      height: 18px;
+
+      background: #00bfff;
+
+      border-radius: 50%;
+    }
+
+    /* =====================================================
+       MOBILE
+    ====================================================== */
+
+    @media (max-width: 600px) {
+
+      #main-menu-ui {
+        padding-bottom: 140px;
+      }
+
+      #settings-panel {
+        width: 210px;
+      }
+    }
+
   </style>
 </head>
 
 <body>
 
-  <!-- =========================================================
+  <!-- =====================================================
        MAIN MENU
-       ========================================================= -->
+  ====================================================== -->
 
   <div id="main-menu-ui">
 
     <div class="logo-container">
+
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/logo.png"
-        alt="Logo"
-        class="logo">
+        alt="DELTARUNE"
+        class="logo"
+        draggable="false"
+      >
+
     </div>
 
     <div id="notice-container"></div>
 
     <div class="menu">
 
-      <a href="javascript:loadChapter(1)" class="row">
-        <span class="chapter">CHAPTER 1</span>
-        <span class="title">The Beginning</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/1.png">
-      </a>
-
-      <a href="javascript:loadChapter(2)" class="row">
-        <span class="chapter">CHAPTER 2</span>
-        <span class="title">A Cyber's World</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/2.png">
-      </a>
-
-      <a href="javascript:loadChapter(3)" class="row">
-        <span class="chapter">CHAPTER 3</span>
-        <span class="title">Late Night</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/3.png">
-      </a>
-
-      <a href="javascript:loadChapter(4)" class="row">
-        <span class="chapter">CHAPTER 4</span>
-        <span class="title">Prophecy</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/4.png">
-      </a>
-
-      <a href="javascript:loadChapter(5)" class="row">
-        <span class="chapter">CHAPTER 5</span>
-        <span class="title">Festival Day</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/5.png">
-      </a>
+      <!-- CHAPTER 1 -->
 
       <a
-        href="javascript:alert('Chapter 6 coming soon!')"
-        class="disabled-row">
-        <span class="chapter">CHAPTER 6</span>
-        <span class="disabled-title">--</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png">
+        href="#"
+        class="row"
+        data-chapter="1"
+      >
+
+        <span class="chapter">
+          CHAPTER 1
+        </span>
+
+        <span class="title">
+          The Beginning
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/1.png"
+          alt=""
+          draggable="false"
+        >
+
       </a>
 
+      <!-- CHAPTER 2 -->
+
       <a
-        href="javascript:alert('Chapter 7 coming soon!')"
-        class="disabled-row">
-        <span class="chapter">CHAPTER 7</span>
-        <span class="disabled-title">--</span>
-        <img src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png">
+        href="#"
+        class="row"
+        data-chapter="2"
+      >
+
+        <span class="chapter">
+          CHAPTER 2
+        </span>
+
+        <span class="title">
+          A Cyber's World
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/2.png"
+          alt=""
+          draggable="false"
+        >
+
       </a>
 
-      <a
-        href="javascript:toggleMobileHardware()"
-        class="row">
+      <!-- CHAPTER 3 -->
 
-        <span class="chapter">SYSTEM</span>
+      <a
+        href="#"
+        class="row"
+        data-chapter="3"
+      >
+
+        <span class="chapter">
+          CHAPTER 3
+        </span>
+
+        <span class="title">
+          Late Night
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/3.png"
+          alt=""
+          draggable="false"
+        >
+
+      </a>
+
+      <!-- CHAPTER 4 -->
+
+      <a
+        href="#"
+        class="row"
+        data-chapter="4"
+      >
+
+        <span class="chapter">
+          CHAPTER 4
+        </span>
+
+        <span class="title">
+          Prophecy
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/4.png"
+          alt=""
+          draggable="false"
+        >
+
+      </a>
+
+      <!-- CHAPTER 5 -->
+
+      <a
+        href="#"
+        class="row"
+        data-chapter="5"
+      >
+
+        <span class="chapter">
+          CHAPTER 5
+        </span>
+
+        <span class="title">
+          Festival Day
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/5.png"
+          alt=""
+          draggable="false"
+        >
+
+      </a>
+
+      <!-- CHAPTER 6 -->
+
+      <a
+        href="#"
+        class="disabled-row"
+        data-disabled="true"
+      >
+
+        <span class="chapter">
+          CHAPTER 6
+        </span>
+
+        <span class="disabled-title">
+          --
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
+          alt=""
+          draggable="false"
+        >
+
+      </a>
+
+      <!-- CHAPTER 7 -->
+
+      <a
+        href="#"
+        class="disabled-row"
+        data-disabled="true"
+      >
+
+        <span class="chapter">
+          CHAPTER 7
+        </span>
+
+        <span class="disabled-title">
+          --
+        </span>
+
+        <img
+          src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
+          alt=""
+          draggable="false"
+        >
+
+      </a>
+
+      <!-- MOBILE -->
+
+      <a
+        href="#"
+        class="row"
+        id="mobile-controls-row"
+      >
+
+        <span class="chapter">
+          SYSTEM
+        </span>
 
         <span
           class="title"
-          id="mobile-controls-status-text">
+          id="mobile-controls-status-text"
+        >
           Mobile controls: OFF
         </span>
 
         <img
           src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/mobile.png"
-          style="opacity:1;">
+          alt=""
+          draggable="false"
+        >
+
       </a>
 
-      <a
-        href="javascript:exportSave()"
-        class="row">
+      <!-- EXPORT -->
 
-        <span class="chapter">SAVE DATA</span>
-        <span class="title">Export Save (.zip)</span>
+      <a
+        href="#"
+        class="row"
+        id="export-row"
+      >
+
+        <span class="chapter">
+          SAVE DATA
+        </span>
+
+        <span class="title">
+          Export Save (.zip)
+        </span>
 
         <img
           src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/export.png"
-          style="opacity:1;">
+          alt=""
+          draggable="false"
+        >
+
       </a>
 
-      <a
-        href="javascript:document.getElementById('importFile').click()"
-        class="row">
+      <!-- IMPORT -->
 
-        <span class="chapter">SAVE DATA</span>
-        <span class="title">Import Save (.zip)</span>
+      <a
+        href="#"
+        class="row"
+        id="import-row"
+      >
+
+        <span class="chapter">
+          SAVE DATA
+        </span>
+
+        <span class="title">
+          Import Save (.zip)
+        </span>
 
         <img
           src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/import.png"
-          style="opacity:1;">
+          alt=""
+          draggable="false"
+        >
+
       </a>
 
       <input
         type="file"
         id="importFile"
-        accept=".zip"
-        style="display:none"
-        onchange="importSave(this)">
+        accept=".zip,application/zip"
+        hidden
+      >
 
     </div>
+
   </div>
 
-
-  <!-- =========================================================
-       LOADER + GAME
-       ========================================================= -->
+  <!-- =====================================================
+       LOADER
+  ====================================================== -->
 
   <div id="loader-screen">
     <p>Launching...</p>
   </div>
 
+  <!-- =====================================================
+       GAME
+  ====================================================== -->
+
   <iframe
     id="game-frame"
-    allow="autoplay"
-    scrolling="no">
-  </iframe>
+    title="DELTARUNE"
+    allow="autoplay; fullscreen; gamepad"
+    allowfullscreen
+    scrolling="no"
+  ></iframe>
 
-
-  <!-- =========================================================
+  <!-- =====================================================
        MOBILE HUD
-       ========================================================= -->
+  ====================================================== -->
 
   <div id="hud-layer">
 
-    <!-- JOYSTICK -->
+    <!-- D-PAD -->
 
     <div
-      id="joystick-group"
+      id="dpad-group"
       class="touch-group draggable"
-      data-save-id="joystick">
+      data-save-id="dpad"
+    >
 
-      <div id="virtualJoystick">
+      <div
+        class="dpad-container"
+        id="dpad-touch-zone"
+      >
 
-        <div id="joystickBase">
-          <div id="joystickStick"></div>
+        <div
+          id="up"
+          class="dpad-btn"
+        >
+          ▲
+        </div>
+
+        <div
+          id="down"
+          class="dpad-btn"
+        >
+          ▼
+        </div>
+
+        <div
+          id="left"
+          class="dpad-btn"
+        >
+          ◀
+        </div>
+
+        <div
+          id="right"
+          class="dpad-btn"
+        >
+          ▶
         </div>
 
       </div>
-    </div>
 
+    </div>
 
     <!-- Z -->
 
     <div
       id="btn-z"
       class="touch-group draggable"
-      data-save-id="z-btn">
+      data-save-id="z-btn"
+    >
 
       <div
         class="btn game-btn"
-        data-key="z">
+        data-key="z"
+      >
         Z
       </div>
 
     </div>
-
 
     <!-- X -->
 
     <div
       id="btn-x"
       class="touch-group draggable"
-      data-save-id="x-btn">
+      data-save-id="x-btn"
+    >
 
       <div
         class="btn game-btn"
-        data-key="x">
+        data-key="x"
+      >
         X
       </div>
 
     </div>
-
 
     <!-- C -->
 
     <div
       id="btn-c"
       class="touch-group draggable"
-      data-save-id="c-btn">
+      data-save-id="c-btn"
+    >
 
       <div
         class="btn game-btn"
-        data-key="c">
+        data-key="c"
+      >
         C
       </div>
 
@@ -518,29 +1030,28 @@
 
   </div>
 
-
-  <!-- =========================================================
-       SETTINGS BUTTON
-       ========================================================= -->
+  <!-- =====================================================
+       SETTINGS
+  ====================================================== -->
 
   <div id="settings-bar">
 
-    <button id="settings-toggle">
+    <button
+      id="settings-toggle"
+      type="button"
+    >
       Mobile Settings
     </button>
 
   </div>
 
-
-  <!-- =========================================================
-       SETTINGS PANEL
-       ========================================================= -->
-
   <div id="settings-panel">
 
     <div style="margin-bottom:15px">
 
-      <label>Opacity</label>
+      <label for="opacity-slider">
+        Opacity
+      </label>
 
       <input
         type="range"
@@ -548,471 +1059,173 @@
         min="0.05"
         max="1"
         step="0.05"
-        style="width:100%">
+        value="1"
+      >
 
     </div>
 
-
     <div style="margin-bottom:15px">
 
-      <label>Size</label>
+      <label for="size-slider">
+        Size
+      </label>
 
       <input
         type="range"
         id="size-slider"
         min="0.5"
-        max="3.0"
+        max="3"
         step="0.1"
-        style="width:100%">
+        value="1.3"
+      >
 
     </div>
 
-
     <button
       id="reset-pos"
+      type="button"
       style="
         width:100%;
         background:#922;
-        color:white;
-        border:none;
+        color:#fff;
+        border:0;
         padding:10px;
         border-radius:6px;
-      ">
-
+      "
+    >
       Reset Layout
-
     </button>
 
   </div>
 
-
-  <!-- =========================================================
+  <!-- =====================================================
        JAVASCRIPT
-       ========================================================= -->
+  ====================================================== -->
 
   <script>
+    "use strict";
 
-    /* =========================================================
-       CONSTANTS
-       ========================================================= */
+    /* =====================================================
+       REPOSITORY
+    ====================================================== */
 
     const REPO_BASE =
       "https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/";
 
+    /* =====================================================
+       ELEMENTS
+    ====================================================== */
+
+    const frame =
+      document.getElementById("game-frame");
+
+    const hud =
+      document.getElementById("hud-layer");
+
+    const mainMenu =
+      document.getElementById("main-menu-ui");
+
+    const loader =
+      document.getElementById("loader-screen");
+
+    const settingsBar =
+      document.getElementById("settings-bar");
+
+    const settingsPanel =
+      document.getElementById("settings-panel");
+
+    const dpadZone =
+      document.getElementById("dpad-touch-zone");
+
+    const mobileRow =
+      document.getElementById(
+        "mobile-controls-row"
+      );
+
+    const mobileStatus =
+      document.getElementById(
+        "mobile-controls-status-text"
+      );
+
+    const importInput =
+      document.getElementById(
+        "importFile"
+      );
+
+    /* =====================================================
+       AUDIO
+    ====================================================== */
+
     const sndMenuMove =
-      new Audio(REPO_BASE + "audios/snd_menumove.mp3");
+      new Audio(
+        REPO_BASE +
+        "audios/snd_menumove.mp3"
+      );
 
     const sndSelect =
-      new Audio(REPO_BASE + "audios/snd_select.mp3");
+      new Audio(
+        REPO_BASE +
+        "audios/snd_select.mp3"
+      );
 
+    sndMenuMove.preload = "auto";
+    sndSelect.preload = "auto";
 
     function playMove() {
 
-      sndMenuMove.currentTime = 0;
+      try {
 
-      sndMenuMove.play().catch(() => {});
+        sndMenuMove.currentTime = 0;
 
+        const promise =
+          sndMenuMove.play();
+
+        if (promise) {
+          promise.catch(() => {});
+        }
+
+      } catch (_) {}
     }
-
 
     function playSelect() {
 
-      sndSelect.currentTime = 0;
-
-      sndSelect.play().catch(() => {});
-
-    }
-
-
-    /* =========================================================
-       SAVE DATABASE
-       ========================================================= */
-
-    const DB_NAME = "/_savedata";
-    const STORE_NAME = "FILE_DATA";
-
-
-    function getDB() {
-
-      return new Promise((resolve, reject) => {
-
-        const request =
-          indexedDB.open(DB_NAME);
-
-        request.onupgradeneeded = (e) => {
-
-          if (
-            !e.target.result.objectStoreNames.contains(
-              STORE_NAME
-            )
-          ) {
-
-            e.target.result.createObjectStore(
-              STORE_NAME
-            );
-
-          }
-
-        };
-
-        request.onsuccess = (e) =>
-          resolve(e.target.result);
-
-        request.onerror = (e) =>
-          reject(e.target.error);
-
-      });
-
-    }
-
-
-    async function getAllSaves() {
-
-      const db = await getDB();
-
-      return new Promise((resolve, reject) => {
-
-        const tx =
-          db.transaction(
-            STORE_NAME,
-            "readonly"
-          );
-
-        const store =
-          tx.objectStore(STORE_NAME);
-
-        const request =
-          store.openCursor();
-
-        const data = {};
-
-        request.onsuccess = (e) => {
-
-          const cursor =
-            e.target.result;
-
-          if (cursor) {
-
-            data[cursor.key] =
-              cursor.value;
-
-            cursor.continue();
-
-          } else {
-
-            resolve(data);
-
-          }
-
-        };
-
-        request.onerror = (e) =>
-          reject(e.target.error);
-
-      });
-
-    }
-
-
-    async function setSaveItem(
-      key,
-      textContent
-    ) {
-
-      const db = await getDB();
-
-      return new Promise((resolve, reject) => {
-
-        const tx =
-          db.transaction(
-            STORE_NAME,
-            "readwrite"
-          );
-
-        const uint8Contents =
-          new TextEncoder().encode(
-            textContent
-          );
-
-        const emscriptenFileObj = {
-
-          timestamp: new Date(),
-
-          mode: 33206,
-
-          contents: uint8Contents
-
-        };
-
-        tx.objectStore(STORE_NAME)
-          .put(
-            emscriptenFileObj,
-            key
-          );
-
-        tx.oncomplete = () =>
-          resolve();
-
-        tx.onerror = (e) =>
-          reject(e.target.error);
-
-      });
-
-    }
-
-
-    /* =========================================================
-       EXPORT SAVE
-       ========================================================= */
-
-    async function exportSave() {
-
-      playSelect();
-
-      const zip = new JSZip();
-
-      let hasData = false;
-
       try {
 
-        const allData =
-          await getAllSaves();
+        sndSelect.currentTime = 0;
 
-        for (
-          const key in allData
-        ) {
+        const promise =
+          sndSelect.play();
 
-          if (
-            key.includes("filech") ||
-            key.includes("dr_") ||
-            key.includes("_savedata")
-          ) {
-
-            const cleanKey =
-              key.replace(
-                /^\/_savedata\//,
-                ""
-              );
-
-            let rawText = "";
-
-            if (
-              allData[key] &&
-              allData[key].contents
-            ) {
-
-              rawText =
-                new TextDecoder().decode(
-                  allData[key].contents
-                );
-
-            } else if (
-              typeof allData[key] === "string"
-            ) {
-
-              rawText =
-                allData[key];
-
-            }
-
-            zip.file(
-              cleanKey,
-              rawText
-            );
-
-            hasData = true;
-
-          }
-
+        if (promise) {
+          promise.catch(() => {});
         }
 
-
-        if (!hasData) {
-
-          alert(
-            "No save data found in the engine database!"
-          );
-
-          return;
-
-        }
-
-
-        const content =
-          await zip.generateAsync({
-            type: "blob"
-          });
-
-
-        const a =
-          document.createElement("a");
-
-        a.href =
-          URL.createObjectURL(content);
-
-        a.download =
-          "deltarune_saves.zip";
-
-        a.click();
-
-
-        setTimeout(() => {
-
-          URL.revokeObjectURL(a.href);
-
-        }, 1000);
-
-
-      } catch (err) {
-
-        alert(
-          "Failed to export saves."
-        );
-
-        console.error(err);
-
-      }
-
+      } catch (_) {}
     }
 
+    /* =====================================================
+       STATE
+    ====================================================== */
 
-    /* =========================================================
-       IMPORT SAVE
-       ========================================================= */
-
-    function importSave(input) {
-
-      playSelect();
-
-      const file =
-        input.files[0];
-
-      if (!file)
-        return;
-
-
-      const zip =
-        new JSZip();
-
-
-      zip.loadAsync(file)
-
-        .then(
-          function(jsZipInstance) {
-
-            const promises = [];
-
-
-            jsZipInstance.forEach(
-              function(
-                relativePath,
-                zipEntry
-              ) {
-
-                if (!zipEntry.dir) {
-
-                  const p =
-                    zipEntry
-                      .async("string")
-                      .then(
-                        function(content) {
-
-                          let fullKey =
-                            zipEntry.name;
-
-                          if (
-                            !fullKey.startsWith(
-                              "/_savedata/"
-                            )
-                          ) {
-
-                            fullKey =
-                              "/_savedata/" +
-                              fullKey;
-
-                          }
-
-                          return setSaveItem(
-                            fullKey,
-                            content
-                          );
-
-                        }
-                      );
-
-
-                  promises.push(p);
-
-                }
-
-              }
-            );
-
-
-            if (
-              promises.length === 0
-            ) {
-
-              throw new Error(
-                "Zip file is empty!"
-              );
-
-            }
-
-
-            return Promise.all(
-              promises
-            );
-
-          }
-        )
-
-        .then(function() {
-
-          alert(
-            "Saves imported successfully! Reloading..."
-          );
-
-          window.location.reload();
-
-        })
-
-        .catch(function(err) {
-
-          alert(
-            "Error importing zip file."
-          );
-
-          console.error(err);
-
-        });
-
-    }
-
-
-    /* =========================================================
-       GAME VARIABLES
-       ========================================================= */
-
-    let gamestarted = false;
+    let gameStarted = false;
 
     let useMobileControls = false;
 
-    const frame =
-      document.getElementById(
-        "game-frame"
-      );
-
-    const hud =
-      document.getElementById(
-        "hud-layer"
-      );
-
-    const STORAGE_KEY =
-      "deltarune-v18-joystick";
-
     let isEditing = false;
 
+    let selectedIndex = null;
+
+    let activeDragItem = null;
+
+    let dragPointerId = null;
+
+    let dpadPointerId = null;
+
+    const STORAGE_KEY =
+      "deltarune-v18-controls";
+
+    const MOBILE_KEY =
+      "deltarune-mobile-toggle";
 
     let config = {
 
@@ -1024,10 +1237,9 @@
 
     };
 
-
-    /* =========================================================
+    /* =====================================================
        KEY MAP
-       ========================================================= */
+    ====================================================== */
 
     const keyMap = {
 
@@ -1047,133 +1259,616 @@
 
     };
 
-
     const activeKeys =
       new Set();
 
-
-    /* =========================================================
+    /* =====================================================
        SEND KEY TO GAME
-       ========================================================= */
+    ====================================================== */
+
+    function sendGameKey(
+      type,
+      key
+    ) {
+
+      if (
+        !frame.contentWindow
+      ) {
+        return;
+      }
+
+      try {
+
+        frame.contentWindow.postMessage(
+          {
+            type: type,
+            key: key,
+            keyCode:
+              keyMap[key] || 0
+          },
+          "*"
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Input error:",
+          error
+        );
+      }
+    }
 
     function updateKey(
       key,
       isDown
     ) {
 
-      if (isEditing)
+      if (isEditing) {
         return;
+      }
 
+      if (!keyMap[key]) {
+        return;
+      }
 
-      if (
-        isDown &&
-        !activeKeys.has(key)
-      ) {
+      if (isDown) {
+
+        if (
+          activeKeys.has(key)
+        ) {
+          return;
+        }
 
         activeKeys.add(key);
 
-
-        frame.contentWindow.postMessage(
-
-          {
-            type: "keydown",
-
-            key: key,
-
-            keyCode: keyMap[key]
-
-          },
-
-          "*"
-
+        sendGameKey(
+          "keydown",
+          key
         );
 
-      }
+      } else {
 
-
-      else if (
-        !isDown &&
-        activeKeys.has(key)
-      ) {
+        if (
+          !activeKeys.has(key)
+        ) {
+          return;
+        }
 
         activeKeys.delete(key);
 
+        sendGameKey(
+          "keyup",
+          key
+        );
+      }
+    }
 
-        frame.contentWindow.postMessage(
+    function releaseAllKeys() {
 
-          {
-            type: "keyup",
+      for (
+        const key of
+        Array.from(activeKeys)
+      ) {
 
-            key: key,
-
-            keyCode: keyMap[key]
-
-          },
-
-          "*"
-
+        sendGameKey(
+          "keyup",
+          key
         );
 
+        activeKeys.delete(key);
       }
-
     }
 
+    /* =====================================================
+       INDEXED DB
+    ====================================================== */
 
-    /* =========================================================
-       RELEASE ALL MOVEMENT KEYS
-       ========================================================= */
+    const DB_NAME =
+      "_savedata";
 
-    function releaseMovementKeys() {
+    const STORE_NAME =
+      "FILE_DATA";
 
-      [
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight"
-      ].forEach(
-        key => updateKey(key, false)
+    function getDB() {
+
+      return new Promise(
+        (resolve, reject) => {
+
+          const request =
+            indexedDB.open(
+              DB_NAME,
+              1
+            );
+
+          request.onupgradeneeded =
+            event => {
+
+              const db =
+                event.target.result;
+
+              if (
+                !db.objectStoreNames
+                  .contains(
+                    STORE_NAME
+                  )
+              ) {
+
+                db.createObjectStore(
+                  STORE_NAME
+                );
+              }
+            };
+
+          request.onsuccess =
+            event => {
+
+              resolve(
+                event.target.result
+              );
+            };
+
+          request.onerror =
+            event => {
+
+              reject(
+                event.target.error
+              );
+            };
+
+        }
       );
-
     }
 
+    async function getAllSaves() {
 
-    /* =========================================================
-       JOYSTICK
-       ========================================================= */
+      const db =
+        await getDB();
 
-    const joystick =
-      document.getElementById(
-        "virtualJoystick"
+      return new Promise(
+        (resolve, reject) => {
+
+          const transaction =
+            db.transaction(
+              STORE_NAME,
+              "readonly"
+            );
+
+          const store =
+            transaction.objectStore(
+              STORE_NAME
+            );
+
+          const request =
+            store.openCursor();
+
+          const data = {};
+
+          request.onsuccess =
+            event => {
+
+              const cursor =
+                event.target.result;
+
+              if (!cursor) {
+
+                resolve(data);
+
+                return;
+              }
+
+              data[cursor.key] =
+                cursor.value;
+
+              cursor.continue();
+            };
+
+          request.onerror =
+            event => {
+
+              reject(
+                event.target.error
+              );
+            };
+
+        }
       );
+    }
 
-    const joystickBase =
-      document.getElementById(
-        "joystickBase"
-      );
-
-    const joystickStick =
-      document.getElementById(
-        "joystickStick"
-      );
-
-
-    let joystickActive = false;
-
-    let joystickPointerId = null;
-
-
-    function updateJoystick(
-      clientX,
-      clientY
+    async function setSaveItem(
+      key,
+      content
     ) {
 
-      if (isEditing)
-        return;
+      const db =
+        await getDB();
 
+      return new Promise(
+        (resolve, reject) => {
+
+          const transaction =
+            db.transaction(
+              STORE_NAME,
+              "readwrite"
+            );
+
+          const bytes =
+            new TextEncoder()
+              .encode(content);
+
+          const fileObject = {
+
+            timestamp:
+              new Date(),
+
+            mode: 33206,
+
+            contents:
+              bytes
+          };
+
+          transaction
+            .objectStore(
+              STORE_NAME
+            )
+            .put(
+              fileObject,
+              key
+            );
+
+          transaction.oncomplete =
+            () => resolve();
+
+          transaction.onerror =
+            event => {
+
+              reject(
+                event.target.error
+              );
+            };
+
+        }
+      );
+    }
+
+    /* =====================================================
+       EXPORT SAVE
+    ====================================================== */
+
+    async function exportSave() {
+
+      playSelect();
+
+      try {
+
+        if (
+          typeof JSZip ===
+          "undefined"
+        ) {
+
+          alert(
+            "JSZip could not be loaded."
+          );
+
+          return;
+        }
+
+        const allData =
+          await getAllSaves();
+
+        const zip =
+          new JSZip();
+
+        let hasData = false;
+
+        for (
+          const key in allData
+        ) {
+
+          const value =
+            allData[key];
+
+          if (
+            key.includes("filech") ||
+            key.includes("dr_") ||
+            key.includes("_savedata")
+          ) {
+
+            let cleanKey =
+              String(key)
+                .replace(
+                  /^\/_savedata\//,
+                  ""
+                )
+                .replace(
+                  /^_savedata\//,
+                  ""
+                );
+
+            let text = "";
+
+            if (
+              value &&
+              value.contents
+            ) {
+
+              let contents =
+                value.contents;
+
+              if (
+                contents instanceof
+                ArrayBuffer
+              ) {
+
+                contents =
+                  new Uint8Array(
+                    contents
+                  );
+              }
+
+              text =
+                new TextDecoder()
+                  .decode(
+                    contents
+                  );
+
+            } else if (
+              typeof value ===
+              "string"
+            ) {
+
+              text = value;
+            }
+
+            zip.file(
+              cleanKey,
+              text
+            );
+
+            hasData = true;
+          }
+        }
+
+        if (!hasData) {
+
+          alert(
+            "No save data found in the engine database!"
+          );
+
+          return;
+        }
+
+        const blob =
+          await zip.generateAsync(
+            {
+              type: "blob"
+            }
+          );
+
+        const url =
+          URL.createObjectURL(
+            blob
+          );
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+        link.href = url;
+
+        link.download =
+          "deltarune_saves.zip";
+
+        link.style.display =
+          "none";
+
+        document.body.appendChild(
+          link
+        );
+
+        link.click();
+
+        link.remove();
+
+        setTimeout(
+          () => {
+            URL.revokeObjectURL(
+              url
+            );
+          },
+          1000
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Export error:",
+          error
+        );
+
+        alert(
+          "Failed to export saves."
+        );
+      }
+    }
+
+    /* =====================================================
+       IMPORT SAVE
+    ====================================================== */
+
+    async function importSave(
+      input
+    ) {
+
+      playSelect();
+
+      const file =
+        input.files &&
+        input.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      try {
+
+        if (
+          typeof JSZip ===
+          "undefined"
+        ) {
+
+          alert(
+            "JSZip could not be loaded."
+          );
+
+          return;
+        }
+
+        const zip =
+          await JSZip.loadAsync(
+            file
+          );
+
+        const promises = [];
+
+        zip.forEach(
+          (path, entry) => {
+
+            if (entry.dir) {
+              return;
+            }
+
+            const promise =
+              entry
+                .async("string")
+                .then(
+                  content => {
+
+                    let key =
+                      entry.name;
+
+                    key =
+                      key.replace(
+                        /^\/+/,
+                        ""
+                      );
+
+                    key =
+                      key.replace(
+                        /^_savedata\//,
+                        ""
+                      );
+
+                    key =
+                      "/_savedata/" +
+                      key;
+
+                    return setSaveItem(
+                      key,
+                      content
+                    );
+                  }
+                );
+
+            promises.push(
+              promise
+            );
+          }
+        );
+
+        if (
+          promises.length === 0
+        ) {
+
+          throw new Error(
+            "Zip file is empty."
+          );
+        }
+
+        await Promise.all(
+          promises
+        );
+
+        alert(
+          "Saves imported successfully! Reloading..."
+        );
+
+        window.location.reload();
+
+      } catch (error) {
+
+        console.error(
+          "Import error:",
+          error
+        );
+
+        alert(
+          "Error importing zip file."
+        );
+
+      } finally {
+
+        input.value = "";
+      }
+    }
+
+    /* =====================================================
+       MOBILE CONTROLS
+    ====================================================== */
+
+    function toggleMobileHardware() {
+
+      playSelect();
+
+      useMobileControls =
+        !useMobileControls;
+
+      try {
+
+        localStorage.setItem(
+          MOBILE_KEY,
+          useMobileControls
+            ? "true"
+            : "false"
+        );
+
+      } catch (_) {}
+
+      updateMobileText();
+
+      applyConfig();
+    }
+
+    function updateMobileText() {
+
+      if (!mobileStatus) {
+        return;
+      }
+
+      mobileStatus.textContent =
+        "Mobile controls: " +
+        (
+          useMobileControls
+            ? "ON"
+            : "OFF"
+        );
+    }
+
+    /* =====================================================
+       D-PAD
+    ====================================================== */
+
+    function processDpad(
+      x,
+      y
+    ) {
+
+      if (isEditing) {
+        return;
+      }
 
       const rect =
-        joystickBase.getBoundingClientRect();
-
+        dpadZone.getBoundingClientRect();
 
       const centerX =
         rect.left +
@@ -1183,17 +1878,11 @@
         rect.top +
         rect.height / 2;
 
+      const dx =
+        x - centerX;
 
-      let dx =
-        clientX - centerX;
-
-      let dy =
-        clientY - centerY;
-
-
-      const maxDistance =
-        rect.width / 2 - 33;
-
+      const dy =
+        y - centerY;
 
       const distance =
         Math.sqrt(
@@ -1201,809 +1890,603 @@
           dy * dy
         );
 
-
-      if (
-        distance > maxDistance
-      ) {
-
-        const ratio =
-          maxDistance / distance;
-
-        dx *= ratio;
-        dy *= ratio;
-
-      }
-
-
-      joystickStick.style.transform =
-        `translate(${dx}px, ${dy}px)`;
-
-
-      const deadzone = 12;
-
-
-      if (
-        Math.abs(dx) < deadzone &&
-        Math.abs(dy) < deadzone
-      ) {
-
-        releaseMovementKeys();
-
-        return;
-
-      }
-
-
-      /*
-       * Same basic directional behavior
-       * as the old D-pad.
-       */
-
-      const angle =
-        Math.atan2(dy, dx) *
-        180 / Math.PI;
-
-
-      let normalizedAngle =
-        angle < 0
-          ? angle + 360
-          : angle;
-
-
-      const newKeys =
+      const keys =
         new Set();
 
+      if (distance > 15) {
 
-      const buffer = 25;
+        const angle =
+          Math.atan2(
+            dy,
+            dx
+          ) *
+          180 /
+          Math.PI;
 
+        const diagonal = 25;
 
-      // UP
-      if (
-        normalizedAngle >
-          270 - buffer &&
-        normalizedAngle <
-          270 + buffer
-      ) {
+        if (
+          angle >=
+            -90 - diagonal &&
+          angle <=
+            -90 + diagonal
+        ) {
 
-        newKeys.add(
-          "ArrowUp"
-        );
+          keys.add(
+            "ArrowUp"
+          );
 
+        } else if (
+          angle >=
+            90 - diagonal &&
+          angle <=
+            90 + diagonal
+        ) {
+
+          keys.add(
+            "ArrowDown"
+          );
+
+        } else if (
+          angle >=
+            180 - diagonal ||
+          angle <=
+            -180 + diagonal
+        ) {
+
+          keys.add(
+            "ArrowLeft"
+          );
+
+        } else if (
+          angle >=
+            -diagonal &&
+          angle <=
+            diagonal
+        ) {
+
+          keys.add(
+            "ArrowRight"
+          );
+
+        } else {
+
+          if (dy < 0) {
+            keys.add(
+              "ArrowUp"
+            );
+          }
+
+          if (dy > 0) {
+            keys.add(
+              "ArrowDown"
+            );
+          }
+
+          if (dx < 0) {
+            keys.add(
+              "ArrowLeft"
+            );
+          }
+
+          if (dx > 0) {
+            keys.add(
+              "ArrowRight"
+            );
+          }
+        }
       }
 
+      const directions = [
 
-      // DOWN
-      else if (
-        normalizedAngle >
-          90 - buffer &&
-        normalizedAngle <
-          90 + buffer
-      ) {
-
-        newKeys.add(
-          "ArrowDown"
-        );
-
-      }
-
-
-      // LEFT
-      else if (
-        normalizedAngle >
-          180 - buffer &&
-        normalizedAngle <
-          180 + buffer
-      ) {
-
-        newKeys.add(
-          "ArrowLeft"
-        );
-
-      }
-
-
-      // RIGHT
-      else if (
-        normalizedAngle < buffer ||
-        normalizedAngle >
-          360 - buffer
-      ) {
-
-        newKeys.add(
-          "ArrowRight"
-        );
-
-      }
-
-
-      /*
-       * Diagonal movement.
-       */
-
-      else {
-
-        if (dy < 0)
-          newKeys.add("ArrowUp");
-
-        if (dy > 0)
-          newKeys.add("ArrowDown");
-
-        if (dx < 0)
-          newKeys.add("ArrowLeft");
-
-        if (dx > 0)
-          newKeys.add("ArrowRight");
-
-      }
-
-
-      [
         "ArrowUp",
         "ArrowDown",
         "ArrowLeft",
         "ArrowRight"
-      ].forEach(
-        key =>
-          updateKey(
-            key,
-            newKeys.has(key)
-          )
-      );
 
+      ];
+
+      for (
+        const key of directions
+      ) {
+
+        updateKey(
+          key,
+          keys.has(key)
+        );
+      }
     }
 
+    function releaseDpad() {
 
-    function resetJoystick() {
+      dpadPointerId =
+        null;
 
-      joystickActive = false;
-
-      joystickPointerId = null;
-
-      joystickStick.style.transform =
-        "translate(0, 0)";
-
-      joystickStick.classList.remove(
-        "active"
+      updateKey(
+        "ArrowUp",
+        false
       );
 
-      releaseMovementKeys();
+      updateKey(
+        "ArrowDown",
+        false
+      );
 
+      updateKey(
+        "ArrowLeft",
+        false
+      );
+
+      updateKey(
+        "ArrowRight",
+        false
+      );
     }
 
+    /* =====================================================
+       D-PAD EVENTS
+    ====================================================== */
 
-    /* =========================================================
-       JOYSTICK POINTER EVENTS
-       ========================================================= */
-
-    joystick.addEventListener(
+    dpadZone.addEventListener(
       "pointerdown",
-      function(e) {
+      event => {
 
-        if (isEditing)
+        if (isEditing) {
           return;
+        }
 
+        event.preventDefault();
 
-        e.preventDefault();
+        dpadPointerId =
+          event.pointerId;
 
-        joystickActive = true;
+        try {
 
-        joystickPointerId =
-          e.pointerId;
+          dpadZone.setPointerCapture(
+            event.pointerId
+          );
 
+        } catch (_) {}
 
-        joystick.setPointerCapture(
-          e.pointerId
+        processDpad(
+          event.clientX,
+          event.clientY
         );
 
-
-        joystickStick.classList.add(
-          "active"
-        );
-
-
-        updateJoystick(
-          e.clientX,
-          e.clientY
-        );
-
+      },
+      {
+        passive: false
       }
     );
 
-
-    joystick.addEventListener(
+    dpadZone.addEventListener(
       "pointermove",
-      function(e) {
+      event => {
 
         if (
-          !joystickActive ||
-          e.pointerId !==
-            joystickPointerId
-        )
+          dpadPointerId !==
+          event.pointerId
+        ) {
           return;
+        }
 
+        event.preventDefault();
 
-        e.preventDefault();
-
-
-        updateJoystick(
-          e.clientX,
-          e.clientY
+        processDpad(
+          event.clientX,
+          event.clientY
         );
 
+      },
+      {
+        passive: false
       }
     );
 
-
-    joystick.addEventListener(
+    dpadZone.addEventListener(
       "pointerup",
-      function(e) {
+      event => {
 
         if (
-          e.pointerId !==
-          joystickPointerId
-        )
+          dpadPointerId !==
+          event.pointerId
+        ) {
           return;
+        }
 
+        event.preventDefault();
 
-        resetJoystick();
+        releaseDpad();
 
+      },
+      {
+        passive: false
       }
     );
 
-
-    joystick.addEventListener(
+    dpadZone.addEventListener(
       "pointercancel",
-      function() {
-
-        resetJoystick();
-
+      releaseDpad,
+      {
+        passive: false
       }
     );
 
-
-    joystick.addEventListener(
+    dpadZone.addEventListener(
       "lostpointercapture",
-      function() {
-
-        if (joystickActive)
-          resetJoystick();
-
-      }
+      releaseDpad
     );
 
-
-    /* =========================================================
-       ACTION BUTTONS
-       ========================================================= */
+    /* =====================================================
+       Z X C
+    ====================================================== */
 
     document
-      .querySelectorAll(".game-btn")
-      .forEach(btn => {
+      .querySelectorAll(
+        ".game-btn"
+      )
+      .forEach(button => {
 
         const key =
-          btn.getAttribute(
-            "data-key"
-          );
+          button.dataset.key;
 
+        let pointerId = null;
 
-        function start(e) {
+        button.addEventListener(
+          "pointerdown",
+          event => {
 
-          if (isEditing)
-            return;
+            if (isEditing) {
+              return;
+            }
 
+            event.preventDefault();
 
-          e.preventDefault();
+            pointerId =
+              event.pointerId;
 
+            try {
 
-          updateKey(
-            key,
-            true
-          );
+              button.setPointerCapture(
+                pointerId
+              );
 
+            } catch (_) {}
 
-          btn.classList.add(
-            "active"
-          );
-
-        }
-
-
-        function end(e) {
-
-          e.preventDefault();
-
-
-          updateKey(
-            key,
-            false
-          );
-
-
-          btn.classList.remove(
-            "active"
-          );
-
-        }
-
-
-        btn.addEventListener(
-          "touchstart",
-          start,
-          {
-            passive: false
-          }
-        );
-
-
-        btn.addEventListener(
-          "touchend",
-          end,
-          {
-            passive: false
-          }
-        );
-
-
-        btn.addEventListener(
-          "touchcancel",
-          end,
-          {
-            passive: false
-          }
-        );
-
-
-        btn.addEventListener(
-          "mousedown",
-          start
-        );
-
-
-        btn.addEventListener(
-          "mouseup",
-          end
-        );
-
-
-        btn.addEventListener(
-          "mouseleave",
-          end
-        );
-
-      });
-
-
-    /* =========================================================
-       DRAG MOBILE CONTROLS
-       ========================================================= */
-
-    let activeItem = null;
-
-
-    const startDrag =
-      (el, x, y) => {
-
-        if (!isEditing)
-          return;
-
-
-        activeItem = el;
-
-        el.style.cursor =
-          "grabbing";
-
-      };
-
-
-    const moveDrag =
-      (x, y) => {
-
-        if (
-          !activeItem ||
-          !isEditing
-        )
-          return;
-
-
-        activeItem.style.left =
-          (
-            x /
-            window.innerWidth *
-            100
-          ).toFixed(2) + "%";
-
-
-        activeItem.style.top =
-          (
-            y /
-            window.innerHeight *
-            100
-          ).toFixed(2) + "%";
-
-      };
-
-
-    document
-      .querySelectorAll(".draggable")
-      .forEach(el => {
-
-        el.addEventListener(
-          "mousedown",
-          e => {
-
-            startDrag(
-              el,
-              e.clientX,
-              e.clientY
+            updateKey(
+              key,
+              true
             );
 
-          }
-        );
-
-
-        el.addEventListener(
-          "touchstart",
-          e => {
-
-            if (!isEditing)
-              return;
-
-
-            startDrag(
-              el,
-              e.touches[0].clientX,
-              e.touches[0].clientY
+            button.classList.add(
+              "active"
             );
 
           },
           {
-            passive: true
+            passive: false
           }
         );
 
+        const release =
+          event => {
+
+            if (
+              pointerId !== null &&
+              event.pointerId !==
+                pointerId
+            ) {
+              return;
+            }
+
+            event.preventDefault();
+
+            updateKey(
+              key,
+              false
+            );
+
+            button.classList.remove(
+              "active"
+            );
+
+            pointerId = null;
+          };
+
+        button.addEventListener(
+          "pointerup",
+          release,
+          {
+            passive: false
+          }
+        );
+
+        button.addEventListener(
+          "pointercancel",
+          release,
+          {
+            passive: false
+          }
+        );
+
+        button.addEventListener(
+          "lostpointercapture",
+          () => {
+
+            updateKey(
+              key,
+              false
+            );
+
+            button.classList.remove(
+              "active"
+            );
+
+            pointerId = null;
+          }
+        );
       });
 
+    /* =====================================================
+       DRAG CONTROLS
+    ====================================================== */
 
-    window.addEventListener(
-      "mousemove",
-      e => {
+    document
+      .querySelectorAll(
+        ".draggable"
+      )
+      .forEach(element => {
 
-        if (activeItem)
-          moveDrag(
-            e.clientX,
-            e.clientY
-          );
+        element.addEventListener(
+          "pointerdown",
+          event => {
 
-      }
-    );
+            if (!isEditing) {
+              return;
+            }
 
+            event.preventDefault();
 
-    window.addEventListener(
-      "touchmove",
-      e => {
+            event.stopPropagation();
 
-        if (
-          activeItem &&
-          e.touches.length
-        ) {
+            activeDragItem =
+              element;
 
-          moveDrag(
-            e.touches[0].clientX,
-            e.touches[0].clientY
-          );
+            dragPointerId =
+              event.pointerId;
 
-        }
+            try {
 
-      },
-      {
-        passive: true
-      }
-    );
+              element.setPointerCapture(
+                event.pointerId
+              );
 
+            } catch (_) {}
 
-    window.addEventListener(
-      "mouseup",
-      () => {
-
-        if (activeItem) {
-
-          activeItem.style.cursor =
-            "grab";
-
-        }
-
-        activeItem = null;
-
-      }
-    );
-
-
-    window.addEventListener(
-      "touchend",
-      () => {
-
-        if (activeItem) {
-
-          activeItem.style.cursor =
-            "grab";
-
-        }
-
-        activeItem = null;
-
-      }
-    );
-
-
-    /* =========================================================
-       MOBILE CONTROLS TOGGLE
-       ========================================================= */
-
-    function toggleMobileHardware() {
-
-      playSelect();
-
-
-      useMobileControls =
-        !useMobileControls;
-
-
-      document
-        .getElementById(
-          "mobile-controls-status-text"
-        )
-        .textContent =
-          "Mobile controls: " +
-          (
-            useMobileControls
-              ? "ON"
-              : "OFF"
-          );
-
-
-      localStorage.setItem(
-        "deltarune-mobile-toggle",
-        useMobileControls
-          ? "true"
-          : "false"
-      );
-
-
-      applyConfig();
-
-    }
-
-
-    /* =========================================================
-       APPLY CONFIG
-       ========================================================= */
-
-    function applyConfig() {
-
-      if (
-        useMobileControls &&
-        gamestarted
-      ) {
-
-        hud.style.display =
-          "block";
-
-
-        hud.style.opacity =
-          config.opacity;
-
-
-        document
-          .getElementById(
-            "settings-bar"
-          )
-          .style.display =
-            "flex";
-
-      }
-
-      else {
-
-        hud.style.display =
-          "none";
-
-
-        document
-          .getElementById(
-            "settings-bar"
-          )
-          .style.display =
-            "none";
-
-
-        document
-          .getElementById(
-            "settings-panel"
-          )
-          .style.display =
-            "none";
-
-      }
-
-
-      document.documentElement
-        .style.setProperty(
-          "--ctrl-scale",
-          config.scale
+            element.style.cursor =
+              "grabbing";
+          },
+          {
+            passive: false
+          }
         );
 
+        element.addEventListener(
+          "pointermove",
+          event => {
 
-      Object.entries(
-        config.positions || {}
-      ).forEach(
-        ([id, pos]) => {
+            if (
+              !activeDragItem ||
+              activeDragItem !==
+                element ||
+              dragPointerId !==
+                event.pointerId
+            ) {
+              return;
+            }
 
-          const el =
-            document.querySelector(
-              `[data-save-id="${id}"]`
-            );
+            event.preventDefault();
 
+            const x =
+              Math.max(
+                0,
+                Math.min(
+                  window.innerWidth,
+                  event.clientX
+                )
+              );
 
-          if (
-            el &&
-            pos &&
-            pos.x &&
-            pos.y
-          ) {
+            const y =
+              Math.max(
+                0,
+                Math.min(
+                  window.innerHeight,
+                  event.clientY
+                )
+              );
 
-            el.style.left =
-              pos.x;
+            element.style.left =
+              (
+                x /
+                window.innerWidth *
+                100
+              ).toFixed(2) +
+              "%";
 
-            el.style.top =
-              pos.y;
+            element.style.top =
+              (
+                y /
+                window.innerHeight *
+                100
+              ).toFixed(2) +
+              "%";
+          },
+          {
+            passive: false
+          }
+        );
 
+        const stopDrag =
+          event => {
+
+            if (
+              activeDragItem !==
+              element
+            ) {
+              return;
+            }
+
+            if (
+              dragPointerId !== null &&
+              event.pointerId !==
+                dragPointerId
+            ) {
+              return;
+            }
+
+            element.style.cursor =
+              "grab";
+
+            activeDragItem = null;
+
+            dragPointerId = null;
+          };
+
+        element.addEventListener(
+          "pointerup",
+          stopDrag,
+          {
+            passive: false
+          }
+        );
+
+        element.addEventListener(
+          "pointercancel",
+          stopDrag,
+          {
+            passive: false
+          }
+        );
+
+        element.addEventListener(
+          "lostpointercapture",
+          stopDrag
+        );
+      });
+
+    /* =====================================================
+       SAVE POSITIONS
+    ====================================================== */
+
+    function savePositions() {
+
+      if (!config.positions) {
+
+        config.positions = {};
+      }
+
+      document
+        .querySelectorAll(
+          ".draggable"
+        )
+        .forEach(element => {
+
+          const id =
+            element.dataset.saveId;
+
+          if (!id) {
+            return;
           }
 
-        }
-      );
+          config.positions[id] = {
 
+            x:
+              element.style.left ||
+              "",
+
+            y:
+              element.style.top ||
+              ""
+
+          };
+        });
+
+      saveConfig();
     }
 
+    /* =====================================================
+       CONFIG
+    ====================================================== */
 
-    /* =========================================================
-       SETTINGS
-       ========================================================= */
+    function saveConfig() {
 
-    document
-      .getElementById(
-        "settings-toggle"
-      )
-      .onclick = () => {
+      try {
 
-        const panel =
-          document.getElementById(
-            "settings-panel"
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(config)
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Config save error:",
+          error
+        );
+      }
+    }
+
+    function loadConfig() {
+
+      try {
+
+        const saved =
+          localStorage.getItem(
+            STORAGE_KEY
           );
 
+        if (!saved) {
+          return;
+        }
+
+        const parsed =
+          JSON.parse(saved);
 
         if (
-          panel.style.display ===
-          "block"
+          parsed &&
+          typeof parsed ===
+            "object"
         ) {
 
-          panel.style.display =
-            "none";
+          config = {
 
+            opacity:
+              typeof parsed.opacity ===
+                "number"
+                ? parsed.opacity
+                : 1,
 
-          isEditing = false;
+            scale:
+              typeof parsed.scale ===
+                "number"
+                ? parsed.scale
+                : 1.3,
 
-
-          document.body.classList
-            .remove(
-              "edit-mode"
-            );
-
-
-          document
-            .querySelectorAll(
-              ".draggable"
-            )
-            .forEach(el => {
-
-              if (
-                !config.positions
-              ) {
-
-                config.positions = {};
-
-              }
-
-
-              config.positions[
-                el.getAttribute(
-                  "data-save-id"
-                )
-              ] = {
-
-                x: el.style.left,
-
-                y: el.style.top
-
-              };
-
-            });
-
-
-          localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(config)
-          );
-
+            positions:
+              parsed.positions &&
+              typeof parsed.positions ===
+                "object"
+                ? parsed.positions
+                : {}
+          };
         }
 
-        else {
+      } catch (error) {
 
-          panel.style.display =
-            "block";
-
-
-          isEditing = true;
-
-
-          releaseMovementKeys();
-
-
-          document.body.classList
-            .add(
-              "edit-mode"
-            );
-
-        }
-
-
-        applyConfig();
-
-      };
-
-
-    document
-      .getElementById(
-        "opacity-slider"
-      )
-      .oninput = e => {
-
-        config.opacity =
-          parseFloat(
-            e.target.value
-          );
-
-
-        applyConfig();
-
-      };
-
-
-    document
-      .getElementById(
-        "size-slider"
-      )
-      .oninput = e => {
-
-        config.scale =
-          parseFloat(
-            e.target.value
-          );
-
-
-        applyConfig();
-
-      };
-
-
-    /* =========================================================
-       RESET LAYOUT
-       ========================================================= */
-
-    document
-      .getElementById(
-        "reset-pos"
-      )
-      .onclick = () => {
+        console.error(
+          "Config load error:",
+          error
+        );
 
         config = {
 
@@ -2012,758 +2495,1076 @@
           scale: 1.3,
 
           positions: {}
-
         };
+      }
+    }
 
+    function applyConfig() {
 
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify(config)
+      document.documentElement
+        .style.setProperty(
+          "--ctrl-scale",
+          String(
+            config.scale
+          )
         );
 
-
-        document
-          .getElementById(
-            "opacity-slider"
+      document.documentElement
+        .style.setProperty(
+          "--ctrl-opacity",
+          String(
+            config.opacity
           )
-          .value = 1;
+        );
 
+      Object.entries(
+        config.positions || {}
+      ).forEach(
+        ([id, position]) => {
 
-        document
-          .getElementById(
-            "size-slider"
-          )
-          .value = 1.3;
-
-
-        document
-          .querySelectorAll(
-            ".draggable"
-          )
-          .forEach(el => {
-
-            el.style.left = "";
-
-            el.style.top = "";
-
-          });
-
-
-        applyConfig();
-
-      };
-
-
-    /* =========================================================
-       INJECT GAME HTML
-       ========================================================= */
-
-    function injectAndLoad(
-      htmlText
-    ) {
-
-      const receiver = `
-
-        <script>
-
-          const r = () => {
-
-            window.dispatchEvent(
-              new Event("resize")
+          const element =
+            document.querySelector(
+              `[data-save-id="${id}"]`
             );
 
+          if (
+            !element ||
+            !position
+          ) {
+            return;
+          }
 
-            const canvas =
-              document.querySelector(
-                "canvas"
-              );
+          if (
+            typeof position.x ===
+              "string" &&
+            position.x !== ""
+          ) {
 
+            element.style.left =
+              position.x;
+          }
 
-            if (canvas) {
+          if (
+            typeof position.y ===
+              "string" &&
+            position.y !== ""
+          ) {
 
-              canvas.style.width =
-                "100vw";
+            element.style.top =
+              position.y;
+          }
+        }
+      );
 
-              canvas.style.height =
-                "100vh";
+      if (
+        gameStarted &&
+        useMobileControls
+      ) {
 
-            }
+        hud.style.display =
+          "block";
 
+        settingsBar.style.display =
+          "flex";
+
+      } else {
+
+        hud.style.display =
+          "none";
+
+        settingsBar.style.display =
+          "none";
+
+        settingsPanel.style.display =
+          "none";
+
+        isEditing = false;
+
+        document.body.classList
+          .remove(
+            "edit-mode"
+          );
+      }
+    }
+
+    /* =====================================================
+       SETTINGS
+    ====================================================== */
+
+    const settingsToggle =
+      document.getElementById(
+        "settings-toggle"
+      );
+
+    settingsToggle.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        if (
+          settingsPanel.style.display ===
+          "block"
+        ) {
+
+          settingsPanel.style.display =
+            "none";
+
+          isEditing = false;
+
+          document.body.classList
+            .remove(
+              "edit-mode"
+            );
+
+          savePositions();
+
+        } else {
+
+          settingsPanel.style.display =
+            "block";
+
+          isEditing = true;
+
+          releaseAllKeys();
+
+          document.body.classList
+            .add(
+              "edit-mode"
+            );
+        }
+      }
+    );
+
+    document
+      .getElementById(
+        "opacity-slider"
+      )
+      .addEventListener(
+        "input",
+        event => {
+
+          config.opacity =
+            Number(
+              event.target.value
+            );
+
+          applyConfig();
+
+          saveConfig();
+        }
+      );
+
+    document
+      .getElementById(
+        "size-slider"
+      )
+      .addEventListener(
+        "input",
+        event => {
+
+          config.scale =
+            Number(
+              event.target.value
+            );
+
+          applyConfig();
+
+          saveConfig();
+        }
+      );
+
+    document
+      .getElementById(
+        "reset-pos"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          config = {
+
+            opacity: 1,
+
+            scale: 1.3,
+
+            positions: {}
           };
 
+          document
+            .getElementById(
+              "opacity-slider"
+            )
+            .value = "1";
 
-          let count = 0;
+          document
+            .getElementById(
+              "size-slider"
+            )
+            .value = "1.3";
 
+          document
+            .querySelectorAll(
+              ".draggable"
+            )
+            .forEach(
+              element => {
 
-          const interval =
-            setInterval(
-              () => {
+                element.style.left =
+                  "";
 
-                r();
-
-                if (
-                  count++ > 30
-                ) {
-
-                  clearInterval(
-                    interval
-                  );
-
-                }
-
-              },
-              100
+                element.style.top =
+                  "";
+              }
             );
 
+          saveConfig();
 
-          window.addEventListener(
-            "message",
-            e => {
+          applyConfig();
+        }
+      );
 
-              if (
-                !e.data ||
-                !e.data.type
-              )
-                return;
+    /* =====================================================
+       GAME HTML LOADER
+    ====================================================== */
 
+    function injectAndLoad(
+      htmlText,
+      baseURL
+    ) {
 
-              const k =
-                new KeyboardEvent(
-                  e.data.type,
-                  {
+      let finalHTML =
+        String(htmlText);
 
-                    key:
-                      e.data.key,
+      /*
+        Remove an existing base.
+        This prevents duplicate <base>
+        elements from breaking paths.
+      */
 
-                    keyCode:
-                      e.data.keyCode,
+      finalHTML =
+        finalHTML.replace(
+          /<base\b[^>]*>/gi,
+          ""
+        );
 
-                    which:
-                      e.data.keyCode,
+      const receiver = `
+<script>
+(function () {
 
-                    bubbles:
-                      true,
+  "use strict";
 
-                    cancelable:
-                      true
+  function resizeGame() {
 
-                  }
-                );
+    try {
 
+      window.dispatchEvent(
+        new Event("resize")
+      );
 
-              window.dispatchEvent(k);
+    } catch (_) {}
 
-              document.dispatchEvent(k);
+    try {
 
-            }
+      const canvas =
+        document.querySelector(
+          "canvas"
+        );
+
+      if (canvas) {
+
+        canvas.style.maxWidth =
+          "100vw";
+
+        canvas.style.maxHeight =
+          "100vh";
+
+        canvas.style.touchAction =
+          "none";
+      }
+
+    } catch (_) {}
+  }
+
+  function createKeyboardEvent(
+    type,
+    data
+  ) {
+
+    try {
+
+      const event =
+        new KeyboardEvent(
+          type,
+          {
+            key:
+              data.key,
+
+            code:
+              data.key ===
+                "ArrowUp"
+                ? "ArrowUp"
+                : data.key ===
+                    "ArrowDown"
+                  ? "ArrowDown"
+                  : data.key ===
+                      "ArrowLeft"
+                    ? "ArrowLeft"
+                    : data.key ===
+                        "ArrowRight"
+                      ? "ArrowRight"
+                      : "Key" +
+                        String(
+                          data.key
+                        ).toUpperCase(),
+
+            keyCode:
+              data.keyCode || 0,
+
+            which:
+              data.keyCode || 0,
+
+            bubbles: true,
+
+            cancelable: true
+          }
+        );
+
+      return event;
+
+    } catch (_) {
+
+      return null;
+    }
+  }
+
+  window.addEventListener(
+    "message",
+    function (event) {
+
+      const data =
+        event.data;
+
+      if (
+        !data ||
+        !data.type
+      ) {
+        return;
+      }
+
+      if (
+        data.type !==
+          "keydown" &&
+        data.type !==
+          "keyup"
+      ) {
+        return;
+      }
+
+      const keyboardEvent =
+        createKeyboardEvent(
+          data.type,
+          data
+        );
+
+      if (!keyboardEvent) {
+        return;
+      }
+
+      try {
+
+        window.dispatchEvent(
+          keyboardEvent
+        );
+
+      } catch (_) {}
+
+      try {
+
+        document.dispatchEvent(
+          keyboardEvent
+        );
+
+      } catch (_) {}
+
+      try {
+
+        if (
+          document.activeElement
+        ) {
+
+          document.activeElement
+            .dispatchEvent(
+              keyboardEvent
+            );
+        }
+
+      } catch (_) {}
+
+    },
+    false
+  );
+
+  let count = 0;
+
+  const interval =
+    setInterval(
+      function () {
+
+        resizeGame();
+
+        count++;
+
+        if (count >= 60) {
+
+          clearInterval(
+            interval
+          );
+        }
+
+      },
+      100
+    );
+
+  window.addEventListener(
+    "resize",
+    resizeGame
+  );
+
+  window.addEventListener(
+    "orientationchange",
+    function () {
+
+      setTimeout(
+        resizeGame,
+        150
+      );
+    }
+  );
+
+})();
+<\/script>
+`;
+
+      /*
+        Put the base immediately after <head>.
+      */
+
+      if (
+        /<head[^>]*>/i.test(
+          finalHTML
+        )
+      ) {
+
+        finalHTML =
+          finalHTML.replace(
+            /<head[^>]*>/i,
+            match =>
+              match +
+              `<base href="${baseURL}">` +
+              receiver
           );
 
-        <\/script>
+      } else {
 
-      `;
+        finalHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<base href="${baseURL}">
+${receiver}
+</head>
+<body>
+${finalHTML}
+</body>
+</html>
+        `;
+      }
 
+      /*
+        Revoke the previous Blob URL.
+      */
+
+      if (
+        frame.dataset.blobUrl
+      ) {
+
+        try {
+
+          URL.revokeObjectURL(
+            frame.dataset.blobUrl
+          );
+
+        } catch (_) {}
+      }
 
       const blob =
         new Blob(
-          [
-            htmlText.replace(
-              "<head>",
-              "<head>" +
-              receiver
-            )
-          ],
+          [finalHTML],
           {
             type:
               "text/html"
           }
         );
 
-
-      frame.src =
+      const url =
         URL.createObjectURL(
           blob
         );
 
+      frame.dataset.blobUrl =
+        url;
 
-      document
-        .getElementById(
-          "loader-screen"
-        )
-        .style.display =
-          "none";
+      frame.onload =
+        () => {
 
+          loader.style.display =
+            "none";
+
+          try {
+
+            frame.contentWindow
+              .focus();
+
+          } catch (_) {}
+        };
+
+      frame.src = url;
     }
 
-
-    /* =========================================================
+    /* =====================================================
        LOAD CHAPTER
-       ========================================================= */
+    ====================================================== */
 
-    function loadChapter(
+    async function loadChapter(
       chapter
     ) {
 
       playSelect();
 
+      gameStarted = true;
 
-      gamestarted = true;
+      releaseAllKeys();
 
+      mainMenu.style.display =
+        "none";
 
-      document.removeEventListener(
-        "keydown",
-        handleMenuNavigation
-      );
-
-
-      document
-        .getElementById(
-          "main-menu-ui"
-        )
-        .style.display =
-          "none";
-
-
-      document
-        .getElementById(
-          "loader-screen"
-        )
-        .style.display =
-          "flex";
-
+      loader.style.display =
+        "flex";
 
       frame.style.display =
         "block";
 
-
       applyConfig();
-
 
       const chapterPath =
         `${REPO_BASE}chapter${chapter}/`;
 
+      const chapterURL =
+        `${chapterPath}index.html`;
 
-      fetch(
-        `${chapterPath}index.html`
-      )
+      try {
 
-      .then(res => {
-
-        if (!res.ok) {
-
-          throw new Error(
-            `Failed to load ${chapterPath}index.html`
+        const response =
+          await fetch(
+            chapterURL,
+            {
+              method: "GET",
+              cache: "no-cache"
+            }
           );
 
+        if (!response.ok) {
+
+          throw new Error(
+            "HTTP " +
+            response.status
+          );
         }
 
-        return res.text();
+        const html =
+          await response.text();
 
-      })
+        if (
+          !html ||
+          html.trim().length === 0
+        ) {
 
-      .then(html => {
+          throw new Error(
+            "Chapter HTML is empty."
+          );
+        }
 
-        injectAndLoad(html);
+        injectAndLoad(
+          html,
+          chapterPath
+        );
 
-      })
+      } catch (error) {
 
-      .catch(error => {
+        console.error(
+          "Chapter loading failed:",
+          error
+        );
 
-        console.error(error);
+        /*
+          Direct fallback.
+        */
 
-
-        frame.src =
-          `${chapterPath}index.html`;
-
-
-        document
-          .getElementById(
-            "loader-screen"
-          )
-          .style.display =
-            "none";
-
-      });
-
-    }
-
-
-    /* =========================================================
-       MENU NAVIGATION
-       ========================================================= */
-
-    let selectedChapter = null;
-
-
-    document
-      .querySelectorAll(
-        ".row"
-      )
-      .forEach(row => {
-
-        row.addEventListener(
-          "mouseenter",
+        frame.onload =
           () => {
 
-            if (!gamestarted) {
+            loader.style.display =
+              "none";
+          };
+
+        frame.src =
+          chapterURL;
+      }
+    }
+
+    /* =====================================================
+       MENU ROWS
+    ====================================================== */
+
+    const chapterRows =
+      Array.from(
+        document.querySelectorAll(
+          ".menu .row"
+        )
+      );
+
+    chapterRows.forEach(
+      row => {
+
+        row.addEventListener(
+          "pointerenter",
+          () => {
+
+            if (!gameStarted) {
 
               playMove();
-
             }
-
           }
         );
 
-      });
+        row.addEventListener(
+          "click",
+          event => {
 
+            event.preventDefault();
+
+            if (gameStarted) {
+              return;
+            }
+
+            const chapter =
+              row.dataset.chapter;
+
+            if (chapter) {
+
+              loadChapter(
+                Number(chapter)
+              );
+            }
+          }
+        );
+      }
+    );
+
+    /* =====================================================
+       MOBILE MENU
+    ====================================================== */
+
+    mobileRow.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        if (gameStarted) {
+          return;
+        }
+
+        toggleMobileHardware();
+      }
+    );
+
+    /* =====================================================
+       EXPORT
+    ====================================================== */
+
+    document
+      .getElementById(
+        "export-row"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          if (gameStarted) {
+            return;
+          }
+
+          exportSave();
+        }
+      );
+
+    /* =====================================================
+       IMPORT
+    ====================================================== */
+
+    document
+      .getElementById(
+        "import-row"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          if (gameStarted) {
+            return;
+          }
+
+          playSelect();
+
+          importInput.click();
+        }
+      );
+
+    importInput.addEventListener(
+      "change",
+      () => {
+
+        importSave(
+          importInput
+        );
+      }
+    );
+
+    /* =====================================================
+       MENU NAVIGATION
+    ====================================================== */
+
+    function updateSelectedRow() {
+
+      chapterRows.forEach(
+        row => {
+
+          row.classList.remove(
+            "selected"
+          );
+        }
+      );
+
+      if (
+        selectedIndex === null
+      ) {
+        return;
+      }
+
+      const row =
+        chapterRows[
+          selectedIndex
+        ];
+
+      if (!row) {
+        return;
+      }
+
+      row.classList.add(
+        "selected"
+      );
+
+      try {
+
+        row.scrollIntoView(
+          {
+            behavior:
+              "smooth",
+
+            block:
+              "nearest"
+          }
+        );
+
+      } catch (_) {}
+    }
+
+    function activateSelectedRow() {
+
+      if (
+        selectedIndex === null
+      ) {
+        return;
+      }
+
+      const row =
+        chapterRows[
+          selectedIndex
+        ];
+
+      if (!row) {
+        return;
+      }
+
+      row.click();
+    }
 
     function handleMenuNavigation(
       event
     ) {
 
-      if (gamestarted)
+      if (gameStarted) {
         return;
-
-
-      const rows =
-        document.querySelectorAll(
-          ".row"
-        );
-
-
-      if (!rows.length)
-        return;
-
+      }
 
       if (
         event.key ===
-        "ArrowUp"
-      ) {
-
-        playMove();
-
-
-        if (
-          selectedChapter ===
-          null
-        ) {
-
-          selectedChapter =
-            0;
-
-        }
-
-        else {
-
-          if (
-            rows[selectedChapter]
-          ) {
-
-            rows[
-              selectedChapter
-            ].classList.remove(
-              "selected"
-            );
-
-          }
-
-
-          selectedChapter--;
-
-
-          if (
-            selectedChapter < 0
-          ) {
-
-            selectedChapter =
-              rows.length - 1;
-
-          }
-
-        }
-
-
-        if (
-          rows[selectedChapter]
-        ) {
-
-          rows[
-            selectedChapter
-          ].classList.add(
-            "selected"
-          );
-
-        }
-
-      }
-
-
-      else if (
+          "ArrowDown" ||
         event.key ===
-        "ArrowDown"
+          "ArrowUp"
       ) {
+
+        event.preventDefault();
+
+        if (
+          selectedIndex === null
+        ) {
+
+          selectedIndex = 0;
+
+        } else if (
+          event.key ===
+          "ArrowDown"
+        ) {
+
+          selectedIndex++;
+
+          if (
+            selectedIndex >=
+            chapterRows.length
+          ) {
+
+            selectedIndex = 0;
+          }
+
+        } else {
+
+          selectedIndex--;
+
+          if (
+            selectedIndex < 0
+          ) {
+
+            selectedIndex =
+              chapterRows.length -
+              1;
+          }
+        }
 
         playMove();
 
+        updateSelectedRow();
 
-        if (
-          selectedChapter ===
-          null
-        ) {
-
-          selectedChapter =
-            0;
-
-        }
-
-        else {
-
-          if (
-            rows[selectedChapter]
-          ) {
-
-            rows[
-              selectedChapter
-            ].classList.remove(
-              "selected"
-            );
-
-          }
-
-
-          selectedChapter++;
-
-
-          if (
-            selectedChapter >=
-            rows.length
-          ) {
-
-            selectedChapter =
-              0;
-
-          }
-
-        }
-
-
-        if (
-          rows[selectedChapter]
-        ) {
-
-          rows[
-            selectedChapter
-          ].classList.add(
-            "selected"
-          );
-
-        }
-
-      }
-
-
-      else if (
+      } else if (
         event.key ===
         "Enter"
       ) {
 
-        if (
-          selectedChapter ===
-          null
-        )
-          return;
+        event.preventDefault();
 
-
-        playSelect();
-
-
-        const targetRow =
-          rows[selectedChapter];
-
-
-        if (
-          !targetRow
-        )
-          return;
-
-
-        const href =
-          targetRow.getAttribute(
-            "href"
-          ) || "";
-
-
-        const chapterMatch =
-          href.match(
-            /loadChapter\((\d+)\)/
-          );
-
-
-        if (chapterMatch) {
-
-          loadChapter(
-            parseInt(
-              chapterMatch[1],
-              10
-            )
-          );
-
-          return;
-
-        }
-
-
-        if (
-          href.includes(
-            "toggleMobileHardware"
-          )
-        ) {
-
-          toggleMobileHardware();
-
-          return;
-
-        }
-
-
-        if (
-          href.includes(
-            "exportSave"
-          )
-        ) {
-
-          exportSave();
-
-          return;
-
-        }
-
-
-        if (
-          href.includes(
-            "importFile"
-          )
-        ) {
-
-          document
-            .getElementById(
-              "importFile"
-            )
-            .click();
-
-        }
-
+        activateSelectedRow();
       }
-
     }
-
 
     document.addEventListener(
       "keydown",
       handleMenuNavigation
     );
 
+    /* =====================================================
+       GLOBAL RELEASE
+    ====================================================== */
 
-    /* =========================================================
-       WINDOW LOAD
-       ========================================================= */
+    window.addEventListener(
+      "blur",
+      releaseAllKeys
+    );
 
-    window.onload = () => {
+    document.addEventListener(
+      "visibilitychange",
+      () => {
 
-      /*
-       * Old domain warning.
-       */
+        if (
+          document.hidden
+        ) {
+
+          releaseAllKeys();
+
+          releaseDpad();
+        }
+      }
+    );
+
+    /* =====================================================
+       OLD DOMAIN
+    ====================================================== */
+
+    function checkOldDomain() {
 
       if (
         window.location.hostname ===
         "deltarunefullwebport.vercel.app"
       ) {
 
-        document
-          .getElementById(
+        const notice =
+          document.getElementById(
             "notice-container"
-          )
-          .innerHTML = `
-
-            <div class="deactivation-warning">
-
-              This domain might get deactivated soon.
-              Please export your saves and switch to
-              the new official domain:
-
-              <a
-                href="https://byalvaro19.github.io/deltarune/"
-                target="_blank"
-                rel="noopener">
-
-                byalvaro19.github.io/deltarune/
-
-              </a>
-
-            </div>
-
-          `;
-
-      }
-
-
-      /* =====================================================
-         RESTORE MOBILE TOGGLE
-         ===================================================== */
-
-      const savedToggle =
-        localStorage.getItem(
-          "deltarune-mobile-toggle"
-        );
-
-
-      if (
-        savedToggle ===
-        "true"
-      ) {
-
-        useMobileControls =
-          true;
-
-
-        document
-          .getElementById(
-            "mobile-controls-status-text"
-          )
-          .textContent =
-            "Mobile controls: ON";
-
-      }
-
-
-      /* =====================================================
-         RESTORE CONTROL CONFIG
-         ===================================================== */
-
-      const saved =
-        localStorage.getItem(
-          STORAGE_KEY
-        );
-
-
-      if (saved) {
-
-        try {
-
-          config =
-            JSON.parse(saved);
-
-        }
-
-        catch (e) {
-
-          console.error(
-            "Invalid control configuration",
-            e
           );
 
+        if (!notice) {
+          return;
         }
 
+        notice.innerHTML = `
+<div class="deactivation-warning">
+
+This domain might get deactivated soon.
+Please export your saves and switch to
+the new official domain:
+
+<br><br>
+
+<a
+  href="https://byalvaro19.github.io/deltarune/"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  byalvaro19.github.io/deltarune/
+</a>
+
+</div>
+        `;
       }
+    }
 
+    /* =====================================================
+       PWA SERVICE WORKER
+    ====================================================== */
 
-      if (!config)
-        config = {};
-
+    function registerServiceWorker() {
 
       if (
-        config.opacity ===
-        undefined
+        "serviceWorker" in navigator &&
+        (
+          location.protocol ===
+            "https:" ||
+          location.hostname ===
+            "localhost" ||
+          location.hostname ===
+            "127.0.0.1"
+        )
       ) {
 
-        config.opacity =
-          1;
+        navigator.serviceWorker
+          .register(
+            "./sw.js"
+          )
+          .catch(
+            error => {
 
+              console.warn(
+                "Service worker registration failed:",
+                error
+              );
+            }
+          );
+      }
+    }
+
+    /* =====================================================
+       INITIALIZATION
+    ====================================================== */
+
+    function initialize() {
+
+      checkOldDomain();
+
+      try {
+
+        const savedMobile =
+          localStorage.getItem(
+            MOBILE_KEY
+          );
+
+        useMobileControls =
+          savedMobile ===
+          "true";
+
+      } catch (_) {
+
+        useMobileControls =
+          false;
       }
 
+      updateMobileText();
 
-      if (
-        config.scale ===
-        undefined
-      ) {
+      loadConfig();
 
-        config.scale =
-          1.3;
-
-      }
-
-
-      if (
-        !config.positions
-      ) {
-
-        config.positions =
-          {};
-
-      }
-
-
-      document
-        .getElementById(
+      const opacitySlider =
+        document.getElementById(
           "opacity-slider"
-        )
-        .value =
-          config.opacity;
+        );
 
-
-      document
-        .getElementById(
+      const sizeSlider =
+        document.getElementById(
           "size-slider"
-        )
-        .value =
-          config.scale;
+        );
 
+      opacitySlider.value =
+        String(
+          config.opacity
+        );
+
+      sizeSlider.value =
+        String(
+          config.scale
+        );
 
       applyConfig();
 
-    };
+      registerServiceWorker();
+    }
 
+    /* =====================================================
+       START
+    ====================================================== */
 
-    /* =========================================================
-       PREVENT IOS GESTURES WHILE PLAYING
-       ========================================================= */
+    if (
+      document.readyState ===
+      "loading"
+    ) {
 
-    document.addEventListener(
-      "gesturestart",
-      e => {
+      document.addEventListener(
+        "DOMContentLoaded",
+        initialize,
+        {
+          once: true
+        }
+      );
 
-        e.preventDefault();
+    } else {
 
-      },
-      {
-        passive: false
-      }
-    );
-
-
-    document.addEventListener(
-      "gesturechange",
-      e => {
-
-        e.preventDefault();
-
-      },
-      {
-        passive: false
-      }
-    );
-
-
-    document.addEventListener(
-      "gestureend",
-      e => {
-
-        e.preventDefault();
-
-      },
-      {
-        passive: false
-      }
-    );
+      initialize();
+    }
 
   </script>
 
