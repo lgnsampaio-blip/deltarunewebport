@@ -9,13 +9,292 @@
   font-display: swap;
 }
 
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 * {
+  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  background: #000;
+  color: #fff;
+
+  overflow: hidden;
+}
+
+body {
+  font-family: "Deltarune", monospace;
+  -webkit-font-smoothing: none;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+#main-menu-ui {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding:
+    max(20px, env(safe-area-inset-top))
+    20px
+    100px;
+
+  background: #000;
+
+  z-index: 10;
+
+  touch-action: pan-y;
+}
+
+#main-menu-ui::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo-container {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
+}
+
+.logo {
+  width: min(700px, 90vw);
+  height: auto;
+  max-height: 200px;
+
+  object-fit: contain;
+  display: block;
+
+  image-rendering: pixelated;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.menu {
+  width: min(90vw, 800px);
+
+  margin: 20px auto 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+
+/* =========================================================
+   MENU ROWS
+========================================================= */
+
+.row,
+.disabled-row {
+  position: relative;
+
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(150px, 200px)
+    minmax(0, 1fr)
+    60px;
+
+  align-items: center;
+
+  padding: 12px 0;
+
+  gap: 16px;
+
+  color: #fff;
+  text-decoration: none;
+
+  touch-action: manipulation;
+
+  transition:
+    transform .08s steps(1),
+    filter .08s steps(1);
+}
+
+.row {
+  cursor: pointer;
+}
+
+.disabled-row {
+  opacity: .55;
+}
+
+.chapter,
+.title,
+.disabled-title,
+.badge {
+  display: inline-block;
+
+  transform: scaleY(1.1);
+  transform-origin: bottom;
+}
+
+.chapter {
+  text-align: left;
+}
+
+.title,
+.disabled-title {
+  text-align: center;
+}
+
+.row img,
+.disabled-row img {
+  width: 60px;
+  height: 50px;
+
+  object-fit: contain;
+
+  image-rendering: pixelated;
+}
+
+
+/* =========================================================
+   MENU SELECT
+========================================================= */
+
+.row:hover .chapter,
+.row:hover .title,
+.row.selected .chapter,
+.row.selected .title {
+  color: #fefe00;
+}
+
+.row:hover img,
+.row.selected img {
+  filter: sepia(1) saturate(100);
+}
+
+.row:active {
+  transform: translate(2px, 2px);
+}
+
+.row.touch-selected .chapter,
+.row.touch-selected .title {
+  color: #fefe00;
+}
+
+.row.touch-selected img {
+  filter: sepia(1) saturate(100);
+}
+
+
+/* =========================================================
+   WARNING
+========================================================= */
+
+.deactivation-warning {
+  width: min(90vw, 700px);
+
+  margin: 10px auto 20px;
+
+  text-align: center;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.deactivation-warning a {
+  color: #ffff00;
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+#loader-screen {
+  position: fixed;
+  inset: 0;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #000;
+  color: #fff;
+
+  z-index: 100;
+
+  font-family: Arial, sans-serif;
+}
+
+
+/* =========================================================
+   GAME
+========================================================= */
+
+#game-frame {
+  position: fixed;
+  inset: 0;
+
+  width: 100vw;
+
+  height: 100vh;
+  height: 100dvh;
+
+  border: 0;
+  outline: 0;
+
+  display: none;
+
+  background: #000;
+
+  z-index: 1;
+}
+
+
+/* =========================================================
+   MOBILE HUD
+========================================================= */
 
 #hud-layer {
   position: fixed;
   inset: 0;
+
   width: 100%;
   height: 100%;
   height: 100dvh;
@@ -23,10 +302,18 @@
   z-index: 9999;
 
   pointer-events: none;
+
   overflow: hidden;
 
   font-family: "Deltarune", monospace;
+
   -webkit-font-smoothing: none;
+
+  image-rendering: pixelated;
+
+  touch-action: none;
+
+  opacity: var(--ctrl-opacity, 1);
 }
 
 
@@ -49,6 +336,7 @@
   border-radius: 0;
 
   pointer-events: auto;
+
   touch-action: none;
 
   box-sizing: border-box;
@@ -60,56 +348,74 @@
 
 
 /* =========================================================
-   CÍRCULO PIXELADO
+   PIXEL CIRCLE BORDER
 ========================================================= */
 
 #joystick::before {
   content: "";
 
   position: absolute;
+
   inset: -4px;
 
   background: #fff;
 
   pointer-events: none;
 
-  z-index: -1;
+  z-index: 0;
 
   clip-path: polygon(
     25% 0,
     75% 0,
+
     75% 3%,
     86% 3%,
+
     86% 8%,
     93% 8%,
+
     93% 15%,
     97% 15%,
+
     97% 25%,
     100% 25%,
+
     100% 75%,
     97% 75%,
+
     97% 85%,
     93% 85%,
+
     93% 92%,
     86% 92%,
+
     86% 97%,
     75% 97%,
+
     75% 100%,
     25% 100%,
+
     25% 97%,
     14% 97%,
+
     14% 92%,
     7% 92%,
+
     7% 85%,
     3% 85%,
+
     3% 75%,
     0 75%,
+
     0 25%,
     3% 25%,
+
     3% 15%,
     7% 15%,
+
     7% 8%,
     14% 8%,
+
     14% 3%,
     25% 3%
   );
@@ -117,38 +423,55 @@
   -webkit-clip-path: polygon(
     25% 0,
     75% 0,
+
     75% 3%,
     86% 3%,
+
     86% 8%,
     93% 8%,
+
     93% 15%,
     97% 15%,
+
     97% 25%,
     100% 25%,
+
     100% 75%,
     97% 75%,
+
     97% 85%,
     93% 85%,
+
     93% 92%,
     86% 92%,
+
     86% 97%,
     75% 97%,
+
     75% 100%,
     25% 100%,
+
     25% 97%,
     14% 97%,
+
     14% 92%,
     7% 92%,
+
     7% 85%,
     3% 85%,
+
     3% 75%,
     0 75%,
+
     0 25%,
     3% 25%,
+
     3% 15%,
     7% 15%,
+
     7% 8%,
     14% 8%,
+
     14% 3%,
     25% 3%
   );
@@ -156,8 +479,10 @@
 
 
 /* =========================================================
-   STICK
-   O JAVASCRIPT CONTROLA O TRANSFORM
+   JOYSTICK STICK
+   IMPORTANTE:
+   NÃO adicionar transform aqui.
+   O JavaScript controla o transform.
 ========================================================= */
 
 #joystick-stick {
@@ -188,7 +513,7 @@
 
 
 /* =========================================================
-   BOTÕES Z X C
+   MOBILE BUTTONS
 ========================================================= */
 
 #mobile-buttons {
@@ -198,14 +523,24 @@
   bottom: 55px;
 
   display: flex;
+
   flex-direction: column;
 
   gap: 10px;
 
   pointer-events: auto;
+
   touch-action: none;
+
+  transform: scale(var(--ctrl-scale, 1));
+
+  transform-origin: center;
 }
 
+
+/* =========================================================
+   Z X C BUTTON
+========================================================= */
 
 .game-btn {
   position: relative;
@@ -217,6 +552,7 @@
   margin: 0;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
@@ -225,6 +561,7 @@
   background: #111;
 
   border: 4px solid #fff;
+
   border-radius: 0;
 
   color: #fff;
@@ -239,6 +576,7 @@
   text-align: center;
 
   pointer-events: auto;
+
   touch-action: none;
 
   box-shadow:
@@ -257,7 +595,7 @@
 
 
 /* =========================================================
-   DETALHE PIXELADO
+   PIXEL DETAIL
 ========================================================= */
 
 .game-btn::before {
@@ -282,7 +620,7 @@
 
 
 /* =========================================================
-   BOTÃO PRESSIONADO
+   PRESSED
 ========================================================= */
 
 .game-btn.active {
@@ -292,8 +630,117 @@
 
   text-shadow: none;
 
+  transform: translate(3px, 3px);
+
   box-shadow:
     2px 2px 0 #000;
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+#settings-bar {
+  position: fixed;
+
+  top:
+    max(10px, env(safe-area-inset-top));
+
+  right:
+    max(10px, env(safe-area-inset-right));
+
+  z-index: 10000;
+
+  display: none;
+
+  gap: 5px;
+}
+
+#settings-toggle {
+  padding: 9px 12px;
+
+  color: #fff;
+
+  background: #111;
+
+  border: 3px solid #fff;
+
+  border-radius: 0;
+
+  font-family: "Deltarune", monospace;
+
+  box-shadow:
+    4px 4px 0 #000;
+
+  cursor: pointer;
+}
+
+#settings-panel {
+  position: fixed;
+
+  top:
+    max(
+      60px,
+      calc(env(safe-area-inset-top) + 50px)
+    );
+
+  right:
+    max(
+      10px,
+      env(safe-area-inset-right)
+    );
+
+  width: 230px;
+
+  padding: 18px;
+
+  display: none;
+
+  background: #000;
+
+  border: 3px solid #fff;
+
+  border-radius: 0;
+
+  z-index: 9998;
+
+  font-family: "Deltarune", monospace;
+
+  box-shadow:
+    5px 5px 0 #000;
+}
+
+#settings-panel input {
+  width: 100%;
+}
+
+#reset-pos {
+  width: 100%;
+
+  margin-top: 10px;
+
+  padding: 10px;
+
+  background: #111;
+
+  color: #fff;
+
+  border: 3px solid #fff;
+
+  border-radius: 0;
+
+  font-family: "Deltarune", monospace;
+}
+
+
+/* =========================================================
+   EDIT MODE
+========================================================= */
+
+body.edit-mode #joystick,
+body.edit-mode #mobile-buttons {
+  outline: 2px dashed #fff;
 }
 
 
@@ -302,6 +749,41 @@
 ========================================================= */
 
 @media (max-width: 700px) {
+
+  #main-menu-ui {
+    padding-top:
+      max(
+        10px,
+        env(safe-area-inset-top)
+      );
+  }
+
+  .logo {
+    width: 90vw;
+    max-height: 150px;
+  }
+
+  .menu {
+    width: 94vw;
+  }
+
+  .row,
+  .disabled-row {
+    grid-template-columns:
+      110px
+      minmax(0, 1fr)
+      48px;
+
+    gap: 8px;
+
+    font-size: 22px;
+  }
+
+  .row img,
+  .disabled-row img {
+    width: 48px;
+    height: 42px;
+  }
 
   #joystick {
     left: 40px;
@@ -336,10 +818,20 @@
 
 
 /* =========================================================
-   CELULAR / TELA PEQUENA
+   SMALL SCREEN
 ========================================================= */
 
 @media (max-width: 450px) {
+
+  .row,
+  .disabled-row {
+    grid-template-columns:
+      90px
+      minmax(0, 1fr)
+      42px;
+
+    font-size: 18px;
+  }
 
   #joystick {
     left: 24px;
@@ -374,7 +866,7 @@
 
 
 /* =========================================================
-   ORIENTAÇÃO HORIZONTAL
+   LANDSCAPE
 ========================================================= */
 
 @media (orientation: landscape) and (max-height: 500px) {
