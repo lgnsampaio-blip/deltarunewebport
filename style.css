@@ -1,11 +1,17 @@
 /* =========================================================
-   DELTARUNE WEB PORT — STYLE
+   DELTARUNE WEB PORT
+   FULL STYLE.CSS
+   Menu + Game + Mobile Controls
+========================================================= */
+
+/* =========================================================
+   FONT
 ========================================================= */
 
 @font-face {
   font-family: "Deltarune";
   src: url("https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/font.otf")
-       format("opentype");
+    format("opentype");
 }
 
 /* =========================================================
@@ -14,8 +20,10 @@
 
 * {
   box-sizing: border-box;
+
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
+
   user-select: none;
   -webkit-user-select: none;
 }
@@ -24,6 +32,7 @@ html,
 body {
   width: 100%;
   height: 100%;
+
   margin: 0;
   padding: 0;
 
@@ -59,13 +68,15 @@ body {
   padding:
     max(20px, env(safe-area-inset-top))
     20px
-    100px;
+    max(100px, env(safe-area-inset-bottom));
 
   background: #000;
 
   z-index: 10;
 
   touch-action: pan-y;
+
+  scrollbar-width: none;
 }
 
 #main-menu-ui::-webkit-scrollbar {
@@ -88,6 +99,7 @@ body {
 
 .logo {
   width: min(700px, 90vw);
+
   height: auto;
 
   max-height: 200px;
@@ -97,13 +109,10 @@ body {
   display: block;
 
   image-rendering: auto;
-
-  filter:
-    drop-shadow(0 0 2px rgba(255,255,255,.15));
 }
 
 /* =========================================================
-   MENU LIST
+   MENU CONTAINER
 ========================================================= */
 
 .menu {
@@ -156,6 +165,8 @@ body {
 
 .disabled-row {
   opacity: .55;
+
+  cursor: default;
 }
 
 .chapter,
@@ -189,17 +200,14 @@ body {
 }
 
 /* =========================================================
-   MENU SELECT
+   MENU HOVER / SELECT
 ========================================================= */
 
 .row:hover .chapter,
 .row:hover .title,
 .row.selected .chapter,
 .row.selected .title {
-  color: #ffff00;
-
-  text-shadow:
-    0 0 4px rgba(255,255,0,.45);
+  color: #fefe00;
 }
 
 .row:hover img,
@@ -213,12 +221,13 @@ body {
   transform: scale(.985);
 }
 
+/* =========================================================
+   TOUCH SELECT
+========================================================= */
+
 .row.touch-selected .chapter,
 .row.touch-selected .title {
-  color: #ffff00;
-
-  text-shadow:
-    0 0 4px rgba(255,255,0,.45);
+  color: #fefe00;
 }
 
 .row.touch-selected img {
@@ -247,6 +256,8 @@ body {
 
 .deactivation-warning a {
   color: #ffff00;
+
+  text-decoration: underline;
 }
 
 /* =========================================================
@@ -275,12 +286,10 @@ body {
   margin: 0;
 
   font-size: 16px;
-
-  letter-spacing: 1px;
 }
 
 /* =========================================================
-   GAME
+   GAME FRAME
 ========================================================= */
 
 #game-frame {
@@ -312,6 +321,7 @@ body {
 
   width: 100%;
   height: 100%;
+  height: 100dvh;
 
   z-index: 20;
 
@@ -322,6 +332,8 @@ body {
   opacity: var(--ctrl-opacity, 1);
 
   touch-action: none;
+
+  overflow: visible;
 }
 
 /* =========================================================
@@ -331,13 +343,17 @@ body {
 #joystick {
   position: absolute;
 
-  left: 90px;
-  bottom: 90px;
+  left: 55px;
+  bottom: 55px;
 
-  width: 150px;
-  height: 150px;
+  width: 145px;
+  height: 145px;
 
   border-radius: 50%;
+
+  background: #000;
+
+  border: 4px solid #fff;
 
   pointer-events: auto;
 
@@ -346,44 +362,44 @@ body {
   transform:
     scale(var(--ctrl-scale, 1.3));
 
-  transform-origin: center;
-
-  background:
-    radial-gradient(
-      circle at 35% 30%,
-      rgba(255,255,255,.12),
-      rgba(255,255,255,.045) 45%,
-      rgba(0,0,0,.75) 100%
-    );
-
-  border:
-    3px solid rgba(255,255,255,.72);
+  transform-origin: center center;
 
   box-shadow:
-    0 0 0 2px #000,
-    0 0 12px rgba(255,255,255,.18),
-    0 0 30px rgba(255,255,255,.05),
-    inset 0 0 20px rgba(0,0,0,.85);
+    0 0 0 3px #000;
+
+  -webkit-user-select: none;
+  user-select: none;
+
+  -webkit-touch-callout: none;
 }
 
-/* Inner ring */
+/* =========================================================
+   JOYSTICK INNER RING
+========================================================= */
 
 #joystick::before {
   content: "";
 
   position: absolute;
 
-  inset: 12px;
+  left: 9px;
+  right: 9px;
 
-  border-radius: 50%;
+  top: 9px;
+  bottom: 9px;
 
   border:
-    2px dashed rgba(255,255,255,.22);
+    2px solid
+    rgba(255,255,255,.45);
+
+  border-radius: 50%;
 
   pointer-events: none;
 }
 
-/* Center ring */
+/* =========================================================
+   JOYSTICK CENTER
+========================================================= */
 
 #joystick::after {
   content: "";
@@ -393,16 +409,17 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 35px;
-  height: 35px;
+  width: 18px;
+  height: 18px;
 
-  margin-left: -17.5px;
-  margin-top: -17.5px;
-
-  border-radius: 50%;
+  transform:
+    translate(-50%, -50%);
 
   border:
-    2px solid rgba(255,255,255,.08);
+    2px solid
+    rgba(255,255,255,.22);
+
+  border-radius: 50%;
 
   pointer-events: none;
 }
@@ -417,52 +434,73 @@ body {
   left: 50%;
   top: 50%;
 
-  width: 68px;
-  height: 68px;
+  width: 58px;
+  height: 58px;
 
-  margin-left: -34px;
-  margin-top: -34px;
+  margin-left: -29px;
+  margin-top: -29px;
 
   border-radius: 50%;
 
-  background:
-    radial-gradient(
-      circle at 35% 28%,
-      #ffffff 0%,
-      #eeeeee 30%,
-      #aaaaaa 68%,
-      #666666 100%
-    );
+  background: #000;
 
-  border:
-    3px solid #fff;
+  border: 4px solid #fff;
 
   box-shadow:
-    0 0 0 2px #000,
-    0 4px 0 #333,
-    0 7px 15px rgba(0,0,0,.85);
+    0 0 0 2px #000;
 
   pointer-events: none;
+
+  z-index: 2;
+
+  transform:
+    translate(0, 0);
 
   transition:
     transform .035s linear;
 }
 
 /* =========================================================
-   MOBILE BUTTONS
+   JOYSTICK STICK HIGHLIGHT
+========================================================= */
+
+#joystick-stick::after {
+  content: "";
+
+  position: absolute;
+
+  left: 9px;
+  top: 9px;
+
+  width: 7px;
+  height: 7px;
+
+  background: #fff;
+
+  box-shadow:
+    9px 0 #fff,
+    0 9px #fff;
+
+  opacity: .55;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   MOBILE BUTTON CONTAINER
 ========================================================= */
 
 #mobile-buttons {
   position: absolute;
 
-  right: 70px;
-  bottom: 80px;
+  right: 55px;
+  bottom: 50px;
 
   display: flex;
 
   flex-direction: column;
 
-  gap: 14px;
+  gap: 12px;
 
   pointer-events: auto;
 
@@ -471,36 +509,32 @@ body {
   transform:
     scale(var(--ctrl-scale, 1.3));
 
-  transform-origin: center;
+  transform-origin: center center;
+
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* =========================================================
-   GAME BUTTON
+   GAME BUTTONS
 ========================================================= */
 
 .game-btn {
   position: relative;
 
-  width: 65px;
-  height: 65px;
-
-  border-radius: 50%;
+  width: 64px;
+  height: 64px;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  background:
-    radial-gradient(
-      circle at 35% 25%,
-      rgba(255,255,255,.38),
-      rgba(255,255,255,.13) 42%,
-      rgba(30,30,30,.85) 100%
-    );
+  border-radius: 50%;
 
-  border:
-    3px solid #fff;
+  background: #000;
+
+  border: 4px solid #fff;
 
   color: #fff;
 
@@ -508,93 +542,85 @@ body {
     "Deltarune",
     monospace;
 
-  font-size: 25px;
+  font-size: 24px;
 
   font-weight: bold;
+
+  line-height: 1;
+
+  text-align: center;
 
   text-shadow:
     2px 2px 0 #000;
 
-  touch-action: none;
-
   pointer-events: auto;
 
+  touch-action: none;
+
+  -webkit-user-select: none;
+  user-select: none;
+
+  -webkit-touch-callout: none;
+
   box-shadow:
-    0 0 0 2px #000,
-    0 0 12px rgba(255,255,255,.15),
-    0 5px 12px rgba(0,0,0,.8),
-    inset 0 0 15px rgba(0,0,0,.7);
+    0 0 0 3px #000;
 
   transition:
-    transform .055s ease,
-    filter .055s ease,
-    background .055s ease;
+    transform .04s steps(1),
+    background .04s steps(1),
+    color .04s steps(1);
 }
 
-/* Inner button ring */
+/* =========================================================
+   BUTTON INNER RING
+========================================================= */
 
 .game-btn::before {
   content: "";
 
   position: absolute;
 
-  inset: 5px;
-
-  border-radius: 50%;
+  inset: 6px;
 
   border:
-    1px solid rgba(255,255,255,.28);
-
-  pointer-events: none;
-}
-
-/* Highlight */
-
-.game-btn::after {
-  content: "";
-
-  position: absolute;
-
-  left: 16px;
-  top: 11px;
-
-  width: 17px;
-  height: 8px;
+    2px solid
+    rgba(255,255,255,.4);
 
   border-radius: 50%;
-
-  background:
-    rgba(255,255,255,.22);
-
-  transform: rotate(-25deg);
 
   pointer-events: none;
 }
 
 /* =========================================================
-   BUTTON PRESS
+   BUTTON ACTIVE
 ========================================================= */
 
 .game-btn.active {
-  background:
-    radial-gradient(
-      circle,
-      rgba(255,255,255,.82),
-      rgba(255,255,255,.28) 55%,
-      rgba(80,80,80,.7)
-    );
+  background: #fff;
+
+  color: #000;
 
   transform:
     scale(.88);
 
-  filter:
-    brightness(1.25);
+  text-shadow: none;
 
-  border-color: #fff;
+  box-shadow:
+    0 0 0 2px #000;
 }
 
 /* =========================================================
-   SETTINGS
+   BUTTON LABELS
+========================================================= */
+
+.game-btn[data-key="z"],
+.game-btn[data-key="x"],
+.game-btn[data-key="c"] {
+  color: #fff;
+}
+
+/* =========================================================
+   SETTINGS BAR
 ========================================================= */
 
 #settings-bar {
@@ -611,7 +637,13 @@ body {
   display: none;
 
   gap: 5px;
+
+  pointer-events: auto;
 }
+
+/* =========================================================
+   SETTINGS TOGGLE
+========================================================= */
 
 #settings-toggle {
   padding: 9px 12px;
@@ -619,7 +651,7 @@ body {
   color: #fff;
 
   background:
-    rgba(10,10,10,.95);
+    rgba(0,0,0,.95);
 
   border:
     2px solid #fff;
@@ -630,21 +662,12 @@ body {
     "Deltarune",
     monospace;
 
+  cursor: pointer;
+
   box-shadow:
     3px 3px 0 #000;
 
-  cursor: pointer;
-
-  transition:
-    background .1s ease,
-    transform .1s ease;
-}
-
-#settings-toggle:active {
-  transform: translate(2px,2px);
-
-  background:
-    #222;
+  touch-action: manipulation;
 }
 
 /* =========================================================
@@ -657,7 +680,9 @@ body {
   top:
     max(
       60px,
-      calc(env(safe-area-inset-top) + 50px)
+      calc(
+        env(safe-area-inset-top) + 50px
+      )
     );
 
   right:
@@ -688,18 +713,22 @@ body {
 
   box-shadow:
     5px 5px 0 #000;
+
+  pointer-events: auto;
 }
 
 #settings-panel label {
   display: block;
 
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 
   color: #fff;
 }
 
 #settings-panel input {
   width: 100%;
+
+  accent-color: #fff;
 }
 
 /* =========================================================
@@ -727,13 +756,15 @@ body {
     monospace;
 
   cursor: pointer;
+
+  touch-action: manipulation;
 }
 
-#reset-pos:active {
-  background: #222;
+#reset-pos:active,
+#settings-toggle:active {
+  background: #fff;
 
-  transform:
-    translate(2px,2px);
+  color: #000;
 }
 
 /* =========================================================
@@ -750,7 +781,7 @@ body.edit-mode #mobile-buttons {
 }
 
 /* =========================================================
-   MOBILE
+   MOBILE — 700PX
 ========================================================= */
 
 @media (max-width: 700px) {
@@ -765,6 +796,7 @@ body.edit-mode #mobile-buttons {
 
   .logo {
     width: 90vw;
+
     max-height: 150px;
   }
 
@@ -791,35 +823,39 @@ body.edit-mode #mobile-buttons {
   }
 
   #joystick {
-    left: 65px;
-    bottom: 75px;
+    left: 40px;
+    bottom: 45px;
 
-    width: 135px;
-    height: 135px;
+    width: 130px;
+    height: 130px;
   }
 
   #joystick-stick {
-    width: 62px;
-    height: 62px;
+    width: 54px;
+    height: 54px;
 
-    margin-left: -31px;
-    margin-top: -31px;
+    margin-left: -27px;
+    margin-top: -27px;
   }
 
   #mobile-buttons {
-    right: 45px;
-    bottom: 65px;
+    right: 35px;
+    bottom: 40px;
+
+    gap: 10px;
   }
 
   .game-btn {
-    width: 60px;
-    height: 60px;
+    width: 58px;
+    height: 58px;
+
+    font-size: 22px;
   }
 
 }
 
 /* =========================================================
-   SMALL PHONES
+   SMALL SCREEN — 450PX
 ========================================================= */
 
 @media (max-width: 450px) {
@@ -834,70 +870,209 @@ body.edit-mode #mobile-buttons {
     font-size: 18px;
   }
 
-  #joystick {
-    left: 30px;
-    bottom: 35px;
+  .row img,
+  .disabled-row img {
+    width: 42px;
+    height: 38px;
+  }
 
-    width: 120px;
-    height: 120px;
+  #joystick {
+    left: 20px;
+    bottom: 25px;
+
+    width: 115px;
+    height: 115px;
   }
 
   #joystick-stick {
-    width: 55px;
-    height: 55px;
+    width: 48px;
+    height: 48px;
 
-    margin-left: -27.5px;
-    margin-top: -27.5px;
+    margin-left: -24px;
+    margin-top: -24px;
+  }
+
+  #joystick::after {
+    width: 14px;
+    height: 14px;
   }
 
   #mobile-buttons {
-    right: 25px;
-    bottom: 30px;
+    right: 20px;
+    bottom: 22px;
 
-    gap: 8px;
+    gap: 7px;
   }
 
   .game-btn {
-    width: 55px;
-    height: 55px;
+    width: 52px;
+    height: 52px;
 
-    font-size: 21px;
+    font-size: 20px;
+  }
+
+  #settings-panel {
+    width: 210px;
+
+    right: 8px;
   }
 
 }
 
 /* =========================================================
-   LANDSCAPE IPAD / TABLET
+   LANDSCAPE
 ========================================================= */
 
-@media (orientation: landscape) and (min-width: 700px) {
+@media (orientation: landscape) {
 
   #joystick {
-    left: 55px;
-    bottom: 45px;
+    left:
+      max(
+        25px,
+        env(safe-area-inset-left)
+      );
+
+    bottom:
+      max(
+        25px,
+        env(safe-area-inset-bottom)
+      );
   }
 
   #mobile-buttons {
-    right: 55px;
-    bottom: 45px;
+    right:
+      max(
+        25px,
+        env(safe-area-inset-right)
+      );
+
+    bottom:
+      max(
+        20px,
+        env(safe-area-inset-bottom)
+      );
   }
 
 }
 
 /* =========================================================
-   SAFE AREA
+   LANDSCAPE + SMALL HEIGHT
 ========================================================= */
 
-@supports (padding: env(safe-area-inset-left)) {
+@media (
+  orientation: landscape
+) and (max-height: 500px) {
 
   #joystick {
-    margin-left:
-      env(safe-area-inset-left);
+    width: 105px;
+    height: 105px;
+  }
+
+  #joystick-stick {
+    width: 44px;
+    height: 44px;
+
+    margin-left: -22px;
+    margin-top: -22px;
   }
 
   #mobile-buttons {
-    margin-right:
-      env(safe-area-inset-right);
+    gap: 5px;
   }
 
+  .game-btn {
+    width: 48px;
+    height: 48px;
+
+    font-size: 18px;
+  }
+
+}
+
+/* =========================================================
+   SAFE AREA — IOS
+========================================================= */
+
+@supports (
+  padding:
+    max(
+      0px,
+      env(safe-area-inset-bottom)
+    )
+) {
+
+  #joystick {
+    margin-bottom:
+      env(safe-area-inset-bottom);
+  }
+
+  #mobile-buttons {
+    margin-bottom:
+      env(safe-area-inset-bottom);
+  }
+
+}
+
+/* =========================================================
+   TOUCH DEVICE
+========================================================= */
+
+@media (hover: none) {
+
+  .row:hover {
+    transform: none;
+  }
+
+  .row:hover .chapter,
+  .row:hover .title {
+    color: #fff;
+  }
+
+  .row:hover img {
+    filter: none;
+  }
+
+}
+
+/* =========================================================
+   PREVENT IMAGE DRAGGING
+========================================================= */
+
+img {
+  -webkit-user-drag: none;
+
+  user-drag: none;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   BUTTON / INPUT FOCUS
+========================================================= */
+
+button,
+input,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+input:focus,
+a:focus {
+  outline: none;
+}
+
+/* =========================================================
+   NO TEXT SELECTION
+========================================================= */
+
+#hud-layer,
+#joystick,
+#joystick-stick,
+#mobile-buttons,
+.game-btn,
+#settings-bar,
+#settings-panel {
+  user-select: none;
+  -webkit-user-select: none;
 }
