@@ -347,6 +347,10 @@ body {
   image-rendering: pixelated;
 }
 
+/* =========================================================
+   PIXEL JOYSTICK OUTER BODY
+========================================================= */
+
 #joystick::before {
   content: "";
 
@@ -359,22 +363,31 @@ body {
   clip-path: polygon(
     20px 0,
     calc(100% - 20px) 0,
+
     calc(100% - 20px) 5px,
     calc(100% - 10px) 5px,
+
     calc(100% - 10px) 15px,
     100% 15px,
+
     100% calc(100% - 15px),
     calc(100% - 10px) calc(100% - 15px),
+
     calc(100% - 10px) calc(100% - 5px),
     calc(100% - 20px) calc(100% - 5px),
+
     calc(100% - 20px) 100%,
     20px 100%,
+
     20px calc(100% - 5px),
     10px calc(100% - 5px),
+
     10px calc(100% - 15px),
     0 calc(100% - 15px),
+
     0 15px,
     10px 15px,
+
     10px 5px,
     20px 5px
   );
@@ -384,6 +397,10 @@ body {
 
   pointer-events: none;
 }
+
+/* =========================================================
+   PIXEL JOYSTICK INNER AREA
+========================================================= */
 
 #joystick::after {
   content: "";
@@ -397,22 +414,31 @@ body {
   clip-path: polygon(
     14px 0,
     calc(100% - 14px) 0,
+
     calc(100% - 14px) 5px,
     calc(100% - 5px) 5px,
+
     calc(100% - 5px) 14px,
     100% 14px,
+
     100% calc(100% - 14px),
     calc(100% - 5px) calc(100% - 14px),
+
     calc(100% - 5px) calc(100% - 5px),
     calc(100% - 14px) calc(100% - 5px),
+
     calc(100% - 14px) 100%,
     14px 100%,
+
     14px calc(100% - 5px),
     5px calc(100% - 5px),
+
     5px calc(100% - 14px),
     0 calc(100% - 14px),
+
     0 14px,
     5px 14px,
+
     5px 5px,
     14px 5px
   );
@@ -443,22 +469,31 @@ body {
   clip-path: polygon(
     12px 0,
     46px 0,
+
     46px 4px,
     54px 4px,
+
     54px 12px,
     58px 12px,
+
     58px 46px,
     54px 46px,
+
     54px 54px,
     46px 54px,
+
     46px 58px,
     12px 58px,
+
     12px 54px,
     4px 54px,
+
     4px 46px,
     0 46px,
+
     0 12px,
     4px 12px,
+
     4px 4px,
     12px 4px
   );
@@ -566,22 +601,31 @@ body {
   clip-path: polygon(
     12px 0,
     52px 0,
+
     52px 4px,
     60px 4px,
+
     60px 12px,
     64px 12px,
+
     64px 52px,
     60px 52px,
+
     60px 60px,
     52px 60px,
+
     52px 64px,
     12px 64px,
+
     12px 60px,
     4px 60px,
+
     4px 52px,
     0 52px,
+
     0 12px,
     4px 12px,
+
     4px 4px,
     12px 4px
   );
@@ -609,6 +653,38 @@ body {
   inset: 7px;
 
   border: 2px solid #171717;
+
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+
+    calc(100% - 8px) 4px,
+    calc(100% - 4px) 4px,
+
+    calc(100% - 4px) 8px,
+    100% 8px,
+
+    100% calc(100% - 8px),
+    calc(100% - 4px) calc(100% - 8px),
+
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 8px) calc(100% - 4px),
+
+    calc(100% - 8px) 100%,
+    8px 100%,
+
+    8px calc(100% - 4px),
+    4px calc(100% - 4px),
+
+    4px calc(100% - 8px),
+    0 calc(100% - 8px),
+
+    0 8px,
+    4px 8px,
+
+    4px 4px,
+    8px 4px
+  );
 
   pointer-events: none;
 }
@@ -670,6 +746,19 @@ body {
   transform:
     translateY(-42px)
     scale(.88);
+}
+
+.game-btn[data-key="z"],
+.game-btn[data-key="x"],
+.game-btn[data-key="c"] {
+  font-family:
+    "Deltarune",
+    monospace;
+
+  color: #f5f5f5;
+
+  text-shadow:
+    2px 2px 0 #000;
 }
 
 /* =========================================================
@@ -790,10 +879,6 @@ body.edit-mode #mobile-buttons {
   background:
     rgba(0,191,255,.12);
 }
-
-/* =========================================================
-   MOBILE
-========================================================= */
 
 @media (max-width: 700px) {
 
@@ -939,7 +1024,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="1">
       <span class="chapter">CHAPTER 1</span>
       <span class="title">The Beginning</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/1.png"
         draggable="false"
@@ -949,7 +1033,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="2">
       <span class="chapter">CHAPTER 2</span>
       <span class="title">A Cyber's World</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/2.png"
         draggable="false"
@@ -959,7 +1042,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="3">
       <span class="chapter">CHAPTER 3</span>
       <span class="title">Late Night</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/3.png"
         draggable="false"
@@ -969,7 +1051,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="4">
       <span class="chapter">CHAPTER 4</span>
       <span class="title">Prophecy</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/4.png"
         draggable="false"
@@ -979,7 +1060,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="row" data-chapter="5">
       <span class="chapter">CHAPTER 5</span>
       <span class="title">Festival Day</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/5.png"
         draggable="false"
@@ -989,7 +1069,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="disabled-row">
       <span class="chapter">CHAPTER 6</span>
       <span class="disabled-title">--</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
         draggable="false"
@@ -999,7 +1078,6 @@ body.edit-mode #mobile-buttons {
     <a href="#" class="disabled-row">
       <span class="chapter">CHAPTER 7</span>
       <span class="disabled-title">--</span>
-
       <img
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/0.png"
         draggable="false"
@@ -1007,7 +1085,6 @@ body.edit-mode #mobile-buttons {
     </a>
 
     <a href="#" class="row" id="mobile-controls-row">
-
       <span class="chapter">SYSTEM</span>
 
       <span
@@ -1021,11 +1098,9 @@ body.edit-mode #mobile-buttons {
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/mobile.png"
         draggable="false"
       >
-
     </a>
 
     <a href="#" class="row" id="export-row">
-
       <span class="chapter">SAVE DATA</span>
 
       <span class="title">
@@ -1036,11 +1111,9 @@ body.edit-mode #mobile-buttons {
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/export.png"
         draggable="false"
       >
-
     </a>
 
     <a href="#" class="row" id="import-row">
-
       <span class="chapter">SAVE DATA</span>
 
       <span class="title">
@@ -1051,7 +1124,6 @@ body.edit-mode #mobile-buttons {
         src="https://cdn.jsdelivr.net/gh/ByAlvaro19/deltarune/icons/import.png"
         draggable="false"
       >
-
     </a>
 
     <input
@@ -1244,30 +1316,17 @@ let selectedIndex = null;
 let joystickPointer = null;
 
 /*
- * Guarda as direções que o joystick está
- * pressionando neste momento.
+ * Guarda as direções atualmente seguradas
+ * pelo joystick.
  */
-
-let joystickDirection = {
-  up: false,
-  down: false,
-  left: false,
-  right: false
-};
+const joystickDirections =
+  new Set();
 
 /*
- * Timer responsável pelo movimento contínuo.
+ * Timer responsável por manter o input
+ * sendo enviado enquanto o stick estiver preso.
  */
-
-let joystickRepeatTimer = null;
-
-/*
- * Intervalo de repetição.
- *
- * 35 ms ≈ 28 atualizações por segundo.
- */
-
-const JOYSTICK_REPEAT_MS = 35;
+let joystickHoldTimer = null;
 
 const activeKeys =
   new Set();
@@ -1304,7 +1363,7 @@ const keyMap = {
    SEND INPUT
 ========================================================= */
 
-function sendGameKey(type, key) {
+function sendGameKey(type, key, repeat = false) {
 
   try {
 
@@ -1351,7 +1410,9 @@ function sendGameKey(type, key) {
 
           cancelable: true,
 
-          composed: true
+          composed: true,
+
+          repeat: repeat
         }
       );
 
@@ -1417,7 +1478,8 @@ function updateKey(key, down) {
 
     sendGameKey(
       "keydown",
-      key
+      key,
+      false
     );
 
   } else {
@@ -1430,7 +1492,8 @@ function updateKey(key, down) {
 
     sendGameKey(
       "keyup",
-      key
+      key,
+      false
     );
 
   }
@@ -1438,10 +1501,151 @@ function updateKey(key, down) {
 }
 
 /* =========================================================
-   RELEASE ALL
+   JOYSTICK CONTINUOUS HOLD
 ========================================================= */
 
+const JOYSTICK_REPEAT_MS = 45;
+
+function startJoystickHold() {
+
+  if (joystickHoldTimer !== null) {
+    return;
+  }
+
+  joystickHoldTimer =
+    setInterval(
+      () => {
+
+        if (
+          !gameStarted ||
+          !mobileControls ||
+          joystickPointer === null
+        ) {
+          return;
+        }
+
+        /*
+         * Reenvia keydown continuamente.
+         * Isso faz jogos que dependem de eventos
+         * repetidos continuarem andando.
+         */
+        joystickDirections.forEach(
+          key => {
+
+            sendGameKey(
+              "keydown",
+              key,
+              true
+            );
+
+          }
+        );
+
+      },
+      JOYSTICK_REPEAT_MS
+    );
+
+}
+
+function stopJoystickHold() {
+
+  if (
+    joystickHoldTimer !== null
+  ) {
+
+    clearInterval(
+      joystickHoldTimer
+    );
+
+    joystickHoldTimer = null;
+
+  }
+
+}
+
+function setJoystickDirection(
+  key,
+  shouldHold
+) {
+
+  if (shouldHold) {
+
+    /*
+     * Adiciona a direção ao conjunto
+     * de direções seguradas.
+     */
+    if (
+      !joystickDirections.has(key)
+    ) {
+
+      joystickDirections.add(key);
+
+      /*
+       * Primeiro input acontece imediatamente.
+       */
+      updateKey(
+        key,
+        true
+      );
+
+    }
+
+    startJoystickHold();
+
+  } else {
+
+    /*
+     * Remove somente essa direção.
+     */
+    if (
+      joystickDirections.has(key)
+    ) {
+
+      joystickDirections.delete(key);
+
+      updateKey(
+        key,
+        false
+      );
+
+    }
+
+    if (
+      joystickDirections.size === 0
+    ) {
+
+      stopJoystickHold();
+
+    }
+
+  }
+
+}
+
+function releaseJoystickDirections() {
+
+  stopJoystickHold();
+
+  for (
+    const key of Array.from(
+      joystickDirections
+    )
+  ) {
+
+    updateKey(
+      key,
+      false
+    );
+
+  }
+
+  joystickDirections.clear();
+
+}
+
 function releaseAllKeys() {
+
+  releaseJoystickDirections();
 
   for (
     const key of Array.from(activeKeys)
@@ -1449,7 +1653,8 @@ function releaseAllKeys() {
 
     sendGameKey(
       "keyup",
-      key
+      key,
+      false
     );
 
     activeKeys.delete(key);
@@ -1522,10 +1727,6 @@ function updateHUD() {
     settingsPanel.style.display =
       "none";
 
-    stopJoystickRepeat();
-
-    resetJoystick();
-
     releaseAllKeys();
 
   }
@@ -1533,129 +1734,15 @@ function updateHUD() {
 }
 
 /* =========================================================
-   JOYSTICK — CONTINUOUS MOVEMENT
-========================================================= */
-
-/*
- * Esta função envia a direção atual.
- *
- * Diferentemente do código anterior,
- * ela é chamada repetidamente enquanto
- * o dedo continuar no joystick.
- */
-
-function joystickRepeat() {
-
-  if (
-    !gameStarted ||
-    !mobileControls ||
-    joystickPointer === null
-  ) {
-    return;
-  }
-
-  const direction =
-    joystickDirection;
-
-  /*
-   * Mantém exatamente as direções atuais.
-   */
-
-  updateKey(
-    "ArrowUp",
-    direction.up
-  );
-
-  updateKey(
-    "ArrowDown",
-    direction.down
-  );
-
-  updateKey(
-    "ArrowLeft",
-    direction.left
-  );
-
-  updateKey(
-    "ArrowRight",
-    direction.right
-  );
-
-}
-
-/* =========================================================
-   START CONTINUOUS MOVEMENT
-========================================================= */
-
-function startJoystickRepeat() {
-
-  if (
-    joystickRepeatTimer !== null
-  ) {
-    return;
-  }
-
-  /*
-   * Envia imediatamente.
-   */
-
-  joystickRepeat();
-
-  /*
-   * Depois continua enviando enquanto
-   * o dedo estiver segurando o joystick.
-   */
-
-  joystickRepeatTimer =
-    setInterval(
-      joystickRepeat,
-      JOYSTICK_REPEAT_MS
-    );
-
-}
-
-/* =========================================================
-   STOP CONTINUOUS MOVEMENT
-========================================================= */
-
-function stopJoystickRepeat() {
-
-  if (
-    joystickRepeatTimer !== null
-  ) {
-
-    clearInterval(
-      joystickRepeatTimer
-    );
-
-    joystickRepeatTimer =
-      null;
-
-  }
-
-}
-
-/* =========================================================
-   RESET JOYSTICK
+   JOYSTICK
 ========================================================= */
 
 function resetJoystick() {
-
-  joystickDirection = {
-    up: false,
-    down: false,
-    left: false,
-    right: false
-  };
 
   joystickStick.style.transform =
     "translate(0px, 0px)";
 
 }
-
-/* =========================================================
-   CALCULATE JOYSTICK
-========================================================= */
 
 function joystickMove(x, y) {
 
@@ -1685,9 +1772,7 @@ function joystickMove(x, y) {
       dy * dy
     );
 
-  if (
-    distance > radius
-  ) {
+  if (distance > radius) {
 
     const factor =
       radius / distance;
@@ -1700,107 +1785,41 @@ function joystickMove(x, y) {
   joystickStick.style.transform =
     `translate(${dx}px, ${dy}px)`;
 
-  const deadzone =
-    Math.max(
-      12,
-      rect.width * .10
-    );
+  const deadzone = 18;
 
   /*
-   * Calcula todas as direções.
+   * Direções do joystick.
    *
-   * Isso permite diagonal:
-   *
-   * cima + direita
-   * cima + esquerda
-   * baixo + direita
-   * baixo + esquerda
+   * Enquanto permanecerem true,
+   * o sistema continuará enviando input.
    */
+  setJoystickDirection(
+    "ArrowUp",
+    dy < -deadzone
+  );
 
-  joystickDirection = {
+  setJoystickDirection(
+    "ArrowDown",
+    dy > deadzone
+  );
 
-    up:
-      dy < -deadzone,
+  setJoystickDirection(
+    "ArrowLeft",
+    dx < -deadzone
+  );
 
-    down:
-      dy > deadzone,
-
-    left:
-      dx < -deadzone,
-
-    right:
-      dx > deadzone
-
-  };
-
-  /*
-   * Se estiver dentro da deadzone,
-   * libera as teclas.
-   */
-
-  if (
-    !joystickDirection.up &&
-    !joystickDirection.down &&
-    !joystickDirection.left &&
-    !joystickDirection.right
-  ) {
-
-    updateKey(
-      "ArrowUp",
-      false
-    );
-
-    updateKey(
-      "ArrowDown",
-      false
-    );
-
-    updateKey(
-      "ArrowLeft",
-      false
-    );
-
-    updateKey(
-      "ArrowRight",
-      false
-    );
-
-    stopJoystickRepeat();
-
-    return;
-
-  }
-
-  /*
-   * Primeiro input imediatamente.
-   */
-
-  joystickRepeat();
-
-  /*
-   * Depois mantém repetindo.
-   */
-
-  startJoystickRepeat();
+  setJoystickDirection(
+    "ArrowRight",
+    dx > deadzone
+  );
 
 }
-
-/* =========================================================
-   JOYSTICK POINTER DOWN
-========================================================= */
 
 joystick.addEventListener(
   "pointerdown",
   event => {
 
     event.preventDefault();
-
-    if (
-      !gameStarted ||
-      !mobileControls
-    ) {
-      return;
-    }
 
     joystickPointer =
       event.pointerId;
@@ -1823,10 +1842,6 @@ joystick.addEventListener(
     passive: false
   }
 );
-
-/* =========================================================
-   JOYSTICK POINTER MOVE
-========================================================= */
 
 joystick.addEventListener(
   "pointermove",
@@ -1852,10 +1867,6 @@ joystick.addEventListener(
   }
 );
 
-/* =========================================================
-   JOYSTICK RELEASE
-========================================================= */
-
 function releaseJoystick(event) {
 
   if (
@@ -1866,56 +1877,23 @@ function releaseJoystick(event) {
     return;
   }
 
-  joystickPointer =
-    null;
-
-  stopJoystickRepeat();
+  joystickPointer = null;
 
   resetJoystick();
 
-  updateKey(
-    "ArrowUp",
-    false
-  );
-
-  updateKey(
-    "ArrowDown",
-    false
-  );
-
-  updateKey(
-    "ArrowLeft",
-    false
-  );
-
-  updateKey(
-    "ArrowRight",
-    false
-  );
+  releaseJoystickDirections();
 
 }
-
-/* =========================================================
-   POINTER UP
-========================================================= */
 
 joystick.addEventListener(
   "pointerup",
   releaseJoystick
 );
 
-/* =========================================================
-   POINTER CANCEL
-========================================================= */
-
 joystick.addEventListener(
   "pointercancel",
   releaseJoystick
 );
-
-/* =========================================================
-   LOST POINTER
-========================================================= */
 
 joystick.addEventListener(
   "lostpointercapture",
@@ -1940,13 +1918,6 @@ document
       event => {
 
         event.preventDefault();
-
-        if (
-          !gameStarted ||
-          !mobileControls
-        ) {
-          return;
-        }
 
         pointerId =
           event.pointerId;
@@ -2044,8 +2015,6 @@ async function loadChapter(chapter) {
   playSelect();
 
   gameStarted = true;
-
-  stopJoystickRepeat();
 
   releaseAllKeys();
 
@@ -3372,15 +3341,7 @@ function initialize() {
 
 window.addEventListener(
   "blur",
-  () => {
-
-    stopJoystickRepeat();
-
-    resetJoystick();
-
-    releaseAllKeys();
-
-  }
+  releaseAllKeys
 );
 
 document.addEventListener(
@@ -3389,11 +3350,11 @@ document.addEventListener(
 
     if (document.hidden) {
 
-      stopJoystickRepeat();
+      releaseAllKeys();
 
       resetJoystick();
 
-      releaseAllKeys();
+      joystickPointer = null;
 
     }
 
