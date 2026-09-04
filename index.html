@@ -10,16 +10,36 @@
 >
 
 <meta name="theme-color" content="#000000">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Deltarune">
 
 <title>Deltarune</title>
 
-<link rel="manifest" href="./manifest.json">
+<!-- =========================================================
+     ICONS
+========================================================= -->
 
-<link rel="icon" type="image/png" href="./icons/webicon.png">
-<link rel="apple-touch-icon" href="./icons/appicon.png">
+<!-- Ícone usado pelo navegador -->
+<link
+  rel="icon"
+  type="image/png"
+  href="./icons/webicon.png"
+>
+
+<!-- Ícone usado pelo iOS/iPadOS ao adicionar à Tela de Início -->
+<link
+  rel="apple-touch-icon"
+  type="image/png"
+  href="./icons/appicon.png"
+>
+
+<!-- Manifest PWA -->
+<link
+  rel="manifest"
+  href="./manifest.json"
+>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -347,10 +367,6 @@ body {
   image-rendering: pixelated;
 }
 
-/* =========================================================
-   PIXEL JOYSTICK OUTER BODY
-========================================================= */
-
 #joystick::before {
   content: "";
 
@@ -398,10 +414,6 @@ body {
   pointer-events: none;
 }
 
-/* =========================================================
-   PIXEL JOYSTICK INNER AREA
-========================================================= */
-
 #joystick::after {
   content: "";
 
@@ -445,10 +457,6 @@ body {
 
   pointer-events: none;
 }
-
-/* =========================================================
-   PIXEL THUMBSTICK
-========================================================= */
 
 #joystick-stick {
   position: absolute;
@@ -1315,17 +1323,9 @@ let selectedIndex = null;
 
 let joystickPointer = null;
 
-/*
- * Guarda as direções atualmente seguradas
- * pelo joystick.
- */
 const joystickDirections =
   new Set();
 
-/*
- * Timer responsável por manter o input
- * sendo enviado enquanto o stick estiver preso.
- */
 let joystickHoldTimer = null;
 
 const activeKeys =
@@ -1363,7 +1363,11 @@ const keyMap = {
    SEND INPUT
 ========================================================= */
 
-function sendGameKey(type, key, repeat = false) {
+function sendGameKey(
+  type,
+  key,
+  repeat = false
+) {
 
   try {
 
@@ -1462,7 +1466,10 @@ function sendGameKey(type, key, repeat = false) {
    UPDATE KEY
 ========================================================= */
 
-function updateKey(key, down) {
+function updateKey(
+  key,
+  down
+) {
 
   if (!keyMap[key]) {
     return;
@@ -1470,7 +1477,9 @@ function updateKey(key, down) {
 
   if (down) {
 
-    if (activeKeys.has(key)) {
+    if (
+      activeKeys.has(key)
+    ) {
       return;
     }
 
@@ -1484,7 +1493,9 @@ function updateKey(key, down) {
 
   } else {
 
-    if (!activeKeys.has(key)) {
+    if (
+      !activeKeys.has(key)
+    ) {
       return;
     }
 
@@ -1508,7 +1519,9 @@ const JOYSTICK_REPEAT_MS = 45;
 
 function startJoystickHold() {
 
-  if (joystickHoldTimer !== null) {
+  if (
+    joystickHoldTimer !== null
+  ) {
     return;
   }
 
@@ -1524,11 +1537,6 @@ function startJoystickHold() {
           return;
         }
 
-        /*
-         * Reenvia keydown continuamente.
-         * Isso faz jogos que dependem de eventos
-         * repetidos continuarem andando.
-         */
         joystickDirections.forEach(
           key => {
 
@@ -1570,19 +1578,12 @@ function setJoystickDirection(
 
   if (shouldHold) {
 
-    /*
-     * Adiciona a direção ao conjunto
-     * de direções seguradas.
-     */
     if (
       !joystickDirections.has(key)
     ) {
 
       joystickDirections.add(key);
 
-      /*
-       * Primeiro input acontece imediatamente.
-       */
       updateKey(
         key,
         true
@@ -1594,9 +1595,6 @@ function setJoystickDirection(
 
   } else {
 
-    /*
-     * Remove somente essa direção.
-     */
     if (
       joystickDirections.has(key)
     ) {
@@ -1744,7 +1742,10 @@ function resetJoystick() {
 
 }
 
-function joystickMove(x, y) {
+function joystickMove(
+  x,
+  y
+) {
 
   const rect =
     joystick.getBoundingClientRect();
@@ -1772,7 +1773,9 @@ function joystickMove(x, y) {
       dy * dy
     );
 
-  if (distance > radius) {
+  if (
+    distance > radius
+  ) {
 
     const factor =
       radius / distance;
@@ -1787,12 +1790,6 @@ function joystickMove(x, y) {
 
   const deadzone = 18;
 
-  /*
-   * Direções do joystick.
-   *
-   * Enquanto permanecerem true,
-   * o sistema continuará enviando input.
-   */
   setJoystickDirection(
     "ArrowUp",
     dy < -deadzone
@@ -1867,7 +1864,9 @@ joystick.addEventListener(
   }
 );
 
-function releaseJoystick(event) {
+function releaseJoystick(
+  event
+) {
 
   if (
     joystickPointer !== null &&
@@ -1906,89 +1905,59 @@ joystick.addEventListener(
 
 document
   .querySelectorAll(".game-btn")
-  .forEach(button => {
+  .forEach(
+    button => {
 
-    const key =
-      button.dataset.key;
+      const key =
+        button.dataset.key;
 
-    let pointerId = null;
+      let pointerId = null;
 
-    button.addEventListener(
-      "pointerdown",
-      event => {
+      button.addEventListener(
+        "pointerdown",
+        event => {
 
-        event.preventDefault();
+          event.preventDefault();
 
-        pointerId =
-          event.pointerId;
+          pointerId =
+            event.pointerId;
 
-        try {
+          try {
 
-          button.setPointerCapture(
-            pointerId
+            button.setPointerCapture(
+              pointerId
+            );
+
+          } catch (_) {}
+
+          updateKey(
+            key,
+            true
           );
 
-        } catch (_) {}
+          button.classList.add(
+            "active"
+          );
 
-        updateKey(
-          key,
-          true
-        );
+        },
+        {
+          passive: false
+        }
+      );
 
-        button.classList.add(
-          "active"
-        );
-
-      },
-      {
-        passive: false
-      }
-    );
-
-    function release(event) {
-
-      if (
-        pointerId !== null &&
-        event.pointerId !==
-        pointerId
+      function release(
+        event
       ) {
-        return;
-      }
 
-      event.preventDefault();
+        if (
+          pointerId !== null &&
+          event.pointerId !==
+          pointerId
+        ) {
+          return;
+        }
 
-      updateKey(
-        key,
-        false
-      );
-
-      button.classList.remove(
-        "active"
-      );
-
-      pointerId = null;
-
-    }
-
-    button.addEventListener(
-      "pointerup",
-      release,
-      {
-        passive: false
-      }
-    );
-
-    button.addEventListener(
-      "pointercancel",
-      release,
-      {
-        passive: false
-      }
-    );
-
-    button.addEventListener(
-      "lostpointercapture",
-      () => {
+        event.preventDefault();
 
         updateKey(
           key,
@@ -2002,15 +1971,51 @@ document
         pointerId = null;
 
       }
-    );
 
-  });
+      button.addEventListener(
+        "pointerup",
+        release,
+        {
+          passive: false
+        }
+      );
+
+      button.addEventListener(
+        "pointercancel",
+        release,
+        {
+          passive: false
+        }
+      );
+
+      button.addEventListener(
+        "lostpointercapture",
+        () => {
+
+          updateKey(
+            key,
+            false
+          );
+
+          button.classList.remove(
+            "active"
+          );
+
+          pointerId = null;
+
+        }
+      );
+
+    }
+  );
 
 /* =========================================================
    LOAD CHAPTER
 ========================================================= */
 
-async function loadChapter(chapter) {
+async function loadChapter(
+  chapter
+) {
 
   playSelect();
 
@@ -2207,37 +2212,41 @@ const chapterRows =
    NORMAL CLICK
 ========================================================= */
 
-chapterRows.forEach(row => {
+chapterRows.forEach(
+  row => {
 
-  row.addEventListener(
-    "click",
-    event => {
+    row.addEventListener(
+      "click",
+      event => {
 
-      event.preventDefault();
+        event.preventDefault();
 
-      if (gameStarted) {
-        return;
+        if (gameStarted) {
+          return;
+        }
+
+        const chapter =
+          Number(
+            row.dataset.chapter
+          );
+
+        if (
+          Number.isFinite(
+            chapter
+          )
+        ) {
+
+          loadChapter(
+            chapter
+          );
+
+        }
+
       }
+    );
 
-      const chapter =
-        Number(
-          row.dataset.chapter
-        );
-
-      if (
-        Number.isFinite(chapter)
-      ) {
-
-        loadChapter(
-          chapter
-        );
-
-      }
-
-    }
-  );
-
-});
+  }
+);
 
 /* =========================================================
    TOUCH CHAPTER NAVIGATION
@@ -2383,7 +2392,9 @@ menu.addEventListener(
    MENU SELECTION
 ========================================================= */
 
-function setSelected(index) {
+function setSelected(
+  index
+) {
 
   if (
     !chapterRows.length
@@ -2448,7 +2459,9 @@ function setSelected(index) {
 
 }
 
-function moveSelection(direction) {
+function moveSelection(
+  direction
+) {
 
   if (
     !chapterRows.length ||
