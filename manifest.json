@@ -1,0 +1,21 @@
+{
+  "name": "Deltarune",
+  "short_name": "Deltarune",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "./icons/webicon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./icons/appicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
